@@ -1,0 +1,1461 @@
+{
+	"common": {
+		"appName": "أمير CRM",
+		"loading": "جاري التحميل...",
+		"logout": "تسجيل الخروج",
+		"user": "مستخدم",
+		"or": "أو",
+		"cancel": "إلغاء",
+		"close": "إغلاق"
+	},
+	"nav": {
+		"dashboard": "لوحة التحكم",
+		"kpi": "مؤشرات الأداء",
+		"reports": "التقارير",
+		"leads": "العملاء المحتملون",
+		"pending": "المعلقون",
+		"pendingLeads": "العملاء المعلقون",
+		"projects": "المشاريع",
+		"campaigns": "الحملات",
+		"clients": "العملاء",
+		"teams": "الفرق",
+		"users": "المستخدمون",
+		"scheduledActions": "الإجراءات المجدولة",
+		"auditLogs": "السجلات",
+		"role": "الدور",
+		"openMenu": "فتح القائمة",
+		"closeMenu": "إغلاق القائمة",
+		"expandSidebar": "توسيع الشريط الجانبي",
+		"collapseSidebar": "طي الشريط الجانبي",
+		"groups": {
+			"sales": "المبيعات",
+			"marketing": "التسويق",
+			"management": "الإدارة",
+			"analytics": "التحليلات",
+			"settings": "الإعدادات"
+		}
+	},
+	"language": {
+		"ar": "العربية",
+		"en": "English",
+		"switchTo": "تغيير اللغة"
+	},
+	"auth": {
+		"login": {
+			"title": "مرحباً بعودتك",
+			"subtitle": "سجّل الدخول للوصول إلى لوحة التحكم وإدارة أعمالك.",
+			"emailLabel": "البريد الإلكتروني",
+			"emailPlaceholder": "admin@crm.com",
+			"passwordLabel": "كلمة المرور",
+			"passwordPlaceholder": "أدخل كلمة المرور",
+			"rememberMe": "تذكرني",
+			"forgotPassword": "نسيت كلمة المرور؟",
+			"signIn": "تسجيل الدخول",
+			"signingIn": "جاري تسجيل الدخول...",
+			"noAccount": "ليس لديك حساب؟",
+			"register": "إنشاء حساب",
+			"registeredSuccess": "تم إنشاء الحساب بنجاح. يرجى تسجيل الدخول.",
+			"showPassword": "إظهار كلمة المرور",
+			"hidePassword": "إخفاء كلمة المرور"
+		},
+		"register": {
+			"title": "إنشاء حساب",
+			"subtitle": "سجّل للوصول إلى لوحة التحكم وإدارة أعمالك.",
+			"nameLabel": "الاسم الكامل",
+			"namePlaceholder": "اسمك",
+			"emailLabel": "البريد الإلكتروني",
+			"emailPlaceholder": "you@company.com",
+			"passwordLabel": "كلمة المرور",
+			"passwordPlaceholder": "8 أحرف على الأقل",
+			"confirmPasswordLabel": "تأكيد كلمة المرور",
+			"confirmPasswordPlaceholder": "أعد إدخال كلمة المرور",
+			"createAccount": "إنشاء حساب",
+			"creatingAccount": "جاري إنشاء الحساب...",
+			"hasAccount": "لديك حساب بالفعل؟",
+			"signIn": "تسجيل الدخول",
+			"showPassword": "إظهار كلمة المرور",
+			"hidePassword": "إخفاء كلمة المرور"
+		}
+	},
+	"kpi": {
+		"title": "مؤشرات الأداء",
+		"subtitle": "مقاييس أداء المبيعات والفرق للفترة المحددة.",
+		"reportingPeriod": "فترة التقرير",
+		"periodRange": "{{from}} – {{to}}",
+		"dateFrom": "من",
+		"dateTo": "إلى",
+		"refresh": "تحديث",
+		"selectDates": "اختر نطاقاً زمنياً لتحميل مؤشرات الأداء.",
+		"sales": {
+			"totalAssigned": "إجمالي المعيّنين",
+			"totalAssignedDesc": "العملاء المعيّنون في الفترة",
+			"contacted": "تم التواصل",
+			"contactedDesc": "العملاء الذين تم التواصل معهم",
+			"qualified": "مؤهلون",
+			"qualifiedDesc": "العملاء الذين تم تأهيلهم",
+			"converted": "محوّلون",
+			"convertedDesc": "العملاء الذين تم تحويلهم",
+			"contactRate": "معدل التواصل",
+			"contactRateDesc": "تم التواصل ÷ المعيّنون",
+			"qualificationRate": "معدل التأهيل",
+			"qualificationRateDesc": "مؤهلون ÷ تم التواصل",
+			"conversionRate": "معدل التحويل",
+			"conversionRateDesc": "محوّلون ÷ مؤهلون"
+		}
+	},
+	"reports": {
+		"title": "التقارير",
+		"subtitle": "أداء المشاريع والحملات ومصادر العملاء للفترة المحددة.",
+		"reportingPeriod": "فترة التقرير",
+		"periodRange": "{{from}} – {{to}}",
+		"refresh": "تحديث",
+		"resetFilters": "إعادة تعيين الفلاتر",
+		"tabsLabel": "أقسام التقارير",
+		"tabs": {
+			"projects": "المشاريع",
+			"campaigns": "الحملات",
+			"sources": "المصادر"
+		},
+		"filters": {
+			"dateFrom": "من",
+			"dateTo": "إلى",
+			"project": "المشروع",
+			"allProjects": "كل المشاريع",
+			"campaign": "الحملة",
+			"allCampaigns": "كل الحملات",
+			"team": "الفريق",
+			"allTeams": "كل الفرق",
+			"user": "المستخدم",
+			"allUsers": "كل المستخدمين",
+			"source": "المصدر",
+			"allSources": "كل المصادر"
+		},
+		"projects": {
+			"columns": {
+				"project": "المشروع",
+				"leads": "العملاء المحتملون",
+				"qualified": "مؤهلون",
+				"clients": "العملاء",
+				"campaigns": "الحملات"
+			}
+		},
+		"campaigns": {
+			"columns": {
+				"campaign": "الحملة",
+				"spent": "الإنفاق",
+				"revenue": "الإيرادات",
+				"leads": "العملاء المحتملون",
+				"qualified": "مؤهلون",
+				"converted": "محوّلون",
+				"cpl": "تكلفة العميل",
+				"cpql": "تكلفة المؤهل",
+				"cpc": "تكلفة التحويل",
+				"roas": "عائد الإعلان",
+				"roi": "العائد على الاستثمار"
+			}
+		},
+		"sources": {
+			"columns": {
+				"source": "المصدر",
+				"leads": "العملاء المحتملون",
+				"qualified": "مؤهلون",
+				"converted": "محوّلون"
+			}
+		},
+		"pagination": {
+			"showing": "عرض {{shown}} من {{total}}"
+		},
+		"empty": {
+			"title": "لا توجد بيانات تقرير",
+			"subtitle": "لا توجد بيانات لهذا التقرير بعد.",
+			"filteredTitle": "لا توجد نتائج مطابقة",
+			"filteredSubtitle": "جرّب تعديل الفلاتر أو النطاق الزمني."
+		},
+		"errors": {
+			"loadFailed": "تعذّر تحميل بيانات التقرير. يرجى المحاولة مرة أخرى."
+		}
+	},
+	"dashboard": {
+		"title": "لوحة التحكم",
+		"welcome": "مرحباً بعودتك، {{name}}.",
+		"welcomeManager": "تركيز اليوم، {{name}}.",
+		"welcomeSales": "يومك، {{name}}.",
+		"subtitle": "إليك ما يحدث اليوم.",
+		"subtitleSales": "إليك تركيزك لليوم.",
+		"greeting": {
+			"morning": "صباح الخير، {{name}}",
+			"afternoon": "مساء الخير، {{name}}",
+			"evening": "مساء الخير، {{name}}"
+		},
+		"profileError": "تعذّر تحميل ملفك الشخصي. يرجى تسجيل الدخول مرة أخرى.",
+		"reportingPeriod": "فترة التقرير",
+		"periodRange": "{{from}} – {{to}}",
+		"refresh": "تحديث",
+		"retry": "إعادة المحاولة",
+		"errorTitle": "حدث خطأ ما",
+		"errorMessage": "تعذّر تحميل هذا القسم. يرجى المحاولة مرة أخرى.",
+		"hero": {
+			"eyebrow": "أولوية",
+			"openQueue": "فتح القائمة",
+			"reviewNow": "راجع الآن",
+			"viewLeads": "عرض العملاء"
+		},
+		"attention": {
+			"title": "يحتاج إلى انتباه",
+			"subtitle": "أعمال تحتاج إجراء اليوم عبر الفريق.",
+			"subtitleSales": "عناصرك المتأخرة والمستحقة اليوم.",
+			"overdue": "متأخر",
+			"overdueDesc": "إجراءات ومتابعات تجاوزت موعدها",
+			"overdueDescSales": "إجراءاتك ومتابعاتك المتأخرة",
+			"dueToday": "مستحق اليوم",
+			"dueTodayDesc": "إجراءات ومتابعات مجدولة اليوم",
+			"dueTodayDescSales": "إجراءاتك ومتابعاتك لليوم",
+			"unassigned": "عملاء غير معيّنين",
+			"unassignedDesc": "عملاء مفتوحون بلا مسؤول",
+			"pendingDuplicates": "مكررات معلّقة",
+			"pendingDuplicatesDesc": "مكررات بانتظار المراجعة",
+			"myAssigned": "عملائي المفتوحون",
+			"myAssignedDesc": "العملاء المعيّنون لك"
+		},
+		"kpiStrip": {
+			"title": "المؤشرات الرئيسية",
+			"subtitle": "لمحة من بيانات نظام إدارة العملاء الحالية.",
+			"totalLeads": "إجمالي العملاء المحتملين",
+			"newToday": "عملاء جدد اليوم",
+			"qualified": "عملاء مؤهلون",
+			"converted": "صفقات ناجحة",
+			"contactRate": "معدل التواصل",
+			"conversionRate": "معدل التحويل"
+		},
+		"schedule": {
+			"title": "جدول اليوم",
+			"subtitle": "أجندة المتابعات والإجراءات المجدولة اليوم.",
+			"emptyTitle": "أنت على اطلاع كامل",
+			"emptyMessage": "لا متابعات أو إجراءات مجدولة لليوم."
+		},
+		"queue": {
+			"title": "قائمة يحتاج انتباه",
+			"subtitle": "عناصر قابلة للتنفيذ مرتبة حسب الأولوية.",
+			"open": "فتح",
+			"viewDetails": "عرض التفاصيل",
+			"overdueHours": "متأخر {{count}} ساعة",
+			"overdueDays": "متأخر {{count}} يوم"
+		},
+		"funnel": {
+			"title": "قمع المبيعات",
+			"subtitle": "مراحل المسار من حالات العملاء الحالية.",
+			"conversion": "{{value}} من السابق",
+			"dropOff": "{{value}} تسرّب",
+			"emptyTitle": "لا بيانات للقمع بعد",
+			"emptyMessage": "ستملأ حالات العملاء القمع مع نمو المسار.",
+			"stages": {
+				"new": "عملاء جدد",
+				"contacted": "تم التواصل",
+				"qualified": "مؤهلون",
+				"meeting": "زيارة عقار",
+				"interested": "تفاوض",
+				"converted": "صفقات ناجحة"
+			}
+		},
+		"leaderboard": {
+			"title": "أداء الفرق",
+			"subtitle": "لوحة المتصدرين حسب معدل التحويل.",
+			"lowContact": "أقل من هدف معدل التواصل"
+		},
+		"projects": {
+			"title": "المشاريع",
+			"subtitle": "حالة المشاريع النشطة والقادمة.",
+			"viewAll": "عرض الكل",
+			"started": "بدء",
+			"emptyTitle": "لا مشاريع بعد",
+			"emptyMessage": "ستظهر المشاريع هنا بعد إنشائها."
+		},
+		"campaigns": {
+			"title": "الحملات",
+			"subtitle": "الميزانية والإيراد والعائد بنظرة سريعة.",
+			"viewAll": "عرض الكل",
+			"budget": "الميزانية",
+			"revenue": "الإيراد",
+			"roi": "العائد",
+			"emptyTitle": "لا حملات بعد",
+			"emptyMessage": "ستظهر الحملات هنا بعد إنشائها."
+		},
+		"leads": {
+			"title": "عملاء مفتوحون",
+			"subtitle": "عملاء بأولوية جاهزون للمتابعة.",
+			"viewAll": "عرض الكل",
+			"open": "فتح العميل",
+			"project": "المشروع",
+			"assignee": "مندوب المبيعات",
+			"lastContact": "المتابعة",
+			"noContact": "لا متابعة محددة"
+		},
+		"analytics": {
+			"title": "التحليلات",
+			"subtitle": "اتجاهات من العملاء والتقارير.",
+			"leadGrowth": "نمو العملاء",
+			"leadGrowthDesc": "عملاء جدد خلال آخر 14 يوماً",
+			"leadSources": "مصادر العملاء",
+			"leadSourcesDesc": "التوزيع حسب المصدر",
+			"campaignRevenue": "إنفاق الحملات مقابل الإيراد",
+			"campaignRevenueDesc": "من تقارير تقييم الحملات",
+			"sourceConversion": "تحويل المصادر",
+			"sourceConversionDesc": "العملاء مقابل المحوّلين حسب المصدر",
+			"emptyTitle": "لا تحليلات بعد",
+			"emptyMessage": "تظهر الرسوم عند توفر بيانات العملاء والتقارير.",
+			"noData": "لا بيانات لهذا الرسم"
+		},
+		"workQueue": {
+			"title": "قائمة العمل",
+			"subtitle": "حسب الأولوية: المتأخر، مستحق اليوم، ثم غير المعيّن.",
+			"subtitleSales": "عناصرك المتأخرة والمستحقة حسب الأولوية.",
+			"emptyTitle": "لا يوجد ما يحتاجك الآن",
+			"emptyMessage": "عند استحقاق المتابعات أو الإجراءات ستظهر هنا.",
+			"kinds": {
+				"scheduled_action": "إجراء مجدول",
+				"lead_follow_up": "متابعة عميل",
+				"unassigned_lead": "عميل غير معيّن"
+			},
+			"urgency": {
+				"overdue": "متأخر",
+				"due_today": "مستحق اليوم",
+				"unassigned": "غير معيّن"
+			}
+		},
+		"exceptions": {
+			"title": "استثناءات الفرق",
+			"subtitle": "فرق أقل من {{min}}% في معدل التواصل",
+			"viewKpis": "عرض كل مؤشرات الأداء",
+			"emptyTitle": "لا استثناءات للفرق",
+			"emptyMessage": "كل الفرق عند هدف معدل التواصل أو أعلى منه."
+		},
+		"stats": {
+			"periodTitle": "لمحة الفترة",
+			"periodSubtitle": "إجماليات ثانوية لفترة التقرير الحالية.",
+			"totalLeads": "إجمالي العملاء المحتملين",
+			"totalLeadsDesc": "العملاء في الفترة الحالية",
+			"totalTeams": "إجمالي الفرق",
+			"totalTeamsDesc": "الفرق النشطة في التقرير",
+			"avgContactRate": "متوسط معدل التواصل",
+			"avgContactRateDesc": "عبر جميع الفرق",
+			"avgConversionRate": "متوسط معدل التحويل",
+			"avgConversionRateDesc": "عبر جميع الفرق"
+		},
+		"teamPerformance": {
+			"title": "أداء الفرق",
+			"subtitle": "مقاييس التوزيع والتحويل حسب الفريق",
+			"teamId": "رقم الفريق",
+			"assigned": "العملاء المعيّنون",
+			"contacted": "تم التواصل",
+			"qualified": "مؤهلون",
+			"converted": "محوّلون",
+			"contactRate": "معدل التواصل",
+			"qualificationRate": "معدل التأهيل",
+			"conversionRate": "معدل التحويل",
+			"emptyTitle": "لا توجد بيانات فرق بعد",
+			"emptyMessage": "سيظهر أداء الفرق هنا عند توفر مؤشرات الأداء."
+		},
+		"recentLeads": {
+			"title": "أحدث العملاء المحتملين",
+			"subtitle": "آخر خمسة عملاء في المسار",
+			"name": "الاسم",
+			"phone": "الهاتف",
+			"source": "المصدر",
+			"status": "الحالة",
+			"created": "تاريخ الإنشاء",
+			"emptyTitle": "لا يوجد عملاء بعد",
+			"emptyMessage": "ستظهر العملاء الجدد هنا عند إنشائهم."
+		},
+		"quickActions": {
+			"title": "إجراءات سريعة",
+			"subtitle": "انتقل إلى أشهر مهام المدير",
+			"subtitleSales": "انتقل إلى مهام مبيعاتك اليومية",
+			"addLead": "إضافة عميل محتمل",
+			"assignLead": "توزيع عميل",
+			"assignLeads": "توزيع العملاء",
+			"reviewPending": "مراجعة المعلّق",
+			"openDueItems": "فتح المستحق",
+			"myScheduledActions": "إجراءاتي المجدولة",
+			"myLeads": "عملائي",
+			"scheduleAction": "جدولة إجراء",
+			"createCampaign": "إنشاء حملة",
+			"createProject": "إنشاء مشروع",
+			"createTeam": "إنشاء فريق",
+			"addClient": "إضافة عميل"
+		},
+		"status": {
+			"new": "جديد",
+			"assigned": "معيّن",
+			"qualified": "مؤهل",
+			"lost": "مفقود",
+			"converted": "محوّل"
+		}
+	},
+	"leads": {
+		"title": "العملاء المحتملون",
+		"subtitle": "إدارة وتتبع جميع العملاء المحتملين في المسار.",
+		"count": "{{count}} عميل محتمل",
+		"addLead": "إضافة عميل محتمل",
+		"editLead": "تعديل العميل المحتمل",
+		"backToList": "العودة إلى القائمة",
+		"searchPlaceholder": "بحث بالاسم أو الهاتف أو البريد",
+		"allStatuses": "كل الحالات",
+		"emptyTitle": "لا يوجد عملاء محتملون",
+		"emptyMessage": "جرّب تعديل الفلاتر أو أنشئ أول عميل محتمل.",
+		"filters": {
+			"button": "تصفية",
+			"buttonWithCount": "تصفية ({{count}})",
+			"apply": "تطبيق الفلاتر",
+			"reset": "إعادة تعيين",
+			"clearAll": "مسح الكل",
+			"createdRange": "تاريخ الإنشاء",
+			"statusSelected": "{{count}} حالات"
+		},
+		"columns": {
+			"name": "الاسم",
+			"phone": "الهاتف",
+			"email": "البريد",
+			"source": "المصدر",
+			"status": "الحالة",
+			"scheduledCall": "موعد المكالمة",
+			"project": "المشروع",
+			"campaign": "الحملة",
+			"assignedTo": "مُعيّن إلى",
+			"created": "تاريخ الإنشاء"
+		},
+		"scheduledCall": {
+			"inMinutes": "خلال {{count}} د",
+			"inHoursMinutes": "خلال {{hours}} س {{minutes}} د",
+			"now": "الآن",
+			"overdueMinutes": "متأخر {{count}} د",
+			"overdueHoursMinutes": "متأخر {{hours}} س {{minutes}} د"
+		},
+		"form": {
+			"name": "الاسم",
+			"phone": "الهاتف",
+			"email": "البريد الإلكتروني",
+			"source": "المصدر",
+			"sourceDetails": "تفاصيل المصدر",
+			"project": "المشروع",
+			"campaign": "الحملة",
+			"assignedTo": "مُعيّن إلى (معرّف المستخدم)",
+			"assignedToPlaceholder": "معرّف مستخدم اختياري",
+			"scheduledCall": "موعد المكالمة",
+			"nextFollowUp": "المتابعة التالية",
+			"note": "ملاحظة",
+			"lastCommunicationNote": "آخر ملاحظة تواصل",
+			"none": "بدون",
+			"create": "إنشاء عميل محتمل",
+			"save": "حفظ التغييرات"
+		},
+		"detail": {
+			"overview": "نظرة عامة",
+			"contact": "التواصل",
+			"source": "المصدر والحملة",
+			"assignment": "التعيين",
+			"timeline": "الجدول الزمني",
+			"keyDates": "التواريخ المهمة",
+			"upcoming": "القادمة",
+			"history": "السجل",
+			"noDates": "لا توجد تواريخ مسجّلة لهذا العميل المحتمل بعد.",
+			"overdue": "متأخر",
+			"activity": "النشاط",
+			"notes": "الملاحظات",
+			"notesEmptyTitle": "لا توجد ملاحظات بعد",
+			"notesEmptyMessage": "ستظهر هنا ملاحظات العميل المحتمل وأسباب الفقد.",
+			"assignedBy": "عيّنه",
+			"assignedAt": "تاريخ التعيين",
+			"createdBy": "أنشأه",
+			"firstAction": "أول إجراء",
+			"lastAction": "آخر إجراء",
+			"qualifiedAt": "تاريخ التأهيل",
+			"lostAt": "تاريخ الفقد",
+			"updatedAt": "آخر تحديث",
+			"lostReason": "سبب الفقد",
+			"call": "اتصال",
+			"whatsapp": "واتساب"
+		},
+		"comments": {
+			"title": "التعليقات",
+			"count": "{{count}} تعليق",
+			"placeholder": "اكتب تعليقاً حول هذا العميل المحتمل…",
+			"post": "نشر التعليق",
+			"posted": "تم نشر التعليق.",
+			"shortcutHint": "اضغط Ctrl+Enter للنشر",
+			"emptyTitle": "لا توجد تعليقات بعد",
+			"emptyMessage": "شارك المتابعات أو ملاحظات المكالمات أو تحديثات الفريق هنا.",
+			"unknownAuthor": "عضو الفريق",
+			"justNow": "الآن",
+			"minutesAgo": "منذ {{count}} د",
+			"hoursAgo": "منذ {{count}} س",
+			"daysAgo": "منذ {{count}} ي",
+			"required": "يرجى كتابة تعليق قبل النشر.",
+			"tooLong": "التعليق طويل جداً.",
+			"loadFailed": "تعذّر تحميل التعليقات. يرجى المحاولة مرة أخرى.",
+			"postFailed": "تعذّر نشر التعليق. يرجى المحاولة مرة أخرى."
+		},
+		"status": {
+			"new": "جديد",
+			"assigned": "معيّن",
+			"contacted": "تم التواصل",
+			"no_answer": "لا يوجد رد",
+			"follow_up": "متابعة",
+			"meeting_scheduled": "موعد مقابلة",
+			"meeting_completed": "اكتملت المقابلة",
+			"interested": "مهتم",
+			"qualified": "مؤهل",
+			"not_qualified": "غير مؤهل",
+			"low_budget": "ميزانية منخفضة",
+			"not_interested": "غير مهتم",
+			"already_bought_elsewhere": "اشترى من مكان آخر",
+			"postponed": "مؤجل",
+			"lost": "مفقود",
+			"converted": "محوّل",
+			"all_status": "كل الحالات",
+			"default": "افتراضي"
+		},
+		"sources": {
+			"facebook": "فيسبوك",
+			"instagram": "إنستغرام",
+			"tiktok": "تيك توك",
+			"google": "جوجل",
+			"website": "الموقع",
+			"whatsapp": "واتساب",
+			"referral": "إحالة",
+			"walk_in": "زيارة",
+			"phone_call": "مكالمة هاتفية",
+			"campaign": "حملة",
+			"manual": "يدوي",
+			"import": "استيراد",
+			"other": "أخرى"
+		},
+		"validation": {
+			"phoneRequired": "الهاتف مطلوب.",
+			"lostReasonRequired": "سبب الفقد مطلوب."
+		},
+		"assign": {
+			"reason": "سبب التعيين",
+			"reasonPlaceholder": "توازن الأحمال / التخصص / التغطية…"
+		},
+		"bulk": {
+			"selected": "{{count}} محدد",
+			"selectAll": "تحديد كل العملاء المحتملين",
+			"selectLead": "تحديد {{name}}",
+			"clearSelection": "مسح التحديد",
+			"setStatus": "تعيين الحالة",
+			"delete": "حذف",
+			"deleteTitle": "حذف العملاء المحتملين المحددين",
+			"deleteMessage": "هل أنت متأكد من حذف {{count}} عملاء محتملين؟ لا يمكن التراجع عن هذا الإجراء."
+		},
+		"markLost": {
+			"title": "تعيين العميل المحتمل كمفقود",
+			"message": "يرجى إدخال السبب قبل تعيين هذا العميل المحتمل كمفقود.",
+			"reason": "سبب الفقد",
+			"reasonPlaceholder": "غير مهتم / الميزانية / التوقيت…",
+			"confirm": "تعيين كمفقود"
+		},
+		"errors": {
+			"createFailed": "تعذّر إنشاء العميل المحتمل. يرجى المحاولة مرة أخرى.",
+			"updateFailed": "تعذّر تحديث العميل المحتمل. يرجى المحاولة مرة أخرى.",
+			"loadFailed": "تعذّر تحميل هذا العميل المحتمل. يرجى المحاولة مرة أخرى."
+		}
+	},
+	"pendingLeads": {
+		"title": "العملاء المعلقون",
+		"subtitle": "راجع وحل العملاء المحتملين المكررين قبل دخولهم إلى نظام إدارة العملاء.",
+		"refresh": "تحديث",
+		"searchPlaceholder": "بحث بالاسم أو الهاتف أو البريد",
+		"resetFilters": "إعادة تعيين الفلاتر",
+		"kpis": {
+			"pending": "معلق",
+			"reviewed": "تمت المراجعة",
+			"today": "اليوم"
+		},
+		"filters": {
+			"duplicateStatus": "حالة التكرار",
+			"allStatuses": "كل الحالات",
+			"dateFrom": "من",
+			"dateTo": "إلى"
+		},
+		"columns": {
+			"selectAll": "تحديد الكل",
+			"selectRow": "تحديد الصف",
+			"lead": "العميل المحتمل",
+			"phone": "الهاتف",
+			"source": "المصدر",
+			"project": "المشروع",
+			"campaign": "الحملة",
+			"duplicateType": "نوع التكرار",
+			"duplicateReason": "سبب التكرار",
+			"status": "الحالة",
+			"created": "تاريخ الإنشاء",
+			"actions": "الإجراءات"
+		},
+		"status": {
+			"pending": "معلق",
+			"merged": "مدمج",
+			"removed": "محذوف",
+			"replaced": "مستبدل"
+		},
+		"duplicateType": {
+			"existing_lead": "عميل محتمل موجود",
+			"existing_client": "عميل موجود"
+		},
+		"actions": {
+			"view": "عرض",
+			"replace": "استبدال",
+			"merge": "دمج",
+			"remove": "إزالة"
+		},
+		"pagination": {
+			"showing": "عرض {{shown}} من {{total}}"
+		},
+		"empty": {
+			"title": "لا يوجد عملاء معلقون",
+			"subtitle": "تمت مراجعة جميع العملاء المحتملين المكررين.",
+			"filteredTitle": "لا توجد نتائج مطابقة",
+			"filteredSubtitle": "جرّب تعديل الفلاتر أو عبارة البحث."
+		},
+		"drawer": {
+			"title": "عميل معلق",
+			"leadInfo": "معلومات العميل المحتمل",
+			"duplicateInfo": "معلومات التكرار",
+			"assignment": "التعيين",
+			"notes": "الملاحظات",
+			"noNotes": "لا توجد ملاحظات",
+			"createdAt": "تاريخ الإنشاء",
+			"existingLeadId": "معرّف العميل المحتمل الموجود",
+			"existingClientId": "معرّف العميل الموجود",
+			"reviewedBy": "راجعه",
+			"reviewedAt": "تاريخ المراجعة",
+			"resolutionNote": "ملاحظة الحل"
+		},
+		"replace": {
+			"title": "استبدال العميل المعلق",
+			"message": "سيتم استبدال العميل المحتمل الموجود باستخدام هذا العميل المعلق.",
+			"noteLabel": "ملاحظة الحل",
+			"notePlaceholder": "الاستبدال بمعلومات محدّثة.",
+			"noteRequired": "يرجى إدخال ملاحظة الحل.",
+			"confirm": "استبدال العميل المحتمل"
+		},
+		"merge": {
+			"title": "دمج العميل المعلق",
+			"message": "دمج هذا التكرار في العميل المحتمل/العميل الموجود.",
+			"confirm": "دمج"
+		},
+		"remove": {
+			"title": "إزالة العميل المعلق",
+			"message": "هل أنت متأكد من إزالة هذا التكرار المعلق؟",
+			"confirm": "إزالة"
+		},
+		"toasts": {
+			"replaced": "تم استبدال العميل المعلق بنجاح.",
+			"merged": "تم دمج العميل المعلق بنجاح.",
+			"removed": "تمت إزالة العميل المعلق بنجاح."
+		},
+		"errors": {
+			"loadFailed": "تعذّر تحميل العملاء المعلقين. يرجى المحاولة مرة أخرى.",
+			"loadDetailFailed": "تعذّر تحميل تفاصيل العميل المعلق.",
+			"replaceFailed": "تعذّر استبدال هذا العميل المعلق.",
+			"mergeFailed": "تعذّر دمج هذا العميل المعلق.",
+			"removeFailed": "تعذّر إزالة هذا العميل المعلق."
+		}
+	},
+	"comingSoon": {
+		"message": "هذه الوحدة قيد التطوير.",
+		"hint": "التنقل جاهز — التجربة الكاملة قادمة قريباً."
+	},
+	"campaigns": {
+		"title": "الحملات",
+		"subtitle": "إدارة الحملات التسويقية والميزانيات والأداء ومصادر العملاء.",
+		"refresh": "تحديث",
+		"newCampaign": "حملة جديدة",
+		"editCampaign": "تعديل الحملة",
+		"searchPlaceholder": "بحث بالاسم أو المرجع الخارجي",
+		"resetFilters": "إعادة تعيين الفلاتر",
+		"present": "حتى الآن",
+		"kpis": {
+			"total": "إجمالي الحملات",
+			"totalDesc": "كل الحملات",
+			"active": "نشطة",
+			"activeDesc": "قيد التشغيل",
+			"draft": "مسودة",
+			"draftDesc": "لم تُطلق بعد",
+			"completed": "مكتملة",
+			"completedDesc": "حملات منتهية",
+			"budget": "إجمالي الميزانية",
+			"budgetDesc": "مجموع الميزانيات"
+		},
+		"filters": {
+			"platform": "المنصة",
+			"allPlatforms": "كل المنصات",
+			"status": "الحالة",
+			"allStatuses": "كل الحالات",
+			"project": "المشروع",
+			"dateFrom": "بدأت من",
+			"dateTo": "بدأت إلى"
+		},
+		"columns": {
+			"campaign": "الحملة",
+			"platform": "المنصة",
+			"project": "المشروع",
+			"source": "المصدر",
+			"budget": "الميزانية",
+			"spent": "المصروف",
+			"revenue": "الإيراد",
+			"roi": "العائد",
+			"status": "الحالة",
+			"duration": "المدة",
+			"created": "تاريخ الإنشاء",
+			"actions": "الإجراءات"
+		},
+		"platforms": {
+			"facebook": "فيسبوك",
+			"instagram": "إنستغرام",
+			"tiktok": "تيك توك",
+			"google": "جوجل",
+			"website": "الموقع",
+			"offline": "أوفلاين",
+			"referral": "إحالة",
+			"other": "أخرى"
+		},
+		"status": {
+			"draft": "مسودة",
+			"active": "نشطة",
+			"paused": "متوقفة",
+			"completed": "مكتملة"
+		},
+		"actions": {
+			"view": "عرض",
+			"edit": "تعديل",
+			"delete": "حذف"
+		},
+		"pagination": {
+			"showing": "عرض {{shown}} من {{total}}"
+		},
+		"empty": {
+			"title": "لا توجد حملات",
+			"subtitle": "أنشئ أول حملة تسويقية.",
+			"filteredTitle": "لا توجد نتائج مطابقة",
+			"filteredSubtitle": "جرّب تعديل الفلاتر أو عبارة البحث."
+		},
+		"drawer": {
+			"title": "حملة",
+			"general": "معلومات عامة",
+			"financial": "المعلومات المالية",
+			"timeline": "الجدول الزمني",
+			"status": "الحالة",
+			"createdAt": "تاريخ الإنشاء",
+			"updatedAt": "آخر تحديث"
+		},
+		"form": {
+			"subtitle": "حدد تفاصيل الحملة والميزانية والجدول.",
+			"name": "اسم الحملة",
+			"platform": "المنصة",
+			"project": "المشروع",
+			"source": "المصدر",
+			"budget": "الميزانية",
+			"spent": "المبلغ المصروف",
+			"revenue": "الإيراد",
+			"startedAt": "تاريخ البدء",
+			"endedAt": "تاريخ الانتهاء",
+			"status": "الحالة",
+			"externalReference": "المرجع الخارجي",
+			"create": "إنشاء الحملة",
+			"save": "حفظ التغييرات"
+		},
+		"delete": {
+			"title": "حذف الحملة",
+			"message": "هل أنت متأكد من حذف هذه الحملة؟",
+			"cannotUndo": "لا يمكن التراجع عن هذا الإجراء.",
+			"confirm": "حذف"
+		},
+		"validation": {
+			"nameRequired": "اسم الحملة مطلوب.",
+			"platformRequired": "المنصة مطلوبة.",
+			"moneyNonNegative": "يجب أن تكون القيمة صفراً أو أكبر.",
+			"dateRange": "تاريخ البدء لا يمكن أن يكون بعد تاريخ الانتهاء."
+		},
+		"toasts": {
+			"created": "تم إنشاء الحملة بنجاح.",
+			"updated": "تم تحديث الحملة بنجاح.",
+			"deleted": "تم حذف الحملة بنجاح."
+		},
+		"errors": {
+			"loadFailed": "تعذّر تحميل الحملات. يرجى المحاولة مرة أخرى.",
+			"loadDetailFailed": "تعذّر تحميل تفاصيل الحملة.",
+			"createFailed": "تعذّر إنشاء الحملة. يرجى المحاولة مرة أخرى.",
+			"updateFailed": "تعذّر تحديث الحملة. يرجى المحاولة مرة أخرى.",
+			"deleteFailed": "تعذّر حذف الحملة. يرجى المحاولة مرة أخرى."
+		}
+	},
+	"clients": {
+		"title": "العملاء",
+		"subtitle": "إدارة العملاء المحوّلين والعلاقات والتعيينات ودورة الحياة.",
+		"refresh": "تحديث",
+		"editClient": "تعديل العميل",
+		"searchPlaceholder": "البحث بالاسم أو الهاتف أو البريد",
+		"resetFilters": "إعادة تعيين الفلاتر",
+		"kpis": {
+			"total": "إجمالي العملاء",
+			"active": "العملاء النشطون",
+			"reserved": "محجوز",
+			"contracted": "متعاقد",
+			"bought": "مشترى",
+			"lost": "العملاء المفقودون"
+		},
+		"filters": {
+			"status": "الحالة",
+			"allStatuses": "كل الحالات",
+			"project": "المشروع",
+			"campaign": "الحملة",
+			"assignedTo": "مندوب المبيعات",
+			"allSales": "كل المندوبين",
+			"source": "المصدر",
+			"allSources": "كل المصادر",
+			"dateFrom": "التحويل من",
+			"dateTo": "التحويل إلى"
+		},
+		"columns": {
+			"selectAll": "تحديد الكل",
+			"selectRow": "تحديد الصف",
+			"toggle": "الأعمدة",
+			"client": "العميل",
+			"phone": "الهاتف",
+			"project": "المشروع",
+			"campaign": "الحملة",
+			"assignedTo": "مُعيَّن إلى",
+			"source": "المصدر",
+			"status": "الحالة",
+			"qualified": "التأهيل",
+			"converted": "التحويل",
+			"created": "الإنشاء",
+			"actions": "الإجراءات"
+		},
+		"status": {
+			"active": "نشط",
+			"reserved": "محجوز",
+			"contracted": "متعاقد",
+			"bought": "مشترى",
+			"canceled": "ملغى",
+			"lost": "مفقود",
+			"archived": "مؤرشف"
+		},
+		"actions": {
+			"view": "عرض",
+			"edit": "تعديل",
+			"markLost": "تعيين كمفقود",
+			"restore": "استعادة"
+		},
+		"pagination": {
+			"showing": "عرض {{shown}} من {{total}}"
+		},
+		"empty": {
+			"title": "لا يوجد عملاء",
+			"subtitle": "سيظهر هنا العملاء المحوّلون من العملاء المحتملين.",
+			"filteredTitle": "لا يوجد عملاء مطابقون",
+			"filteredSubtitle": "جرّب تعديل الفلاتر أو البحث."
+		},
+		"drawer": {
+			"title": "عميل",
+			"tabsLabel": "أقسام تفاصيل العميل",
+			"comingSoon": "قريباً",
+			"tabs": {
+				"overview": "نظرة عامة",
+				"activities": "الأنشطة",
+				"comments": "التعليقات",
+				"timeline": "الجدول الزمني",
+				"files": "الملفات"
+			},
+			"general": "معلومات عامة",
+			"assignment": "التعيين",
+			"timeline": "الجدول الزمني",
+			"lostInfo": "معلومات الفقدان",
+			"originalLeadId": "معرّف العميل المحتمل الأصلي",
+			"qualifiedAt": "تاريخ التأهيل",
+			"convertedAt": "تاريخ التحويل",
+			"createdAt": "تاريخ الإنشاء",
+			"updatedAt": "تاريخ التحديث",
+			"lostAt": "تاريخ الفقدان",
+			"lostBy": "فُقد بواسطة",
+			"lostReason": "سبب الفقدان"
+		},
+		"form": {
+			"subtitle": "حدّث تفاصيل العميل والتعيين والحالة.",
+			"name": "اسم العميل",
+			"phone": "الهاتف",
+			"email": "البريد الإلكتروني",
+			"project": "المشروع",
+			"campaign": "الحملة",
+			"assignedTo": "مندوب المبيعات",
+			"status": "الحالة",
+			"source": "المصدر",
+			"save": "حفظ التغييرات"
+		},
+		"markLost": {
+			"title": "تعيين العميل كمفقود",
+			"message": "سيتم نقل هذا العميل إلى قائمة العملاء المفقودين.",
+			"reason": "سبب الفقدان",
+			"reasonPlaceholder": "ألغى العميل بسبب مشاكل التمويل.",
+			"confirm": "تعيين كمفقود"
+		},
+		"restore": {
+			"title": "استعادة العميل",
+			"message": "استعادة هذا العميل إلى الحالة النشطة؟",
+			"confirm": "استعادة"
+		},
+		"validation": {
+			"nameRequired": "اسم العميل مطلوب.",
+			"phoneRequired": "الهاتف مطلوب.",
+			"lostReasonRequired": "سبب الفقدان مطلوب."
+		},
+		"toasts": {
+			"updated": "تم تحديث العميل بنجاح.",
+			"markedLost": "تم تعيين العميل كمفقود.",
+			"restored": "تمت استعادة العميل بنجاح."
+		},
+		"errors": {
+			"loadFailed": "تعذّر تحميل العملاء. يرجى المحاولة مرة أخرى.",
+			"loadDetailFailed": "تعذّر تحميل تفاصيل العميل.",
+			"updateFailed": "تعذّر تحديث العميل. يرجى المحاولة مرة أخرى.",
+			"markLostFailed": "تعذّر تعيين العميل كمفقود. يرجى المحاولة مرة أخرى.",
+			"restoreFailed": "تعذّر استعادة العميل. يرجى المحاولة مرة أخرى."
+		}
+	},
+	"projects": {
+		"title": "المشاريع",
+		"subtitle": "إدارة مشاريع العقارات وتعيين فرق المبيعات ودورة الحياة.",
+		"refresh": "تحديث",
+		"newProject": "مشروع جديد",
+		"editProject": "تعديل المشروع",
+		"searchPlaceholder": "البحث بالاسم أو الوصف",
+		"resetFilters": "إعادة تعيين الفلاتر",
+		"kpis": {
+			"total": "إجمالي المشاريع",
+			"active": "نشط",
+			"upcoming": "قادم",
+			"paused": "متوقف",
+			"completed": "مكتمل",
+			"archived": "مؤرشف"
+		},
+		"filters": {
+			"status": "الحالة",
+			"allStatuses": "كل الحالات",
+			"team": "الفريق",
+			"allTeams": "كل الفرق",
+			"dateFrom": "البدء من",
+			"dateTo": "البدء إلى"
+		},
+		"columns": {
+			"selectAll": "تحديد الكل",
+			"selectRow": "تحديد الصف",
+			"toggle": "الأعمدة",
+			"project": "المشروع",
+			"status": "الحالة",
+			"teams": "الفرق",
+			"started": "البدء",
+			"createdBy": "أنشئ بواسطة",
+			"created": "الإنشاء",
+			"actions": "الإجراءات"
+		},
+		"status": {
+			"upcoming": "قادم",
+			"active": "نشط",
+			"paused": "متوقف",
+			"completed": "مكتمل",
+			"archived": "مؤرشف"
+		},
+		"actions": {
+			"view": "عرض",
+			"edit": "تعديل",
+			"import": "استيراد عملاء",
+			"delete": "حذف"
+		},
+		"pagination": {
+			"showing": "عرض {{shown}} من {{total}}"
+		},
+		"empty": {
+			"title": "لا توجد مشاريع",
+			"subtitle": "أنشئ مشروعك الأول.",
+			"filteredTitle": "لا توجد مشاريع مطابقة",
+			"filteredSubtitle": "جرّب تعديل الفلاتر أو البحث."
+		},
+		"drawer": {
+			"title": "مشروع",
+			"tabsLabel": "أقسام تفاصيل المشروع",
+			"comingSoon": "قريباً",
+			"tabs": {
+				"overview": "نظرة عامة",
+				"leads": "العملاء المحتملون",
+				"campaigns": "الحملات",
+				"files": "الملفات"
+			},
+			"general": "معلومات عامة",
+			"teams": "الفرق",
+			"meta": "البيانات الوصفية",
+			"noTeams": "لا توجد فرق معيّنة لهذا المشروع.",
+			"createdBy": "أنشئ بواسطة",
+			"createdAt": "تاريخ الإنشاء",
+			"updatedAt": "تاريخ التحديث",
+			"leaderId": "القائد #{{id}}",
+			"supervisorId": "المشرف #{{id}}"
+		},
+		"form": {
+			"subtitle": "حدّد تفاصيل المشروع والجدول وفرق المبيعات.",
+			"name": "اسم المشروع",
+			"description": "الوصف",
+			"startedAt": "تاريخ البدء",
+			"status": "الحالة",
+			"teams": "الفرق المعيّنة",
+			"noTeams": "لا توجد فرق متاحة.",
+			"create": "إنشاء مشروع",
+			"save": "حفظ التغييرات"
+		},
+		"delete": {
+			"title": "حذف المشروع",
+			"message": "هل أنت متأكد من حذف هذا المشروع؟",
+			"cannotUndo": "لا يمكن التراجع عن هذا الإجراء.",
+			"confirm": "حذف"
+		},
+		"import": {
+			"title": "استيراد عملاء محتملين",
+			"message": "ارفع ملفًا لاستيراد عملاء محتملين إلى هذا المشروع.",
+			"file": "الملف",
+			"confirm": "استيراد"
+		},
+		"validation": {
+			"nameRequired": "اسم المشروع مطلوب.",
+			"statusRequired": "الحالة مطلوبة.",
+			"fileRequired": "يرجى اختيار ملف للاستيراد."
+		},
+		"toasts": {
+			"created": "تم إنشاء المشروع بنجاح.",
+			"updated": "تم تحديث المشروع بنجاح.",
+			"deleted": "تم حذف المشروع بنجاح.",
+			"imported": "تم استيراد العملاء المحتملين بنجاح."
+		},
+		"errors": {
+			"loadFailed": "تعذّر تحميل المشاريع. يرجى المحاولة مرة أخرى.",
+			"loadDetailFailed": "تعذّر تحميل تفاصيل المشروع.",
+			"createFailed": "تعذّر إنشاء المشروع. يرجى المحاولة مرة أخرى.",
+			"updateFailed": "تعذّر تحديث المشروع. يرجى المحاولة مرة أخرى.",
+			"deleteFailed": "تعذّر حذف المشروع. يرجى المحاولة مرة أخرى.",
+			"importFailed": "تعذّر استيراد العملاء المحتملين. يرجى المحاولة مرة أخرى."
+		}
+	},
+	"teams": {
+		"title": "الفرق",
+		"subtitle": "إدارة فرق المبيعات والقادة والمشرفين.",
+		"refresh": "تحديث",
+		"newTeam": "فريق جديد",
+		"editTeam": "تعديل الفريق",
+		"searchPlaceholder": "البحث باسم الفريق",
+		"resetFilters": "إعادة تعيين الفلاتر",
+		"kpis": {
+			"total": "إجمالي الفرق",
+			"withLeader": "مع قائد",
+			"withSupervisor": "مع مشرف",
+			"incomplete": "غير مكتمل"
+		},
+		"filters": {
+			"leader": "قائد الفريق",
+			"allLeaders": "كل القادة",
+			"supervisor": "المشرف",
+			"allSupervisors": "كل المشرفين"
+		},
+		"columns": {
+			"selectAll": "تحديد الكل",
+			"selectRow": "تحديد الصف",
+			"toggle": "الأعمدة",
+			"team": "الفريق",
+			"leader": "قائد الفريق",
+			"supervisor": "المشرف",
+			"created": "الإنشاء",
+			"updated": "التحديث",
+			"actions": "الإجراءات"
+		},
+		"actions": {
+			"view": "عرض",
+			"edit": "تعديل",
+			"delete": "حذف"
+		},
+		"pagination": {
+			"showing": "عرض {{shown}} من {{total}}"
+		},
+		"empty": {
+			"title": "لا توجد فرق",
+			"subtitle": "أنشئ فريق المبيعات الأول.",
+			"filteredTitle": "لا توجد فرق مطابقة",
+			"filteredSubtitle": "جرّب تعديل الفلاتر أو البحث."
+		},
+		"drawer": {
+			"title": "فريق",
+			"tabsLabel": "أقسام تفاصيل الفريق",
+			"comingSoon": "قريباً",
+			"tabs": {
+				"overview": "نظرة عامة",
+				"members": "الأعضاء",
+				"projects": "المشاريع",
+				"performance": "الأداء"
+			},
+			"general": "معلومات عامة",
+			"leadership": "القيادة",
+			"timeline": "الجدول الزمني",
+			"createdAt": "تاريخ الإنشاء",
+			"updatedAt": "تاريخ التحديث"
+		},
+		"form": {
+			"subtitle": "حدّد اسم الفريق وعيّن أدوار القيادة.",
+			"name": "اسم الفريق",
+			"leader": "قائد الفريق",
+			"supervisor": "المشرف",
+			"create": "إنشاء فريق",
+			"save": "حفظ التغييرات"
+		},
+		"delete": {
+			"title": "حذف الفريق",
+			"message": "هل أنت متأكد من حذف هذا الفريق؟",
+			"cannotUndo": "لا يمكن التراجع عن هذا الإجراء.",
+			"confirm": "حذف"
+		},
+		"validation": {
+			"nameRequired": "اسم الفريق مطلوب."
+		},
+		"toasts": {
+			"created": "تم إنشاء الفريق بنجاح.",
+			"updated": "تم تحديث الفريق بنجاح.",
+			"deleted": "تم حذف الفريق بنجاح."
+		},
+		"errors": {
+			"loadFailed": "تعذّر تحميل الفرق. يرجى المحاولة مرة أخرى.",
+			"loadDetailFailed": "تعذّر تحميل تفاصيل الفريق.",
+			"createFailed": "تعذّر إنشاء الفريق. يرجى المحاولة مرة أخرى.",
+			"updateFailed": "تعذّر تحديث الفريق. يرجى المحاولة مرة أخرى.",
+			"deleteFailed": "تعذّر حذف الفريق. يرجى المحاولة مرة أخرى."
+		}
+	},
+	"users": {
+		"title": "المستخدمون",
+		"subtitle": "إدارة الحسابات والأدوار وصلاحيات فريق الـ CRM.",
+		"refresh": "تحديث",
+		"newUser": "مستخدم جديد",
+		"editUser": "تعديل المستخدم",
+		"searchPlaceholder": "البحث بالاسم أو البريد أو الدور",
+		"resetFilters": "إعادة تعيين الفلاتر",
+		"kpis": {
+			"total": "إجمالي المستخدمين",
+			"active": "نشط",
+			"inactive": "غير نشط",
+			"admins": "المدراء"
+		},
+		"filters": {
+			"role": "الدور",
+			"allRoles": "كل الأدوار",
+			"status": "الحالة",
+			"allStatuses": "كل الحالات"
+		},
+		"status": {
+			"active": "نشط",
+			"inactive": "غير نشط"
+		},
+		"roles": {
+			"admin": "مدير",
+			"sales": "مبيعات",
+			"leader": "قائد",
+			"supervisor": "مشرف"
+		},
+		"columns": {
+			"selectAll": "تحديد الكل",
+			"selectRow": "تحديد الصف",
+			"toggle": "الأعمدة",
+			"user": "المستخدم",
+			"role": "الدور",
+			"jobTitle": "المسمى الوظيفي",
+			"status": "الحالة",
+			"created": "الإنشاء",
+			"actions": "الإجراءات"
+		},
+		"actions": {
+			"view": "عرض",
+			"edit": "تعديل",
+			"activate": "تفعيل",
+			"deactivate": "إيقاف",
+			"delete": "حذف"
+		},
+		"pagination": {
+			"showing": "عرض {{shown}} من {{total}}"
+		},
+		"empty": {
+			"title": "لا يوجد مستخدمون",
+			"subtitle": "أنشئ حساب المستخدم الأول.",
+			"filteredTitle": "لا يوجد مستخدمون مطابقون",
+			"filteredSubtitle": "جرّب تعديل الفلاتر أو البحث."
+		},
+		"drawer": {
+			"title": "مستخدم",
+			"tabsLabel": "أقسام تفاصيل المستخدم",
+			"tabs": {
+				"overview": "نظرة عامة"
+			},
+			"general": "معلومات عامة",
+			"timeline": "الجدول الزمني",
+			"createdAt": "تاريخ الإنشاء",
+			"updatedAt": "تاريخ التحديث"
+		},
+		"form": {
+			"subtitle": "حدّد بيانات الحساب والدور وكلمة المرور.",
+			"name": "الاسم الكامل",
+			"email": "البريد الإلكتروني",
+			"role": "الدور",
+			"rolePlaceholder": "اختر دوراً",
+			"jobTitle": "المسمى الوظيفي",
+			"password": "كلمة المرور",
+			"confirmPassword": "تأكيد كلمة المرور",
+			"passwordHint": "اترك كلمة المرور فارغة للإبقاء على الحالية.",
+			"create": "إنشاء مستخدم",
+			"save": "حفظ التغييرات"
+		},
+		"delete": {
+			"title": "حذف المستخدم",
+			"message": "هل أنت متأكد من حذف هذا المستخدم؟",
+			"cannotUndo": "لا يمكن التراجع عن هذا الإجراء.",
+			"confirm": "حذف"
+		},
+		"validation": {
+			"nameRequired": "الاسم مطلوب.",
+			"emailRequired": "البريد الإلكتروني مطلوب.",
+			"emailInvalid": "يرجى إدخال بريد إلكتروني صالح.",
+			"roleRequired": "الدور مطلوب.",
+			"passwordRequired": "كلمة المرور مطلوبة.",
+			"passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل.",
+			"confirmPasswordRequired": "يرجى تأكيد كلمة المرور.",
+			"passwordsMismatch": "كلمتا المرور غير متطابقتين."
+		},
+		"toasts": {
+			"created": "تم إنشاء المستخدم بنجاح.",
+			"updated": "تم تحديث المستخدم بنجاح.",
+			"deleted": "تم حذف المستخدم بنجاح.",
+			"activated": "تم تفعيل المستخدم بنجاح.",
+			"deactivated": "تم إيقاف المستخدم بنجاح."
+		},
+		"errors": {
+			"loadFailed": "تعذّر تحميل المستخدمين. يرجى المحاولة مرة أخرى.",
+			"loadDetailFailed": "تعذّر تحميل تفاصيل المستخدم.",
+			"createFailed": "تعذّر إنشاء المستخدم. يرجى المحاولة مرة أخرى.",
+			"updateFailed": "تعذّر تحديث المستخدم. يرجى المحاولة مرة أخرى.",
+			"deleteFailed": "تعذّر حذف المستخدم. يرجى المحاولة مرة أخرى.",
+			"activateFailed": "تعذّر تفعيل المستخدم. يرجى المحاولة مرة أخرى.",
+			"deactivateFailed": "تعذّر إيقاف المستخدم. يرجى المحاولة مرة أخرى."
+		}
+	},
+	"scheduledActions": {
+		"title": "الإجراءات المجدولة",
+		"subtitle": "خطّط وتابع المكالمات والاجتماعات والمتابعات عبر العملاء المحتملين والعملاء.",
+		"refresh": "تحديث",
+		"newAction": "إجراء جديد",
+		"editAction": "تعديل الإجراء",
+		"searchPlaceholder": "البحث بالملاحظة أو النوع أو الحالة",
+		"resetFilters": "إعادة تعيين الفلاتر",
+		"kpis": {
+			"total": "الإجمالي",
+			"pending": "معلّق",
+			"completed": "مكتمل",
+			"missed": "فائت"
+		},
+		"filters": {
+			"type": "النوع",
+			"allTypes": "كل الأنواع",
+			"status": "الحالة",
+			"allStatuses": "كل الحالات",
+			"assignee": "المكلّف",
+			"allAssignees": "كل المكلّفين"
+		},
+		"types": {
+			"call": "مكالمة",
+			"follow_up": "متابعة",
+			"meeting": "اجتماع",
+			"site_visit": "زيارة موقع",
+			"whatsapp": "واتساب",
+			"email": "بريد إلكتروني",
+			"other": "أخرى"
+		},
+		"statuses": {
+			"pending": "معلّق",
+			"completed": "مكتمل",
+			"missed": "فائت"
+		},
+		"columns": {
+			"selectAll": "تحديد الكل",
+			"selectRow": "تحديد الصف",
+			"toggle": "الأعمدة",
+			"type": "النوع",
+			"related": "مرتبط بـ",
+			"assignee": "المكلّف",
+			"scheduledAt": "الموعد",
+			"status": "الحالة",
+			"note": "ملاحظة",
+			"actions": "الإجراءات"
+		},
+		"actions": {
+			"view": "عرض",
+			"edit": "تعديل",
+			"complete": "إكمال",
+			"delete": "حذف"
+		},
+		"pagination": {
+			"showing": "عرض {{shown}} من {{total}}"
+		},
+		"empty": {
+			"title": "لا توجد إجراءات مجدولة",
+			"subtitle": "أنشئ أول إجراء مجدول.",
+			"filteredTitle": "لا توجد إجراءات مطابقة",
+			"filteredSubtitle": "جرّب تعديل الفلاتر أو البحث."
+		},
+		"drawer": {
+			"title": "إجراء مجدول",
+			"tabsLabel": "أقسام تفاصيل الإجراء",
+			"tabs": {
+				"overview": "نظرة عامة"
+			},
+			"general": "معلومات عامة",
+			"timeline": "الجدول الزمني",
+			"createdBy": "أنشأه",
+			"createdAt": "تاريخ الإنشاء",
+			"updatedAt": "تاريخ التحديث",
+			"completedAt": "تاريخ الإكمال"
+		},
+		"form": {
+			"subtitle": "اربط بعميل محتمل أو عميل، وحدّد النوع والمكلّف والموعد.",
+			"relatedTo": "مرتبط بـ",
+			"relatedTypes": {
+				"lead": "عميل محتمل",
+				"client": "عميل"
+			},
+			"lead": "عميل محتمل",
+			"leadPlaceholder": "اختر عميلاً محتملاً",
+			"client": "عميل",
+			"clientPlaceholder": "اختر عميلاً",
+			"type": "النوع",
+			"typePlaceholder": "اختر نوعاً",
+			"assignee": "المكلّف",
+			"assigneePlaceholder": "اختر مكلّفاً",
+			"scheduledAt": "موعد الجدولة",
+			"note": "ملاحظة",
+			"create": "إنشاء إجراء",
+			"save": "حفظ التغييرات"
+		},
+		"complete": {
+			"title": "إكمال الإجراء",
+			"message": "سجّل نتيجة هذا الإجراء المجدول.",
+			"outcome": "النتيجة",
+			"note": "ملاحظة",
+			"confirm": "تأكيد الإكمال"
+		},
+		"delete": {
+			"title": "حذف الإجراء",
+			"message": "هل أنت متأكد من حذف هذا الإجراء المجدول؟",
+			"cannotUndo": "لا يمكن التراجع عن هذا الإجراء.",
+			"confirm": "حذف"
+		},
+		"validation": {
+			"typeRequired": "النوع مطلوب.",
+			"assignedRequired": "المكلّف مطلوب.",
+			"scheduledAtRequired": "موعد الجدولة مطلوب.",
+			"leadRequired": "العميل المحتمل مطلوب.",
+			"clientRequired": "العميل مطلوب.",
+			"outcomeRequired": "النتيجة مطلوبة."
+		},
+		"toasts": {
+			"created": "تم إنشاء الإجراء المجدول بنجاح.",
+			"updated": "تم تحديث الإجراء المجدول بنجاح.",
+			"deleted": "تم حذف الإجراء المجدول بنجاح.",
+			"completed": "تم إكمال الإجراء المجدول بنجاح."
+		},
+		"errors": {
+			"loadFailed": "تعذّر تحميل الإجراءات المجدولة. يرجى المحاولة مرة أخرى.",
+			"loadDetailFailed": "تعذّر تحميل تفاصيل الإجراء.",
+			"createFailed": "تعذّر إنشاء الإجراء المجدول. يرجى المحاولة مرة أخرى.",
+			"updateFailed": "تعذّر تحديث الإجراء المجدول. يرجى المحاولة مرة أخرى.",
+			"deleteFailed": "تعذّر حذف الإجراء المجدول. يرجى المحاولة مرة أخرى.",
+			"completeFailed": "تعذّر إكمال الإجراء المجدول. يرجى المحاولة مرة أخرى."
+		}
+	},
+	"auditLogs": {
+		"title": "سجلات التدقيق",
+		"subtitle": "راجع نشاط النظام والتغييرات ومن قام بها.",
+		"refresh": "تحديث",
+		"searchPlaceholder": "البحث بالإجراء أو النموذج أو IP أو المستخدم",
+		"resetFilters": "إعادة تعيين الفلاتر",
+		"kpis": {
+			"total": "إجمالي الأحداث",
+			"changes": "التغييرات",
+			"creates": "الإنشاءات",
+			"actors": "المستخدمون"
+		},
+		"filters": {
+			"action": "الإجراء",
+			"allActions": "كل الإجراءات",
+			"model": "النموذج",
+			"allModels": "كل النماذج",
+			"user": "المستخدم",
+			"allUsers": "كل المستخدمين"
+		},
+		"columns": {
+			"selectAll": "تحديد الكل",
+			"selectRow": "تحديد الصف",
+			"toggle": "الأعمدة",
+			"action": "الإجراء",
+			"model": "النموذج",
+			"user": "المستخدم",
+			"ip": "عنوان IP",
+			"created": "التوقيت",
+			"actions": "الإجراءات"
+		},
+		"actions": {
+			"view": "عرض"
+		},
+		"pagination": {
+			"showing": "عرض {{shown}} من {{total}}"
+		},
+		"empty": {
+			"title": "لا توجد سجلات تدقيق",
+			"subtitle": "سيظهر النشاط هنا عند إجراء المستخدمين تغييرات.",
+			"filteredTitle": "لا توجد سجلات مطابقة",
+			"filteredSubtitle": "جرّب تعديل الفلاتر أو البحث."
+		},
+		"drawer": {
+			"title": "سجل تدقيق",
+			"tabsLabel": "أقسام سجل التدقيق",
+			"tabs": {
+				"overview": "نظرة عامة"
+			},
+			"general": "معلومات عامة",
+			"diff": "القيم",
+			"oldValues": "القيم القديمة",
+			"newValues": "القيم الجديدة",
+			"metadata": "البيانات الوصفية",
+			"noOldValues": "لا توجد قيم سابقة مسجّلة.",
+			"noNewValues": "لا توجد قيم جديدة مسجّلة.",
+			"noMetadata": "لا توجد بيانات وصفية مسجّلة.",
+			"userAgent": "وكيل المستخدم"
+		},
+		"errors": {
+			"loadFailed": "تعذّر تحميل سجلات التدقيق. يرجى المحاولة مرة أخرى.",
+			"loadDetailFailed": "تعذّر تحميل تفاصيل سجل التدقيق."
+		}
+	},
+	"validation": {
+		"emailRequired": "البريد الإلكتروني مطلوب.",
+		"emailInvalid": "يرجى إدخال بريد إلكتروني صالح.",
+		"passwordRequired": "كلمة المرور مطلوبة.",
+		"passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل.",
+		"nameRequired": "الاسم مطلوب.",
+		"confirmPasswordRequired": "يرجى تأكيد كلمة المرور.",
+		"passwordsMismatch": "كلمتا المرور غير متطابقتين."
+	},
+	"errors": {
+		"loginInvalid": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+		"loginFailed": "تعذّر تسجيل الدخول. يرجى المحاولة مرة أخرى.",
+		"registerFailed": "فشل التسجيل. يرجى المحاولة مرة أخرى."
+	}
+}

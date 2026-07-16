@@ -1,0 +1,1461 @@
+{
+	"common": {
+		"appName": "Amair CRM",
+		"loading": "Loading...",
+		"logout": "Logout",
+		"user": "User",
+		"or": "OR",
+		"cancel": "Cancel",
+		"close": "Close"
+	},
+	"nav": {
+		"dashboard": "Dashboard",
+		"kpi": "KPI",
+		"reports": "Reports",
+		"leads": "Leads",
+		"pending": "Pending",
+		"pendingLeads": "Pending Leads",
+		"projects": "Projects",
+		"campaigns": "Campaigns",
+		"clients": "Clients",
+		"teams": "Teams",
+		"users": "Users",
+		"scheduledActions": "Scheduled Actions",
+		"auditLogs": "Logs",
+		"role": "Role",
+		"openMenu": "Open menu",
+		"closeMenu": "Close menu",
+		"expandSidebar": "Expand sidebar",
+		"collapseSidebar": "Collapse sidebar",
+		"groups": {
+			"sales": "Sales",
+			"marketing": "Marketing",
+			"management": "Management",
+			"analytics": "Analytics",
+			"settings": "Settings"
+		}
+	},
+	"language": {
+		"ar": "العربية",
+		"en": "English",
+		"switchTo": "Switch language"
+	},
+	"auth": {
+		"login": {
+			"title": "Welcome Back",
+			"subtitle": "Sign in to access your CRM dashboard and manage your business.",
+			"emailLabel": "Email Address",
+			"emailPlaceholder": "admin@crm.com",
+			"passwordLabel": "Password",
+			"passwordPlaceholder": "Enter your password",
+			"rememberMe": "Remember me",
+			"forgotPassword": "Forgot password?",
+			"signIn": "Sign In",
+			"signingIn": "Signing in...",
+			"noAccount": "Don't have an account?",
+			"register": "Register",
+			"registeredSuccess": "Account created successfully. Please sign in.",
+			"showPassword": "Show password",
+			"hidePassword": "Hide password"
+		},
+		"register": {
+			"title": "Create Account",
+			"subtitle": "Register to access your CRM dashboard and manage your business.",
+			"nameLabel": "Full Name",
+			"namePlaceholder": "Your name",
+			"emailLabel": "Email Address",
+			"emailPlaceholder": "you@company.com",
+			"passwordLabel": "Password",
+			"passwordPlaceholder": "At least 8 characters",
+			"confirmPasswordLabel": "Confirm Password",
+			"confirmPasswordPlaceholder": "Re-enter your password",
+			"createAccount": "Create Account",
+			"creatingAccount": "Creating account...",
+			"hasAccount": "Already have an account?",
+			"signIn": "Sign In",
+			"showPassword": "Show password",
+			"hidePassword": "Hide password"
+		}
+	},
+	"kpi": {
+		"title": "KPI",
+		"subtitle": "Sales and team performance metrics for the selected period.",
+		"reportingPeriod": "Reporting period",
+		"periodRange": "{{from}} – {{to}}",
+		"dateFrom": "From",
+		"dateTo": "To",
+		"refresh": "Refresh",
+		"selectDates": "Select a date range to load KPI data.",
+		"sales": {
+			"totalAssigned": "Total Assigned",
+			"totalAssignedDesc": "Leads assigned in the period",
+			"contacted": "Contacted",
+			"contactedDesc": "Leads that were contacted",
+			"qualified": "Qualified",
+			"qualifiedDesc": "Leads that were qualified",
+			"converted": "Converted",
+			"convertedDesc": "Leads that converted",
+			"contactRate": "Contact Rate",
+			"contactRateDesc": "Contacted ÷ assigned",
+			"qualificationRate": "Qualification Rate",
+			"qualificationRateDesc": "Qualified ÷ contacted",
+			"conversionRate": "Conversion Rate",
+			"conversionRateDesc": "Converted ÷ qualified"
+		}
+	},
+	"reports": {
+		"title": "Reports",
+		"subtitle": "Project, campaign, and lead-source performance for the selected period.",
+		"reportingPeriod": "Reporting period",
+		"periodRange": "{{from}} – {{to}}",
+		"refresh": "Refresh",
+		"resetFilters": "Reset Filters",
+		"tabsLabel": "Report sections",
+		"tabs": {
+			"projects": "Projects",
+			"campaigns": "Campaigns",
+			"sources": "Sources"
+		},
+		"filters": {
+			"dateFrom": "From",
+			"dateTo": "To",
+			"project": "Project",
+			"allProjects": "All projects",
+			"campaign": "Campaign",
+			"allCampaigns": "All campaigns",
+			"team": "Team",
+			"allTeams": "All teams",
+			"user": "User",
+			"allUsers": "All users",
+			"source": "Source",
+			"allSources": "All sources"
+		},
+		"projects": {
+			"columns": {
+				"project": "Project",
+				"leads": "Leads",
+				"qualified": "Qualified",
+				"clients": "Clients",
+				"campaigns": "Campaigns"
+			}
+		},
+		"campaigns": {
+			"columns": {
+				"campaign": "Campaign",
+				"spent": "Spent",
+				"revenue": "Revenue",
+				"leads": "Leads",
+				"qualified": "Qualified",
+				"converted": "Converted",
+				"cpl": "CPL",
+				"cpql": "CPQL",
+				"cpc": "CPC",
+				"roas": "ROAS",
+				"roi": "ROI"
+			}
+		},
+		"sources": {
+			"columns": {
+				"source": "Source",
+				"leads": "Leads",
+				"qualified": "Qualified",
+				"converted": "Converted"
+			}
+		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
+		"empty": {
+			"title": "No Report Data",
+			"subtitle": "There is no data for this report yet.",
+			"filteredTitle": "No matching results",
+			"filteredSubtitle": "Try adjusting your filters or date range."
+		},
+		"errors": {
+			"loadFailed": "Unable to load report data. Please try again."
+		}
+	},
+	"dashboard": {
+		"title": "Dashboard",
+		"welcome": "Welcome back, {{name}}.",
+		"welcomeManager": "Today’s focus, {{name}}.",
+		"welcomeSales": "Your day, {{name}}.",
+		"subtitle": "Here's what's happening today.",
+		"subtitleSales": "Here's your focus for today.",
+		"greeting": {
+			"morning": "Good morning, {{name}}",
+			"afternoon": "Good afternoon, {{name}}",
+			"evening": "Good evening, {{name}}"
+		},
+		"profileError": "Unable to load your profile. Please try signing in again.",
+		"reportingPeriod": "Reporting period",
+		"periodRange": "{{from}} – {{to}}",
+		"refresh": "Refresh",
+		"retry": "Retry",
+		"errorTitle": "Something went wrong",
+		"errorMessage": "We couldn't load this section. Please try again.",
+		"hero": {
+			"eyebrow": "Priority",
+			"openQueue": "Open queue",
+			"reviewNow": "Review now",
+			"viewLeads": "View leads"
+		},
+		"attention": {
+			"title": "Needs attention",
+			"subtitle": "Work that needs action today across the team.",
+			"subtitleSales": "Your overdue and due items for today.",
+			"overdue": "Overdue",
+			"overdueDesc": "Actions and follow-ups past due",
+			"overdueDescSales": "Your actions and follow-ups past due",
+			"dueToday": "Due today",
+			"dueTodayDesc": "Actions and follow-ups scheduled today",
+			"dueTodayDescSales": "Your actions and follow-ups for today",
+			"unassigned": "Unassigned leads",
+			"unassignedDesc": "Open leads with no owner",
+			"pendingDuplicates": "Pending duplicates",
+			"pendingDuplicatesDesc": "Duplicates waiting for review",
+			"myAssigned": "My open leads",
+			"myAssignedDesc": "Leads assigned to you"
+		},
+		"kpiStrip": {
+			"title": "Key metrics",
+			"subtitle": "Snapshot from your current CRM data.",
+			"totalLeads": "Total leads",
+			"newToday": "New leads today",
+			"qualified": "Qualified leads",
+			"converted": "Won deals",
+			"contactRate": "Contact rate",
+			"conversionRate": "Conversion rate"
+		},
+		"schedule": {
+			"title": "Today's schedule",
+			"subtitle": "Agenda for follow-ups and scheduled actions today.",
+			"emptyTitle": "You're all caught up",
+			"emptyMessage": "No follow-ups or actions scheduled for today."
+		},
+		"queue": {
+			"title": "Needs attention queue",
+			"subtitle": "Actionable items prioritized by urgency.",
+			"open": "Open",
+			"viewDetails": "View details",
+			"overdueHours": "{{count}}h overdue",
+			"overdueDays": "{{count}}d overdue"
+		},
+		"funnel": {
+			"title": "Sales funnel",
+			"subtitle": "Pipeline stages from current lead statuses.",
+			"conversion": "{{value}} from prior",
+			"dropOff": "{{value}} drop-off",
+			"emptyTitle": "No funnel data yet",
+			"emptyMessage": "Lead statuses will populate the funnel as the pipeline grows.",
+			"stages": {
+				"new": "New leads",
+				"contacted": "Contacted",
+				"qualified": "Qualified",
+				"meeting": "Property visit",
+				"interested": "Negotiation",
+				"converted": "Won deals"
+			}
+		},
+		"leaderboard": {
+			"title": "Team performance",
+			"subtitle": "Leaderboard ranked by conversion rate.",
+			"lowContact": "Below contact-rate target"
+		},
+		"projects": {
+			"title": "Projects",
+			"subtitle": "Active and upcoming project status.",
+			"viewAll": "View all",
+			"started": "Started",
+			"emptyTitle": "No projects yet",
+			"emptyMessage": "Projects will appear here once created."
+		},
+		"campaigns": {
+			"title": "Campaigns",
+			"subtitle": "Budget, revenue, and ROI at a glance.",
+			"viewAll": "View all",
+			"budget": "Budget",
+			"revenue": "Revenue",
+			"roi": "ROI",
+			"emptyTitle": "No campaigns yet",
+			"emptyMessage": "Campaigns will appear here once created."
+		},
+		"leads": {
+			"title": "Open leads",
+			"subtitle": "Priority leads ready for follow-up.",
+			"viewAll": "View all",
+			"open": "Open lead",
+			"project": "Project",
+			"assignee": "Sales rep",
+			"lastContact": "Follow-up",
+			"noContact": "No follow-up set"
+		},
+		"analytics": {
+			"title": "Analytics",
+			"subtitle": "Trends from leads and reports.",
+			"leadGrowth": "Lead growth",
+			"leadGrowthDesc": "New leads over the last 14 days",
+			"leadSources": "Lead sources",
+			"leadSourcesDesc": "Distribution by source",
+			"campaignRevenue": "Campaign spend vs revenue",
+			"campaignRevenueDesc": "From campaign evaluation reports",
+			"sourceConversion": "Source conversion",
+			"sourceConversionDesc": "Leads vs converted by source",
+			"emptyTitle": "No analytics yet",
+			"emptyMessage": "Charts appear when lead and report data is available.",
+			"noData": "No data for this chart"
+		},
+		"workQueue": {
+			"title": "Work queue",
+			"subtitle": "Prioritized items: overdue, due today, then unassigned.",
+			"subtitleSales": "Your prioritized overdue and due items.",
+			"emptyTitle": "Nothing needs you right now",
+			"emptyMessage": "When follow-ups or actions come due, they will show up here.",
+			"kinds": {
+				"scheduled_action": "Scheduled action",
+				"lead_follow_up": "Lead follow-up",
+				"unassigned_lead": "Unassigned lead"
+			},
+			"urgency": {
+				"overdue": "Overdue",
+				"due_today": "Due today",
+				"unassigned": "Unassigned"
+			}
+		},
+		"exceptions": {
+			"title": "Team exceptions",
+			"subtitle": "Teams below {{min}}% contact rate",
+			"viewKpis": "View all KPIs",
+			"emptyTitle": "No team exceptions",
+			"emptyMessage": "All teams are at or above the contact-rate target."
+		},
+		"stats": {
+			"periodTitle": "Period snapshot",
+			"periodSubtitle": "Secondary totals for the current reporting period.",
+			"totalLeads": "Total Leads",
+			"totalLeadsDesc": "Leads in the current period",
+			"totalTeams": "Total Teams",
+			"totalTeamsDesc": "Active teams in the report",
+			"avgContactRate": "Average Contact Rate",
+			"avgContactRateDesc": "Across all teams",
+			"avgConversionRate": "Average Conversion Rate",
+			"avgConversionRateDesc": "Across all teams"
+		},
+		"teamPerformance": {
+			"title": "Team Performance",
+			"subtitle": "Assignment and conversion metrics by team",
+			"teamId": "Team ID",
+			"assigned": "Assigned Leads",
+			"contacted": "Contacted",
+			"qualified": "Qualified",
+			"converted": "Converted",
+			"contactRate": "Contact Rate",
+			"qualificationRate": "Qualification Rate",
+			"conversionRate": "Conversion Rate",
+			"emptyTitle": "No team data yet",
+			"emptyMessage": "Team performance will appear here once KPIs are available."
+		},
+		"recentLeads": {
+			"title": "Recent Leads",
+			"subtitle": "Latest five leads in the pipeline",
+			"name": "Name",
+			"phone": "Phone",
+			"source": "Source",
+			"status": "Status",
+			"created": "Created Date",
+			"emptyTitle": "No leads yet",
+			"emptyMessage": "New leads will show up here as they are created."
+		},
+		"quickActions": {
+			"title": "Quick Actions",
+			"subtitle": "Jump into the most common manager workflows",
+			"subtitleSales": "Jump into your daily sales workflows",
+			"addLead": "Add Lead",
+			"assignLead": "Assign Lead",
+			"assignLeads": "Assign leads",
+			"reviewPending": "Review pending",
+			"openDueItems": "Open due items",
+			"myScheduledActions": "My scheduled actions",
+			"myLeads": "My leads",
+			"scheduleAction": "Schedule action",
+			"createCampaign": "Create Campaign",
+			"createProject": "Create Project",
+			"createTeam": "Create Team",
+			"addClient": "Add Client"
+		},
+		"status": {
+			"new": "New",
+			"assigned": "Assigned",
+			"qualified": "Qualified",
+			"lost": "Lost",
+			"converted": "Converted"
+		}
+	},
+	"leads": {
+		"title": "Leads",
+		"subtitle": "Manage and track every lead in your pipeline.",
+		"count": "{{count}} leads",
+		"addLead": "Add Lead",
+		"editLead": "Edit Lead",
+		"backToList": "Back to leads",
+		"searchPlaceholder": "Search by name, phone, or email",
+		"allStatuses": "All statuses",
+		"emptyTitle": "No leads found",
+		"emptyMessage": "Try adjusting filters or create your first lead.",
+		"filters": {
+			"button": "Filter",
+			"buttonWithCount": "Filter ({{count}})",
+			"apply": "Apply Filters",
+			"reset": "Reset",
+			"clearAll": "Clear All",
+			"createdRange": "Created Date",
+			"statusSelected": "{{count}} statuses"
+		},
+		"columns": {
+			"name": "Name",
+			"phone": "Phone",
+			"email": "Email",
+			"source": "Source",
+			"status": "Status",
+			"scheduledCall": "Scheduled Call",
+			"project": "Project",
+			"campaign": "Campaign",
+			"assignedTo": "Assigned To",
+			"created": "Created"
+		},
+		"scheduledCall": {
+			"inMinutes": "in {{count}}m",
+			"inHoursMinutes": "in {{hours}}h {{minutes}}m",
+			"now": "now",
+			"overdueMinutes": "overdue {{count}}m",
+			"overdueHoursMinutes": "overdue {{hours}}h {{minutes}}m"
+		},
+		"form": {
+			"name": "Name",
+			"phone": "Phone",
+			"email": "Email",
+			"source": "Source",
+			"sourceDetails": "Source details",
+			"project": "Project",
+			"campaign": "Campaign",
+			"assignedTo": "Assigned to (user ID)",
+			"assignedToPlaceholder": "Optional user ID",
+			"scheduledCall": "Scheduled call",
+			"nextFollowUp": "Next follow-up",
+			"note": "Note",
+			"lastCommunicationNote": "Last communication note",
+			"none": "None",
+			"create": "Create lead",
+			"save": "Save changes"
+		},
+		"detail": {
+			"overview": "Overview",
+			"contact": "Contact",
+			"source": "Source & campaign",
+			"assignment": "Assignment",
+			"timeline": "Timeline",
+			"keyDates": "Key dates",
+			"upcoming": "Upcoming",
+			"history": "History",
+			"noDates": "No dates recorded for this lead yet.",
+			"overdue": "Overdue",
+			"activity": "Activity",
+			"notes": "Notes",
+			"notesEmptyTitle": "No notes yet",
+			"notesEmptyMessage": "Lead notes and lost reasons will appear here.",
+			"assignedBy": "Assigned by",
+			"assignedAt": "Assigned at",
+			"createdBy": "Created by",
+			"firstAction": "First action",
+			"lastAction": "Last action",
+			"qualifiedAt": "Qualified at",
+			"lostAt": "Lost at",
+			"updatedAt": "Updated at",
+			"lostReason": "Lost reason",
+			"call": "Call",
+			"whatsapp": "WhatsApp"
+		},
+		"comments": {
+			"title": "Comments",
+			"count": "{{count}} comments",
+			"placeholder": "Write a comment about this lead…",
+			"post": "Post comment",
+			"posted": "Comment posted.",
+			"shortcutHint": "Press Ctrl+Enter to post",
+			"emptyTitle": "No comments yet",
+			"emptyMessage": "Share follow-ups, call notes, or team updates here.",
+			"unknownAuthor": "Team member",
+			"justNow": "Just now",
+			"minutesAgo": "{{count}}m ago",
+			"hoursAgo": "{{count}}h ago",
+			"daysAgo": "{{count}}d ago",
+			"required": "Please write a comment before posting.",
+			"tooLong": "Comment is too long.",
+			"loadFailed": "Unable to load comments. Please try again.",
+			"postFailed": "Unable to post comment. Please try again."
+		},
+		"status": {
+			"new": "New",
+			"assigned": "Assigned",
+			"contacted": "Contacted",
+			"no_answer": "No answer",
+			"follow_up": "Follow up",
+			"meeting_scheduled": "Meeting scheduled",
+			"meeting_completed": "Meeting completed",
+			"interested": "Interested",
+			"qualified": "Qualified",
+			"not_qualified": "Not qualified",
+			"low_budget": "Low budget",
+			"not_interested": "Not interested",
+			"already_bought_elsewhere": "Already bought elsewhere",
+			"postponed": "Postponed",
+			"lost": "Lost",
+			"converted": "Converted",
+			"all_status": "All statuses",
+			"default": "Default"
+		},
+		"sources": {
+			"facebook": "Facebook",
+			"instagram": "Instagram",
+			"tiktok": "TikTok",
+			"google": "Google",
+			"website": "Website",
+			"whatsapp": "WhatsApp",
+			"referral": "Referral",
+			"walk_in": "Walk-in",
+			"phone_call": "Phone call",
+			"campaign": "Campaign",
+			"manual": "Manual",
+			"import": "Import",
+			"other": "Other"
+		},
+		"validation": {
+			"phoneRequired": "Phone is required.",
+			"lostReasonRequired": "Lost reason is required."
+		},
+		"assign": {
+			"reason": "Assignment Reason",
+			"reasonPlaceholder": "Workload balance / specialty / coverage…"
+		},
+		"bulk": {
+			"selected": "{{count}} selected",
+			"selectAll": "Select all leads",
+			"selectLead": "Select {{name}}",
+			"clearSelection": "Clear selection",
+			"setStatus": "Set status",
+			"delete": "Delete",
+			"deleteTitle": "Delete selected leads",
+			"deleteMessage": "Are you sure you want to delete {{count}} leads? This cannot be undone."
+		},
+		"markLost": {
+			"title": "Mark Lead as Lost",
+			"message": "Provide a reason before marking this lead as lost.",
+			"reason": "Lost Reason",
+			"reasonPlaceholder": "Not interested / budget / timing…",
+			"confirm": "Mark Lost"
+		},
+		"errors": {
+			"createFailed": "Unable to create lead. Please try again.",
+			"updateFailed": "Unable to update lead. Please try again.",
+			"loadFailed": "Unable to load this lead. Please try again."
+		}
+	},
+	"pendingLeads": {
+		"title": "Pending Leads",
+		"subtitle": "Review and resolve duplicated leads before they enter the CRM.",
+		"refresh": "Refresh",
+		"searchPlaceholder": "Search by name, phone or email",
+		"resetFilters": "Reset Filters",
+		"kpis": {
+			"pending": "Pending",
+			"reviewed": "Reviewed",
+			"today": "Today"
+		},
+		"filters": {
+			"duplicateStatus": "Duplicate Status",
+			"allStatuses": "All statuses",
+			"dateFrom": "From",
+			"dateTo": "To"
+		},
+		"columns": {
+			"selectAll": "Select all",
+			"selectRow": "Select row",
+			"lead": "Lead",
+			"phone": "Phone",
+			"source": "Source",
+			"project": "Project",
+			"campaign": "Campaign",
+			"duplicateType": "Duplicate Type",
+			"duplicateReason": "Duplicate Reason",
+			"status": "Status",
+			"created": "Created Date",
+			"actions": "Actions"
+		},
+		"status": {
+			"pending": "Pending",
+			"merged": "Merged",
+			"removed": "Removed",
+			"replaced": "Replaced"
+		},
+		"duplicateType": {
+			"existing_lead": "Existing Lead",
+			"existing_client": "Existing Client"
+		},
+		"actions": {
+			"view": "View",
+			"replace": "Replace",
+			"merge": "Merge",
+			"remove": "Remove"
+		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
+		"empty": {
+			"title": "No Pending Leads",
+			"subtitle": "All duplicate leads have been reviewed.",
+			"filteredTitle": "No matching pending leads",
+			"filteredSubtitle": "Try adjusting your filters or search query."
+		},
+		"drawer": {
+			"title": "Pending Lead",
+			"leadInfo": "Lead Information",
+			"duplicateInfo": "Duplicate Information",
+			"assignment": "Assignment",
+			"notes": "Notes",
+			"noNotes": "No notes",
+			"createdAt": "Created At",
+			"existingLeadId": "Existing Lead ID",
+			"existingClientId": "Existing Client ID",
+			"reviewedBy": "Reviewed By",
+			"reviewedAt": "Reviewed At",
+			"resolutionNote": "Resolution Note"
+		},
+		"replace": {
+			"title": "Replace Pending Lead",
+			"message": "This will replace the existing lead using this pending lead.",
+			"noteLabel": "Resolution Note",
+			"notePlaceholder": "Replacing with updated information.",
+			"noteRequired": "Please enter a resolution note.",
+			"confirm": "Replace Lead"
+		},
+		"merge": {
+			"title": "Merge Pending Lead",
+			"message": "Merge this duplicate into the existing lead/client.",
+			"confirm": "Merge"
+		},
+		"remove": {
+			"title": "Remove Pending Lead",
+			"message": "Are you sure you want to remove this pending duplicate?",
+			"confirm": "Remove"
+		},
+		"toasts": {
+			"replaced": "Pending lead replaced successfully.",
+			"merged": "Pending lead merged successfully.",
+			"removed": "Pending lead removed successfully."
+		},
+		"errors": {
+			"loadFailed": "Unable to load pending leads. Please try again.",
+			"loadDetailFailed": "Unable to load pending lead details.",
+			"replaceFailed": "Unable to replace this pending lead.",
+			"mergeFailed": "Unable to merge this pending lead.",
+			"removeFailed": "Unable to remove this pending lead."
+		}
+	},
+	"comingSoon": {
+		"message": "This module is coming soon.",
+		"hint": "Navigation is ready — the full experience is on the way."
+	},
+	"campaigns": {
+		"title": "Campaigns",
+		"subtitle": "Manage marketing campaigns, budgets, performance, and lead sources.",
+		"refresh": "Refresh",
+		"newCampaign": "New Campaign",
+		"editCampaign": "Edit Campaign",
+		"searchPlaceholder": "Search by name or external reference",
+		"resetFilters": "Reset Filters",
+		"present": "Present",
+		"kpis": {
+			"total": "Total Campaigns",
+			"totalDesc": "All campaigns",
+			"active": "Active",
+			"activeDesc": "Currently running",
+			"draft": "Draft",
+			"draftDesc": "Not yet launched",
+			"completed": "Completed",
+			"completedDesc": "Finished campaigns",
+			"budget": "Total Budget",
+			"budgetDesc": "Sum of all budgets"
+		},
+		"filters": {
+			"platform": "Platform",
+			"allPlatforms": "All platforms",
+			"status": "Status",
+			"allStatuses": "All statuses",
+			"project": "Project",
+			"dateFrom": "Started from",
+			"dateTo": "Started to"
+		},
+		"columns": {
+			"campaign": "Campaign",
+			"platform": "Platform",
+			"project": "Project",
+			"source": "Source",
+			"budget": "Budget",
+			"spent": "Spent",
+			"revenue": "Revenue",
+			"roi": "ROI",
+			"status": "Status",
+			"duration": "Duration",
+			"created": "Created At",
+			"actions": "Actions"
+		},
+		"platforms": {
+			"facebook": "Facebook",
+			"instagram": "Instagram",
+			"tiktok": "TikTok",
+			"google": "Google",
+			"website": "Website",
+			"offline": "Offline",
+			"referral": "Referral",
+			"other": "Other"
+		},
+		"status": {
+			"draft": "Draft",
+			"active": "Active",
+			"paused": "Paused",
+			"completed": "Completed"
+		},
+		"actions": {
+			"view": "View",
+			"edit": "Edit",
+			"delete": "Delete"
+		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
+		"empty": {
+			"title": "No Campaigns Found",
+			"subtitle": "Create your first marketing campaign.",
+			"filteredTitle": "No matching campaigns",
+			"filteredSubtitle": "Try adjusting your filters or search query."
+		},
+		"drawer": {
+			"title": "Campaign",
+			"general": "General Information",
+			"financial": "Financial Information",
+			"timeline": "Timeline",
+			"status": "Status",
+			"createdAt": "Created At",
+			"updatedAt": "Updated At"
+		},
+		"form": {
+			"subtitle": "Define campaign details, budget, and schedule.",
+			"name": "Campaign Name",
+			"platform": "Platform",
+			"project": "Project",
+			"source": "Source",
+			"budget": "Budget",
+			"spent": "Spent Amount",
+			"revenue": "Revenue",
+			"startedAt": "Start Date",
+			"endedAt": "End Date",
+			"status": "Status",
+			"externalReference": "External Reference",
+			"create": "Create Campaign",
+			"save": "Save Changes"
+		},
+		"delete": {
+			"title": "Delete Campaign",
+			"message": "Are you sure you want to delete this campaign?",
+			"cannotUndo": "This action cannot be undone.",
+			"confirm": "Delete"
+		},
+		"validation": {
+			"nameRequired": "Campaign name is required.",
+			"platformRequired": "Platform is required.",
+			"moneyNonNegative": "Value must be zero or greater.",
+			"dateRange": "Start date cannot be after end date."
+		},
+		"toasts": {
+			"created": "Campaign created successfully.",
+			"updated": "Campaign updated successfully.",
+			"deleted": "Campaign deleted successfully."
+		},
+		"errors": {
+			"loadFailed": "Unable to load campaigns. Please try again.",
+			"loadDetailFailed": "Unable to load campaign details.",
+			"createFailed": "Unable to create campaign. Please try again.",
+			"updateFailed": "Unable to update campaign. Please try again.",
+			"deleteFailed": "Unable to delete campaign. Please try again."
+		}
+	},
+	"clients": {
+		"title": "Clients",
+		"subtitle": "Manage converted leads, customer relationships, assignments, and lifecycle.",
+		"refresh": "Refresh",
+		"editClient": "Edit Client",
+		"searchPlaceholder": "Search by name, phone, or email",
+		"resetFilters": "Reset Filters",
+		"kpis": {
+			"total": "Total Clients",
+			"active": "Active Clients",
+			"reserved": "Reserved",
+			"contracted": "Contracted",
+			"bought": "Bought",
+			"lost": "Lost Clients"
+		},
+		"filters": {
+			"status": "Status",
+			"allStatuses": "All statuses",
+			"project": "Project",
+			"campaign": "Campaign",
+			"assignedTo": "Assigned Sales",
+			"allSales": "All sales",
+			"source": "Source",
+			"allSources": "All sources",
+			"dateFrom": "Converted from",
+			"dateTo": "Converted to"
+		},
+		"columns": {
+			"selectAll": "Select all",
+			"selectRow": "Select row",
+			"toggle": "Columns",
+			"client": "Client",
+			"phone": "Phone",
+			"project": "Project",
+			"campaign": "Campaign",
+			"assignedTo": "Assigned To",
+			"source": "Source",
+			"status": "Status",
+			"qualified": "Qualified",
+			"converted": "Converted",
+			"created": "Created",
+			"actions": "Actions"
+		},
+		"status": {
+			"active": "Active",
+			"reserved": "Reserved",
+			"contracted": "Contracted",
+			"bought": "Bought",
+			"canceled": "Canceled",
+			"lost": "Lost",
+			"archived": "Archived"
+		},
+		"actions": {
+			"view": "View",
+			"edit": "Edit",
+			"markLost": "Mark Lost",
+			"restore": "Restore"
+		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
+		"empty": {
+			"title": "No Clients Found",
+			"subtitle": "Converted leads will appear here.",
+			"filteredTitle": "No matching clients",
+			"filteredSubtitle": "Try adjusting your filters or search query."
+		},
+		"drawer": {
+			"title": "Client",
+			"tabsLabel": "Client detail sections",
+			"comingSoon": "Coming soon",
+			"tabs": {
+				"overview": "Overview",
+				"activities": "Activities",
+				"comments": "Comments",
+				"timeline": "Timeline",
+				"files": "Files"
+			},
+			"general": "General Information",
+			"assignment": "Assignment",
+			"timeline": "Timeline",
+			"lostInfo": "Lost Information",
+			"originalLeadId": "Original Lead ID",
+			"qualifiedAt": "Qualified At",
+			"convertedAt": "Converted At",
+			"createdAt": "Created At",
+			"updatedAt": "Updated At",
+			"lostAt": "Lost At",
+			"lostBy": "Lost By",
+			"lostReason": "Lost Reason"
+		},
+		"form": {
+			"subtitle": "Update client details, assignment, and status.",
+			"name": "Client Name",
+			"phone": "Phone",
+			"email": "Email",
+			"project": "Project",
+			"campaign": "Campaign",
+			"assignedTo": "Assigned Sales",
+			"status": "Status",
+			"source": "Source",
+			"save": "Save Changes"
+		},
+		"markLost": {
+			"title": "Mark Client as Lost",
+			"message": "This client will be moved to the Lost Clients list.",
+			"reason": "Lost Reason",
+			"reasonPlaceholder": "Customer canceled due to financing issues.",
+			"confirm": "Mark Lost"
+		},
+		"restore": {
+			"title": "Restore Client",
+			"message": "Restore this client back to Active status?",
+			"confirm": "Restore"
+		},
+		"validation": {
+			"nameRequired": "Client name is required.",
+			"phoneRequired": "Phone is required.",
+			"lostReasonRequired": "Lost reason is required."
+		},
+		"toasts": {
+			"updated": "Client updated successfully.",
+			"markedLost": "Client marked as lost.",
+			"restored": "Client restored successfully."
+		},
+		"errors": {
+			"loadFailed": "Unable to load clients. Please try again.",
+			"loadDetailFailed": "Unable to load client details.",
+			"updateFailed": "Unable to update client. Please try again.",
+			"markLostFailed": "Unable to mark client as lost. Please try again.",
+			"restoreFailed": "Unable to restore client. Please try again."
+		}
+	},
+	"projects": {
+		"title": "Projects",
+		"subtitle": "Manage real-estate projects, sales team assignments, and lifecycle.",
+		"refresh": "Refresh",
+		"newProject": "New Project",
+		"editProject": "Edit Project",
+		"searchPlaceholder": "Search by name or description",
+		"resetFilters": "Reset Filters",
+		"kpis": {
+			"total": "Total Projects",
+			"active": "Active",
+			"upcoming": "Upcoming",
+			"paused": "Paused",
+			"completed": "Completed",
+			"archived": "Archived"
+		},
+		"filters": {
+			"status": "Status",
+			"allStatuses": "All statuses",
+			"team": "Team",
+			"allTeams": "All teams",
+			"dateFrom": "Started from",
+			"dateTo": "Started to"
+		},
+		"columns": {
+			"selectAll": "Select all",
+			"selectRow": "Select row",
+			"toggle": "Columns",
+			"project": "Project",
+			"status": "Status",
+			"teams": "Teams",
+			"started": "Started",
+			"createdBy": "Created By",
+			"created": "Created",
+			"actions": "Actions"
+		},
+		"status": {
+			"upcoming": "Upcoming",
+			"active": "Active",
+			"paused": "Paused",
+			"completed": "Completed",
+			"archived": "Archived"
+		},
+		"actions": {
+			"view": "View",
+			"edit": "Edit",
+			"import": "Import Leads",
+			"delete": "Delete"
+		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
+		"empty": {
+			"title": "No Projects Found",
+			"subtitle": "Create your first project.",
+			"filteredTitle": "No matching projects",
+			"filteredSubtitle": "Try adjusting your filters or search query."
+		},
+		"drawer": {
+			"title": "Project",
+			"tabsLabel": "Project detail sections",
+			"comingSoon": "Coming soon",
+			"tabs": {
+				"overview": "Overview",
+				"leads": "Leads",
+				"campaigns": "Campaigns",
+				"files": "Files"
+			},
+			"general": "General Information",
+			"teams": "Teams",
+			"meta": "Metadata",
+			"noTeams": "No teams assigned to this project.",
+			"createdBy": "Created By",
+			"createdAt": "Created At",
+			"updatedAt": "Updated At",
+			"leaderId": "Leader #{{id}}",
+			"supervisorId": "Supervisor #{{id}}"
+		},
+		"form": {
+			"subtitle": "Define project details, schedule, and sales teams.",
+			"name": "Project Name",
+			"description": "Description",
+			"startedAt": "Start Date",
+			"status": "Status",
+			"teams": "Assigned Teams",
+			"noTeams": "No teams available.",
+			"create": "Create Project",
+			"save": "Save Changes"
+		},
+		"delete": {
+			"title": "Delete Project",
+			"message": "Are you sure you want to delete this project?",
+			"cannotUndo": "This action cannot be undone.",
+			"confirm": "Delete"
+		},
+		"import": {
+			"title": "Import Leads",
+			"message": "Upload a file to import leads into this project.",
+			"file": "File",
+			"confirm": "Import"
+		},
+		"validation": {
+			"nameRequired": "Project name is required.",
+			"statusRequired": "Status is required.",
+			"fileRequired": "Please select a file to import."
+		},
+		"toasts": {
+			"created": "Project created successfully.",
+			"updated": "Project updated successfully.",
+			"deleted": "Project deleted successfully.",
+			"imported": "Leads imported successfully."
+		},
+		"errors": {
+			"loadFailed": "Unable to load projects. Please try again.",
+			"loadDetailFailed": "Unable to load project details.",
+			"createFailed": "Unable to create project. Please try again.",
+			"updateFailed": "Unable to update project. Please try again.",
+			"deleteFailed": "Unable to delete project. Please try again.",
+			"importFailed": "Unable to import leads. Please try again."
+		}
+	},
+	"teams": {
+		"title": "Teams",
+		"subtitle": "Manage sales teams, leaders, and supervisors.",
+		"refresh": "Refresh",
+		"newTeam": "New Team",
+		"editTeam": "Edit Team",
+		"searchPlaceholder": "Search by team name",
+		"resetFilters": "Reset Filters",
+		"kpis": {
+			"total": "Total Teams",
+			"withLeader": "With Leader",
+			"withSupervisor": "With Supervisor",
+			"incomplete": "Incomplete"
+		},
+		"filters": {
+			"leader": "Team Leader",
+			"allLeaders": "All leaders",
+			"supervisor": "Supervisor",
+			"allSupervisors": "All supervisors"
+		},
+		"columns": {
+			"selectAll": "Select all",
+			"selectRow": "Select row",
+			"toggle": "Columns",
+			"team": "Team",
+			"leader": "Team Leader",
+			"supervisor": "Supervisor",
+			"created": "Created",
+			"updated": "Updated",
+			"actions": "Actions"
+		},
+		"actions": {
+			"view": "View",
+			"edit": "Edit",
+			"delete": "Delete"
+		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
+		"empty": {
+			"title": "No Teams Found",
+			"subtitle": "Create your first sales team.",
+			"filteredTitle": "No matching teams",
+			"filteredSubtitle": "Try adjusting your filters or search query."
+		},
+		"drawer": {
+			"title": "Team",
+			"tabsLabel": "Team detail sections",
+			"comingSoon": "Coming soon",
+			"tabs": {
+				"overview": "Overview",
+				"members": "Members",
+				"projects": "Projects",
+				"performance": "Performance"
+			},
+			"general": "General Information",
+			"leadership": "Leadership",
+			"timeline": "Timeline",
+			"createdAt": "Created At",
+			"updatedAt": "Updated At"
+		},
+		"form": {
+			"subtitle": "Define the team name and assign leadership roles.",
+			"name": "Team Name",
+			"leader": "Team Leader",
+			"supervisor": "Supervisor",
+			"create": "Create Team",
+			"save": "Save Changes"
+		},
+		"delete": {
+			"title": "Delete Team",
+			"message": "Are you sure you want to delete this team?",
+			"cannotUndo": "This action cannot be undone.",
+			"confirm": "Delete"
+		},
+		"validation": {
+			"nameRequired": "Team name is required."
+		},
+		"toasts": {
+			"created": "Team created successfully.",
+			"updated": "Team updated successfully.",
+			"deleted": "Team deleted successfully."
+		},
+		"errors": {
+			"loadFailed": "Unable to load teams. Please try again.",
+			"loadDetailFailed": "Unable to load team details.",
+			"createFailed": "Unable to create team. Please try again.",
+			"updateFailed": "Unable to update team. Please try again.",
+			"deleteFailed": "Unable to delete team. Please try again."
+		}
+	},
+	"users": {
+		"title": "Users",
+		"subtitle": "Manage accounts, roles, and access for your CRM team.",
+		"refresh": "Refresh",
+		"newUser": "New User",
+		"editUser": "Edit User",
+		"searchPlaceholder": "Search by name, email, or role",
+		"resetFilters": "Reset Filters",
+		"kpis": {
+			"total": "Total Users",
+			"active": "Active",
+			"inactive": "Inactive",
+			"admins": "Admins"
+		},
+		"filters": {
+			"role": "Role",
+			"allRoles": "All roles",
+			"status": "Status",
+			"allStatuses": "All statuses"
+		},
+		"status": {
+			"active": "Active",
+			"inactive": "Inactive"
+		},
+		"roles": {
+			"admin": "Admin",
+			"sales": "Sales",
+			"leader": "Leader",
+			"supervisor": "Supervisor"
+		},
+		"columns": {
+			"selectAll": "Select all",
+			"selectRow": "Select row",
+			"toggle": "Columns",
+			"user": "User",
+			"role": "Role",
+			"jobTitle": "Job Title",
+			"status": "Status",
+			"created": "Created",
+			"actions": "Actions"
+		},
+		"actions": {
+			"view": "View",
+			"edit": "Edit",
+			"activate": "Activate",
+			"deactivate": "Deactivate",
+			"delete": "Delete"
+		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
+		"empty": {
+			"title": "No Users Found",
+			"subtitle": "Create your first user account.",
+			"filteredTitle": "No matching users",
+			"filteredSubtitle": "Try adjusting your filters or search query."
+		},
+		"drawer": {
+			"title": "User",
+			"tabsLabel": "User detail sections",
+			"tabs": {
+				"overview": "Overview"
+			},
+			"general": "General Information",
+			"timeline": "Timeline",
+			"createdAt": "Created At",
+			"updatedAt": "Updated At"
+		},
+		"form": {
+			"subtitle": "Set account details, role, and password.",
+			"name": "Full Name",
+			"email": "Email",
+			"role": "Role",
+			"rolePlaceholder": "Select a role",
+			"jobTitle": "Job Title",
+			"password": "Password",
+			"confirmPassword": "Confirm Password",
+			"passwordHint": "Leave password blank to keep the current password.",
+			"create": "Create User",
+			"save": "Save Changes"
+		},
+		"delete": {
+			"title": "Delete User",
+			"message": "Are you sure you want to delete this user?",
+			"cannotUndo": "This action cannot be undone.",
+			"confirm": "Delete"
+		},
+		"validation": {
+			"nameRequired": "Name is required.",
+			"emailRequired": "Email is required.",
+			"emailInvalid": "Please enter a valid email address.",
+			"roleRequired": "Role is required.",
+			"passwordRequired": "Password is required.",
+			"passwordMinLength": "Password must be at least 8 characters.",
+			"confirmPasswordRequired": "Please confirm your password.",
+			"passwordsMismatch": "Passwords do not match."
+		},
+		"toasts": {
+			"created": "User created successfully.",
+			"updated": "User updated successfully.",
+			"deleted": "User deleted successfully.",
+			"activated": "User activated successfully.",
+			"deactivated": "User deactivated successfully."
+		},
+		"errors": {
+			"loadFailed": "Unable to load users. Please try again.",
+			"loadDetailFailed": "Unable to load user details.",
+			"createFailed": "Unable to create user. Please try again.",
+			"updateFailed": "Unable to update user. Please try again.",
+			"deleteFailed": "Unable to delete user. Please try again.",
+			"activateFailed": "Unable to activate user. Please try again.",
+			"deactivateFailed": "Unable to deactivate user. Please try again."
+		}
+	},
+	"scheduledActions": {
+		"title": "Scheduled Actions",
+		"subtitle": "Plan and track calls, meetings, and follow-ups across leads and clients.",
+		"refresh": "Refresh",
+		"newAction": "New Action",
+		"editAction": "Edit Action",
+		"searchPlaceholder": "Search by note, type, or status",
+		"resetFilters": "Reset Filters",
+		"kpis": {
+			"total": "Total",
+			"pending": "Pending",
+			"completed": "Completed",
+			"missed": "Missed"
+		},
+		"filters": {
+			"type": "Type",
+			"allTypes": "All types",
+			"status": "Status",
+			"allStatuses": "All statuses",
+			"assignee": "Assignee",
+			"allAssignees": "All assignees"
+		},
+		"types": {
+			"call": "Call",
+			"follow_up": "Follow-up",
+			"meeting": "Meeting",
+			"site_visit": "Site visit",
+			"whatsapp": "WhatsApp",
+			"email": "Email",
+			"other": "Other"
+		},
+		"statuses": {
+			"pending": "Pending",
+			"completed": "Completed",
+			"missed": "Missed"
+		},
+		"columns": {
+			"selectAll": "Select all",
+			"selectRow": "Select row",
+			"toggle": "Columns",
+			"type": "Type",
+			"related": "Related to",
+			"assignee": "Assignee",
+			"scheduledAt": "Scheduled",
+			"status": "Status",
+			"note": "Note",
+			"actions": "Actions"
+		},
+		"actions": {
+			"view": "View",
+			"edit": "Edit",
+			"complete": "Complete",
+			"delete": "Delete"
+		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
+		"empty": {
+			"title": "No Scheduled Actions",
+			"subtitle": "Create your first scheduled action.",
+			"filteredTitle": "No matching actions",
+			"filteredSubtitle": "Try adjusting your filters or search query."
+		},
+		"drawer": {
+			"title": "Scheduled Action",
+			"tabsLabel": "Action detail sections",
+			"tabs": {
+				"overview": "Overview"
+			},
+			"general": "General Information",
+			"timeline": "Timeline",
+			"createdBy": "Created By",
+			"createdAt": "Created At",
+			"updatedAt": "Updated At",
+			"completedAt": "Completed At"
+		},
+		"form": {
+			"subtitle": "Link to a lead or client, set type, assignee, and schedule.",
+			"relatedTo": "Related to",
+			"relatedTypes": {
+				"lead": "Lead",
+				"client": "Client"
+			},
+			"lead": "Lead",
+			"leadPlaceholder": "Select a lead",
+			"client": "Client",
+			"clientPlaceholder": "Select a client",
+			"type": "Type",
+			"typePlaceholder": "Select a type",
+			"assignee": "Assignee",
+			"assigneePlaceholder": "Select an assignee",
+			"scheduledAt": "Scheduled at",
+			"note": "Note",
+			"create": "Create Action",
+			"save": "Save Changes"
+		},
+		"complete": {
+			"title": "Complete Action",
+			"message": "Record the outcome of this scheduled action.",
+			"outcome": "Outcome",
+			"note": "Note",
+			"confirm": "Mark Complete"
+		},
+		"delete": {
+			"title": "Delete Action",
+			"message": "Are you sure you want to delete this scheduled action?",
+			"cannotUndo": "This action cannot be undone.",
+			"confirm": "Delete"
+		},
+		"validation": {
+			"typeRequired": "Type is required.",
+			"assignedRequired": "Assignee is required.",
+			"scheduledAtRequired": "Scheduled time is required.",
+			"leadRequired": "Lead is required.",
+			"clientRequired": "Client is required.",
+			"outcomeRequired": "Outcome is required."
+		},
+		"toasts": {
+			"created": "Scheduled action created successfully.",
+			"updated": "Scheduled action updated successfully.",
+			"deleted": "Scheduled action deleted successfully.",
+			"completed": "Scheduled action completed successfully."
+		},
+		"errors": {
+			"loadFailed": "Unable to load scheduled actions. Please try again.",
+			"loadDetailFailed": "Unable to load action details.",
+			"createFailed": "Unable to create scheduled action. Please try again.",
+			"updateFailed": "Unable to update scheduled action. Please try again.",
+			"deleteFailed": "Unable to delete scheduled action. Please try again.",
+			"completeFailed": "Unable to complete scheduled action. Please try again."
+		}
+	},
+	"auditLogs": {
+		"title": "Audit Logs",
+		"subtitle": "Review system activity, changes, and who performed them.",
+		"refresh": "Refresh",
+		"searchPlaceholder": "Search by action, model, IP, or user",
+		"resetFilters": "Reset Filters",
+		"kpis": {
+			"total": "Total Events",
+			"changes": "Changes",
+			"creates": "Creates",
+			"actors": "Actors"
+		},
+		"filters": {
+			"action": "Action",
+			"allActions": "All actions",
+			"model": "Model",
+			"allModels": "All models",
+			"user": "User",
+			"allUsers": "All users"
+		},
+		"columns": {
+			"selectAll": "Select all",
+			"selectRow": "Select row",
+			"toggle": "Columns",
+			"action": "Action",
+			"model": "Model",
+			"user": "User",
+			"ip": "IP Address",
+			"created": "When",
+			"actions": "Actions"
+		},
+		"actions": {
+			"view": "View"
+		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
+		"empty": {
+			"title": "No Audit Logs",
+			"subtitle": "Activity will appear here as users make changes.",
+			"filteredTitle": "No matching logs",
+			"filteredSubtitle": "Try adjusting your filters or search query."
+		},
+		"drawer": {
+			"title": "Audit Log",
+			"tabsLabel": "Audit log sections",
+			"tabs": {
+				"overview": "Overview"
+			},
+			"general": "General Information",
+			"diff": "Values",
+			"oldValues": "Old Values",
+			"newValues": "New Values",
+			"metadata": "Metadata",
+			"noOldValues": "No previous values recorded.",
+			"noNewValues": "No new values recorded.",
+			"noMetadata": "No metadata recorded.",
+			"userAgent": "User Agent"
+		},
+		"errors": {
+			"loadFailed": "Unable to load audit logs. Please try again.",
+			"loadDetailFailed": "Unable to load audit log details."
+		}
+	},
+	"validation": {
+		"emailRequired": "Email is required.",
+		"emailInvalid": "Please enter a valid email address.",
+		"passwordRequired": "Password is required.",
+		"passwordMinLength": "Password must be at least 8 characters.",
+		"nameRequired": "Name is required.",
+		"confirmPasswordRequired": "Please confirm your password.",
+		"passwordsMismatch": "Passwords do not match."
+	},
+	"errors": {
+		"loginInvalid": "Invalid email or password.",
+		"loginFailed": "Unable to sign in. Please try again.",
+		"registerFailed": "Registration failed. Please try again."
+	}
+}
