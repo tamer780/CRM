@@ -409,7 +409,15 @@
 			"reset": "Reset",
 			"clearAll": "Clear All",
 			"createdRange": "Created Date",
-			"statusSelected": "{{count}} statuses"
+			"assignedAtRange": "Assigned Date",
+			"lastActionRange": "Last Action Date",
+			"statusSelected": "{{count}} statuses",
+			"usersSelected": "{{count}} users",
+			"dateFrom": "From",
+			"dateTo": "To",
+			"clearDate": "Clear",
+			"prevMonth": "Previous month",
+			"nextMonth": "Next month"
 		},
 		"columns": {
 			"name": "Name",
@@ -531,7 +539,9 @@
 		},
 		"validation": {
 			"phoneRequired": "Phone is required.",
-			"lostReasonRequired": "Lost reason is required."
+			"lostReasonRequired": "Lost reason is required.",
+			"fileRequired": "Please select a file to import.",
+			"sourceRequired": "Please select a source."
 		},
 		"assign": {
 			"reason": "Assignment Reason",
@@ -547,6 +557,9 @@
 			"deleteTitle": "Delete selected leads",
 			"deleteMessage": "Are you sure you want to delete {{count}} leads? This cannot be undone."
 		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
 		"markLost": {
 			"title": "Mark Lead as Lost",
 			"message": "Provide a reason before marking this lead as lost.",
@@ -554,10 +567,26 @@
 			"reasonPlaceholder": "Not interested / budget / timing…",
 			"confirm": "Mark Lost"
 		},
+		"actions": {
+			"import": "Import"
+		},
+		"import": {
+			"title": "Import Leads",
+			"message": "Download the template, fill it in, then upload with a source.",
+			"file": "File",
+			"source": "Source",
+			"confirm": "Import",
+			"downloadTemplate": "Download template"
+		},
+		"toasts": {
+			"imported": "Leads imported successfully."
+		},
 		"errors": {
 			"createFailed": "Unable to create lead. Please try again.",
 			"updateFailed": "Unable to update lead. Please try again.",
-			"loadFailed": "Unable to load this lead. Please try again."
+			"loadFailed": "Unable to load this lead. Please try again.",
+			"importFailed": "Unable to import leads. Please try again.",
+			"templateFailed": "Unable to download the import template. Please try again."
 		}
 	},
 	"pendingLeads": {
@@ -1140,7 +1169,7 @@
 		"refresh": "Refresh",
 		"newUser": "New User",
 		"editUser": "Edit User",
-		"searchPlaceholder": "Search by name, email, or role",
+		"searchPlaceholder": "Search by name, email, phone, or role",
 		"resetFilters": "Reset Filters",
 		"kpis": {
 			"total": "Total Users",
@@ -1159,10 +1188,11 @@
 			"inactive": "Inactive"
 		},
 		"roles": {
+			"superadmin": "Super Admin",
 			"admin": "Admin",
 			"sales": "Sales",
-			"leader": "Leader",
-			"supervisor": "Supervisor"
+			"leader": "Team Leader",
+			"supervisor": "Sales Supervisor"
 		},
 		"columns": {
 			"selectAll": "Select all",
@@ -1170,6 +1200,8 @@
 			"toggle": "Columns",
 			"user": "User",
 			"role": "Role",
+			"phone": "Phone",
+			"team": "Team",
 			"jobTitle": "Job Title",
 			"status": "Status",
 			"created": "Created",
@@ -1203,12 +1235,16 @@
 			"updatedAt": "Updated At"
 		},
 		"form": {
-			"subtitle": "Set account details, role, and password.",
+			"subtitle": "Set account details, role, team, and password.",
 			"name": "Full Name",
 			"email": "Email",
+			"phone": "Phone",
+			"team": "Team",
+			"teamPlaceholder": "Select a team",
 			"role": "Role",
 			"rolePlaceholder": "Select a role",
 			"jobTitle": "Job Title",
+			"isActive": "Active account",
 			"password": "Password",
 			"confirmPassword": "Confirm Password",
 			"passwordHint": "Leave password blank to keep the current password.",

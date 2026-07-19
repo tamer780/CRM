@@ -12,6 +12,7 @@ const LeadBulkAssignBar = ({
 	onStatusChange,
 	onDelete,
 	onClear,
+	canDelete = true,
 }) => {
 	const { t } = useTranslation();
 	const busy = isAssigning || isUpdatingStatus || isDeleting;
@@ -46,14 +47,16 @@ const LeadBulkAssignBar = ({
 						disabled={busy}
 						placement="bottom"
 					/>
-					<button
-						type="button"
-						onClick={onDelete}
-						disabled={busy}
-						className="rounded-xl border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-60"
-					>
-						{isDeleting ? t("common.loading") : t("leads.bulk.delete")}
-					</button>
+					{canDelete && (
+						<button
+							type="button"
+							onClick={onDelete}
+							disabled={busy}
+							className="rounded-xl border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-60"
+						>
+							{isDeleting ? t("common.loading") : t("leads.bulk.delete")}
+						</button>
+					)}
 					<button
 						type="button"
 						onClick={onClear}

@@ -1,6 +1,11 @@
 import { getUserRole } from "../../features/users/utils/userConstants";
 
-const MANAGER_ROLES = new Set(["admin", "leader", "supervisor"]);
+const MANAGER_ROLES = new Set([
+	"superadmin",
+	"admin",
+	"leader",
+	"supervisor",
+]);
 
 /**
  * Resolve dashboard layout variant from the authenticated user.

@@ -1,8 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UserPlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ErrorState from "../../../components/dashboard/ErrorState";
 import LeadTableRow, { LeadMobileCard } from "./LeadTableRow";
+
+const INITIAL_VISIBLE = 20;
+const CHUNK_SIZE = 20;
 
 const checkboxClass =
 	"size-4 rounded border-border text-gold accent-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30";
@@ -84,9 +87,14 @@ const LeadTable = ({
 	selectedIds,
 	onToggleSelect,
 	onToggleSelectAll,
+	canEdit = true,
+	canDelete = true,
 }) => {
 	const { t } = useTranslation();
 	const selectAllRef = useRef(null);
+	const sentinelRef = useRef(null);
+	const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+	const showActions = canEdit || canDelete;
 
 	const selectedCount = leads.filter((lead) =>
 		selectedIds?.has(String(lead.id)),
@@ -94,11 +102,38 @@ const LeadTable = ({
 	const allSelected = leads.length > 0 && selectedCount === leads.length;
 	const someSelected = selectedCount > 0 && !allSelected;
 
+	const totalCount = leads?.length ?? 0;
+	const visibleLeads = (leads ?? []).slice(0, visibleCount);
+	const hasMore = visibleCount < totalCount;
+
+	useEffect(() => {
+		setVisibleCount(INITIAL_VISIBLE);
+	}, [leads]);
+
 	useEffect(() => {
 		if (selectAllRef.current) {
 			selectAllRef.current.indeterminate = someSelected;
 		}
 	}, [someSelected]);
+
+	useEffect(() => {
+		const node = sentinelRef.current;
+		if (!node || !hasMore) return undefined;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0]?.isIntersecting) {
+					setVisibleCount((prev) =>
+						Math.min(prev + CHUNK_SIZE, totalCount),
+					);
+				}
+			},
+			{ root: null, rootMargin: "200px", threshold: 0 },
+		);
+
+		observer.observe(node);
+		return () => observer.disconnect();
+	}, [hasMore, totalCount, visibleCount]);
 
 	if (isLoading) {
 		return <LeadTableSkeleton />;
@@ -128,65 +163,87 @@ const LeadTable = ({
 		statusUpdatingId,
 		assignUpdatingId,
 		onToggleSelect,
+		canEdit,
+		canDelete,
 	};
 
 	return (
-		<section className="overflow-visible rounded-2xl border border-border bg-surface shadow-sm">
-			<div className="md:hidden overflow-visible">
-				{leads.map((lead) => (
-					<LeadMobileCard
-						key={lead.id}
-						lead={lead}
-						selected={selectedIds?.has(String(lead.id))}
-						{...rowProps}
-					/>
-				))}
-			</div>
-
-			<div className="hidden overflow-visible md:block">
-				<div className="overflow-x-auto overflow-y-visible">
-					<table className="min-w-full text-start text-sm">
-						<thead className="relative z-0 border-b border-border bg-background/80 text-xs font-semibold uppercase tracking-wide text-muted">
-							<tr>
-								<th className="w-10 px-4 py-3 text-start">
-									<input
-										ref={selectAllRef}
-										type="checkbox"
-										checked={allSelected}
-										onChange={onToggleSelectAll}
-										aria-label={t("leads.bulk.selectAll")}
-										className={checkboxClass}
-									/>
-								</th>
-								<th className="px-4 py-3 text-start">{t("leads.columns.name")}</th>
-								<th className="px-4 py-3 text-start">{t("leads.columns.source")}</th>
-								<th className="px-4 py-3 text-start">{t("leads.columns.status")}</th>
-								<th className="px-4 py-3 text-start">
-									{t("leads.columns.scheduledCall")}
-								</th>
-								<th className="px-4 py-3 text-start">{t("leads.columns.project")}</th>
-								<th className="px-4 py-3 text-start">{t("leads.columns.campaign")}</th>
-								<th className="px-4 py-3 text-start">{t("leads.columns.assignedTo")}</th>
-								<th className="px-4 py-3 text-start">{t("leads.columns.created")}</th>
-								<th className="px-4 py-3 text-end">
-									<span className="sr-only">{t("dashboard.quickActions.title")}</span>
-								</th>
-							</tr>
-						</thead>
-						<tbody className="relative z-10 divide-y divide-border bg-surface">
-							{leads.map((lead) => (
-								<LeadTableRow
-									key={lead.id}
-									lead={lead}
-									selected={selectedIds?.has(String(lead.id))}
-									{...rowProps}
-								/>
-							))}
-						</tbody>
-					</table>
+		<>
+			<section className="overflow-visible rounded-2xl border border-border bg-surface shadow-sm">
+				<div className="md:hidden overflow-visible">
+					{visibleLeads.map((lead) => (
+						<LeadMobileCard
+							key={lead.id}
+							lead={lead}
+							selected={selectedIds?.has(String(lead.id))}
+							{...rowProps}
+						/>
+					))}
 				</div>
-			</div>
-		</section>
+
+				<div className="hidden overflow-visible md:block">
+					<div className="overflow-x-auto overflow-y-visible">
+						<table className="min-w-full text-start text-sm">
+							<thead className="relative z-0 border-b border-border bg-background/80 text-xs font-semibold uppercase tracking-wide text-muted">
+								<tr>
+									<th className="w-10 px-4 py-3 text-start">
+										<input
+											ref={selectAllRef}
+											type="checkbox"
+											checked={allSelected}
+											onChange={onToggleSelectAll}
+											aria-label={t("leads.bulk.selectAll")}
+											className={checkboxClass}
+										/>
+									</th>
+									<th className="px-4 py-3 text-start">{t("leads.columns.name")}</th>
+									<th className="px-4 py-3 text-start">{t("leads.columns.source")}</th>
+									<th className="px-4 py-3 text-start">{t("leads.columns.status")}</th>
+									<th className="px-4 py-3 text-start">
+										{t("leads.columns.scheduledCall")}
+									</th>
+									<th className="px-4 py-3 text-start">{t("leads.columns.project")}</th>
+									<th className="px-4 py-3 text-start">{t("leads.columns.campaign")}</th>
+									<th className="px-4 py-3 text-start">{t("leads.columns.assignedTo")}</th>
+									<th className="px-4 py-3 text-start">{t("leads.columns.created")}</th>
+									{showActions && (
+										<th className="px-4 py-3 text-end">
+											<span className="sr-only">
+												{t("dashboard.quickActions.title")}
+											</span>
+										</th>
+									)}
+								</tr>
+							</thead>
+							<tbody className="relative z-10 divide-y divide-border bg-surface">
+								{visibleLeads.map((lead) => (
+									<LeadTableRow
+										key={lead.id}
+										lead={lead}
+										selected={selectedIds?.has(String(lead.id))}
+										{...rowProps}
+									/>
+								))}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</section>
+
+			<p className="text-center text-sm text-muted">
+				{t("leads.pagination.showing", {
+					shown: Math.min(visibleCount, totalCount),
+					total: totalCount,
+				})}
+			</p>
+			{hasMore ? (
+				<div
+					ref={sentinelRef}
+					className="h-4 w-full"
+					aria-hidden="true"
+				/>
+			) : null}
+		</>
 	);
 };
 

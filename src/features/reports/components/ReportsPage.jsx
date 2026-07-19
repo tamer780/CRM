@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+import { usePermissions } from "../../../hooks/auth/usePermissions";
 import { useCampaignEvaluationReports } from "../../../hooks/reports/useCampaignEvaluationReports";
 import { useCampaigns } from "../../../hooks/campaigns/useCampaigns";
 import { useProjectReports } from "../../../hooks/reports/useProjectReports";
@@ -8,6 +9,7 @@ import { useProjects } from "../../../hooks/projects/useProjects";
 import { useSourceReports } from "../../../hooks/reports/useSourceReports";
 import { useTeams } from "../../../hooks/teams/useTeams";
 import { useUsers } from "../../../hooks/users/useUsers";
+import { scopeToReportParams } from "../../users/utils/permissions";
 import {
 	applyFiltersToSearchParams,
 	clearFilterParams,
@@ -26,15 +28,21 @@ import SourceReportsTable from "./SourceReportsTable";
 const ReportsPage = () => {
 	const queryClient = useQueryClient();
 	const [searchParams, setSearchParams] = useSearchParams();
+	const { scope } = usePermissions();
 
 	const tab = useMemo(
 		() => tabFromSearchParams(searchParams),
 		[searchParams],
 	);
-	const filters = useMemo(
-		() => filtersFromSearchParams(searchParams),
-		[searchParams],
-	);
+	const filters = useMemo(() => {
+		const fromUrl = filtersFromSearchParams(searchParams);
+		const scoped = scopeToReportParams(scope);
+		return {
+			...fromUrl,
+			...(scoped.teamId ? { teamId: scoped.teamId } : {}),
+			...(scoped.userId ? { userId: scoped.userId } : {}),
+		};
+	}, [searchParams, scope]);
 	const apiParams = useMemo(() => toApiParams(filters), [filters]);
 	const hasFilters = hasActiveReportFilters(filters);
 

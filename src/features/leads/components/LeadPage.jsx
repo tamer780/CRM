@@ -1,7 +1,8 @@
-import { Download, Plus, RefreshCw } from "lucide-react";
+import { FileUp, Plus, RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 import { useAssignLead } from "../../../hooks/leads/useAssignLead";
 import { useBulkAssignLeads } from "../../../hooks/leads/useBulkAssignLeads";
 import { useBulkDeleteLeads } from "../../../hooks/leads/useBulkDeleteLeads";
@@ -9,11 +10,14 @@ import { useBulkUpdateLeadStatus } from "../../../hooks/leads/useBulkUpdateLeadS
 import { useCampaigns } from "../../../hooks/campaigns/useCampaigns";
 import { useCreateLead } from "../../../hooks/leads/useCreateLead";
 import { useDeleteLead } from "../../../hooks/leads/useDeleteLead";
+import { useImportLeads } from "../../../hooks/leads/useImportLeads";
 import { useLeads } from "../../../hooks/leads/useLeads";
 import { useProjects } from "../../../hooks/projects/useProjects";
 import { useUpdateLead } from "../../../hooks/leads/useUpdateLead";
 import { useUpdateLeadStatus } from "../../../hooks/leads/useUpdateLeadStatus";
 import { useUsers } from "../../../hooks/users/useUsers";
+import { usePermissions } from "../../../hooks/auth/usePermissions";
+import { PERMISSIONS } from "../../users/utils/permissions";
 import { extractApiError } from "../../../utils/api/apiHelpers";
 import {
 	emptyLeadFormValues,
@@ -21,12 +25,13 @@ import {
 	leadToFormValues,
 	validateLeadForm,
 } from "../../../utils/leads/leadConstants";
-import { exportLeadsCsv } from "../utils/exportLeadsCsv";
+import { buildLookupMap } from "../../../utils/leads/resolveLeadLabels";
 import LeadBulkAssignBar from "./LeadBulkAssignBar";
 import LeadDeleteDialog from "./LeadDeleteDialog";
 import LeadDetailDrawer from "./LeadDetailDrawer";
 import LeadForm from "./LeadForm";
 import LeadFormModal from "./LeadFormModal";
+import LeadImportModal from "./LeadImportModal";
 import LeadMarkLostModal from "./LeadMarkLostModal";
 import LeadTable from "./LeadTable";
 import LeadToolbar from "./LeadToolbar";
@@ -37,40 +42,22 @@ const emptyFilters = () => ({
 	source: "",
 	projectId: "",
 	campaignId: "",
-	assignedTo: "",
-	dateFrom: "",
-	dateTo: "",
+	assignedTo: [],
+	assignedAtFrom: "",
+	assignedAtTo: "",
+	createdFrom: "",
+	createdTo: "",
+	lastActionFrom: "",
+	lastActionTo: "",
 });
-
-function buildLookupMap(list) {
-	const map = new Map();
-	for (const item of list ?? []) {
-		if (item?.id == null) continue;
-		map.set(Number(item.id), item);
-		map.set(String(item.id), item);
-	}
-	return map;
-}
-
-function inDateRange(createdAt, dateFrom, dateTo) {
-	if (!dateFrom && !dateTo) return true;
-	if (!createdAt) return false;
-	const ts = new Date(createdAt).getTime();
-	if (Number.isNaN(ts)) return false;
-	if (dateFrom) {
-		const start = new Date(`${dateFrom}T00:00:00`).getTime();
-		if (ts < start) return false;
-	}
-	if (dateTo) {
-		const end = new Date(`${dateTo}T23:59:59.999`).getTime();
-		if (ts > end) return false;
-	}
-	return true;
-}
 
 const LeadPage = () => {
 	const { t } = useTranslation();
 	const [searchParams, setSearchParams] = useSearchParams();
+	const { can } = usePermissions();
+	const canEditLeads = can(PERMISSIONS.LEADS_EDIT);
+	const canDeleteLeads = can(PERMISSIONS.LEADS_DELETE);
+	const canImportLeads = can(PERMISSIONS.LEADS_IMPORT);
 
 	const [filters, setFilters] = useState(emptyFilters);
 	const [modalOpen, setModalOpen] = useState(false);
@@ -85,8 +72,19 @@ const LeadPage = () => {
 	const [lostLeadTarget, setLostLeadTarget] = useState(null);
 	const [lostError, setLostError] = useState("");
 	const [selectedIds, setSelectedIds] = useState(() => new Set());
+	const [importOpen, setImportOpen] = useState(false);
+	const [importError, setImportError] = useState("");
 
-	const leadsQuery = useLeads({ status: filters.status });
+	const leadsQuery = useLeads({
+		status: filters.status,
+		assignedTo: filters.assignedTo,
+		assignedAtFrom: filters.assignedAtFrom,
+		assignedAtTo: filters.assignedAtTo,
+		createdFrom: filters.createdFrom,
+		createdTo: filters.createdTo,
+		lastActionFrom: filters.lastActionFrom,
+		lastActionTo: filters.lastActionTo,
+	});
 	const projectsQuery = useProjects();
 	const campaignsQuery = useCampaigns();
 	const usersQuery = useUsers();
@@ -97,6 +95,7 @@ const LeadPage = () => {
 	const bulkDeleteLeads = useBulkDeleteLeads();
 	const bulkUpdateLeadStatus = useBulkUpdateLeadStatus();
 	const updateLeadStatus = useUpdateLeadStatus();
+	const importLeads = useImportLeads();
 
 	const selectedLeadId = searchParams.get("selected");
 	const updateLead = useUpdateLead(editingLeadId);
@@ -145,15 +144,6 @@ const LeadPage = () => {
 				filters.campaignId &&
 				String(lead.campaign_id) !== String(filters.campaignId)
 			) {
-				return false;
-			}
-			if (
-				filters.assignedTo &&
-				String(lead.assigned_to) !== String(filters.assignedTo)
-			) {
-				return false;
-			}
-			if (!inDateRange(lead.created_at, filters.dateFrom, filters.dateTo)) {
 				return false;
 			}
 			if (!q) return true;
@@ -206,6 +196,7 @@ const LeadPage = () => {
 	}, [searchParams, setSearchParams]);
 
 	const openEdit = (lead) => {
+		if (!canEditLeads) return;
 		setModalMode("edit");
 		setEditingLeadId(lead.id);
 		setFormValues(leadToFormValues(lead));
@@ -314,7 +305,7 @@ const LeadPage = () => {
 	};
 
 	const openBulkDelete = () => {
-		if (selectedIds.size === 0) return;
+		if (!canDeleteLeads || selectedIds.size === 0) return;
 		setBulkDeleteError("");
 		setBulkDeleteOpen(true);
 	};
@@ -390,12 +381,24 @@ const LeadPage = () => {
 		});
 	};
 
-	const handleExport = () => {
-		exportLeadsCsv(filteredLeads, {
-			projectsMap,
-			campaignsMap,
-			usersMap,
-		});
+	const handleImport = ({ file, source }) => {
+		if (!canImportLeads) return;
+		setImportError("");
+		importLeads.mutate(
+			{ file, source },
+			{
+				onSuccess: () => {
+					toast.success(t("leads.toasts.imported"));
+					setImportOpen(false);
+					setImportError("");
+				},
+				onError: (error) => {
+					setImportError(
+						extractApiError(error, t("leads.errors.importFailed")),
+					);
+				},
+			},
+		);
 	};
 
 	return (
@@ -425,15 +428,19 @@ const LeadPage = () => {
 						/>
 						{t("dashboard.refresh")}
 					</button>
-					<button
-						type="button"
-						onClick={handleExport}
-						disabled={!filteredLeads.length}
-						className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm font-medium text-text shadow-sm transition hover:bg-background disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
-					>
-						<Download className="size-4 text-muted" aria-hidden="true" />
-						Export
-					</button>
+					{canImportLeads && (
+						<button
+							type="button"
+							onClick={() => {
+								setImportError("");
+								setImportOpen(true);
+							}}
+							className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm font-medium text-text shadow-sm transition hover:bg-background disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+						>
+							<FileUp className="size-4 text-muted" aria-hidden="true" />
+							{t("leads.actions.import")}
+						</button>
+					)}
 					<button
 						type="button"
 						onClick={openCreate}
@@ -463,6 +470,7 @@ const LeadPage = () => {
 				onStatusChange={handleBulkStatus}
 				onDelete={openBulkDelete}
 				onClear={clearSelection}
+				canDelete={canDeleteLeads}
 			/>
 
 			<LeadTable
@@ -478,6 +486,7 @@ const LeadPage = () => {
 				onView={openDetail}
 				onEdit={openEdit}
 				onDelete={(lead) => {
+					if (!canDeleteLeads) return;
 					setDeleteError("");
 					setDeleteLeadTarget(lead);
 				}}
@@ -494,6 +503,8 @@ const LeadPage = () => {
 				selectedIds={selectedIds}
 				onToggleSelect={toggleSelect}
 				onToggleSelectAll={toggleSelectAll}
+				canEdit={canEditLeads}
+				canDelete={canDeleteLeads}
 			/>
 
 			<LeadDetailDrawer
@@ -509,6 +520,7 @@ const LeadPage = () => {
 				projectsLoading={projectsQuery.isLoading}
 				campaignsLoading={campaignsQuery.isLoading}
 				usersLoading={usersQuery.isLoading}
+				canEdit={canEditLeads}
 			/>
 
 			<LeadFormModal
@@ -574,6 +586,16 @@ const LeadPage = () => {
 				}}
 				onConfirm={handleMarkLost}
 			/>
+
+			{canImportLeads && (
+				<LeadImportModal
+					open={importOpen}
+					isSubmitting={importLeads.isPending}
+					error={importError}
+					onClose={() => !importLeads.isPending && setImportOpen(false)}
+					onConfirm={handleImport}
+				/>
+			)}
 		</div>
 	);
 };

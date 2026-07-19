@@ -9,19 +9,37 @@ import {
 	isOverdue,
 	isSameLocalDay,
 	parseDate,
-	sameAssignee,
 } from "./attentionHelpers";
+
+function normalizeScopeIds(scopeUserId) {
+	if (scopeUserId == null || scopeUserId === "") return null;
+	if (Array.isArray(scopeUserId)) {
+		const ids = scopeUserId.map(String).filter(Boolean);
+		return ids.length > 0 ? ids : null;
+	}
+	return [String(scopeUserId)];
+}
+
+function matchesScopeAssignee(value, scopeIds) {
+	if (!scopeIds) return true;
+	if (!hasAssignee(value)) return false;
+	return scopeIds.includes(String(value));
+}
 
 function scopeLeads(leads, scopeUserId) {
 	const list = leads ?? [];
-	if (scopeUserId == null) return list;
-	return list.filter((lead) => sameAssignee(lead.assigned_to, scopeUserId));
+	const scopeIds = normalizeScopeIds(scopeUserId);
+	if (!scopeIds) return list;
+	return list.filter((lead) => matchesScopeAssignee(lead.assigned_to, scopeIds));
 }
 
 function scopeActions(actions, scopeUserId) {
 	const list = actions ?? [];
-	if (scopeUserId == null) return list;
-	return list.filter((action) => sameAssignee(action.assigned_to, scopeUserId));
+	const scopeIds = normalizeScopeIds(scopeUserId);
+	if (!scopeIds) return list;
+	return list.filter((action) =>
+		matchesScopeAssignee(action.assigned_to, scopeIds),
+	);
 }
 
 function pendingActions(actions) {

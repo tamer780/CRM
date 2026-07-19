@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import SourceBadge from "../ui/SourceBadge";
 import {
-	resolveEntityLabel,
+	resolveCampaignLabel,
+	resolveProjectLabel,
 	resolveUserLabel,
 } from "../../utils/leads/resolveLeadLabels";
 
@@ -188,11 +189,11 @@ const LeadDetailCard = ({
 							/>
 							<Field
 								label={t("leads.form.project")}
-								value={resolveEntityLabel(projectsMap, lead.project_id)}
+								value={resolveProjectLabel(projectsMap, lead)}
 							/>
 							<Field
 								label={t("leads.form.campaign")}
-								value={resolveEntityLabel(campaignsMap, lead.campaign_id)}
+								value={resolveCampaignLabel(campaignsMap, lead)}
 							/>
 						</div>
 					</div>

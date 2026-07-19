@@ -1,5 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { LEAD_STATUS_ROW_STYLES } from "../../../utils/leads/leadConstants";
+import {
+	resolveCampaignLabel,
+	resolveProjectLabel,
+} from "../../../utils/leads/resolveLeadLabels";
 import { getAvatarTone, getInitials } from "../utils/leadAvatars";
 import LeadActionsMenu from "./LeadActionsMenu";
 import LeadAssignSelect from "./LeadAssignSelect";
@@ -24,13 +28,6 @@ function formatDate(value) {
 	});
 }
 
-function resolveLabel(map, id) {
-	if (id == null || id === "") return null;
-	const item = map.get(Number(id)) ?? map.get(String(id));
-	if (!item) return String(id);
-	return item.name ?? item.title ?? String(id);
-}
-
 const checkboxClass =
 	"size-4 rounded border-border text-gold accent-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30";
 
@@ -46,8 +43,11 @@ export function LeadMobileCard({
 	assignUpdatingId,
 	selected = false,
 	onToggleSelect,
+	canEdit = true,
+	canDelete = true,
 }) {
 	const { t } = useTranslation();
+	const showActions = canEdit || canDelete;
 
 	return (
 		<article
@@ -126,12 +126,16 @@ export function LeadMobileCard({
 					</div>
 				</div>
 			</div>
-			<div className="mt-3 flex justify-end border-t border-border/60 pt-3">
-				<LeadActionsMenu
-					onEdit={() => onEdit(lead)}
-					onDelete={() => onDelete(lead)}
-				/>
-			</div>
+			{showActions && (
+				<div className="mt-3 flex justify-end border-t border-border/60 pt-3">
+					<LeadActionsMenu
+						onEdit={() => onEdit(lead)}
+						onDelete={() => onDelete(lead)}
+						canEdit={canEdit}
+						canDelete={canDelete}
+					/>
+				</div>
+			)}
 		</article>
 	);
 }
@@ -150,8 +154,11 @@ const LeadTableRow = ({
 	assignUpdatingId,
 	selected = false,
 	onToggleSelect,
+	canEdit = true,
+	canDelete = true,
 }) => {
 	const { t } = useTranslation();
+	const showActions = canEdit || canDelete;
 
 	return (
 		<tr
@@ -219,10 +226,10 @@ const LeadTableRow = ({
 				<ScheduledCallBadge scheduledCallAt={lead.scheduled_call_at} />
 			</td>
 			<td className="px-4 py-3 text-muted">
-				{resolveLabel(projectsMap, lead.project_id) ?? "—"}
+				{resolveProjectLabel(projectsMap, lead)}
 			</td>
 			<td className="px-4 py-3 text-muted">
-				{resolveLabel(campaignsMap, lead.campaign_id) ?? "—"}
+				{resolveCampaignLabel(campaignsMap, lead)}
 			</td>
 			<td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
 				<LeadAssignSelect
@@ -234,12 +241,16 @@ const LeadTableRow = ({
 				/>
 			</td>
 			<td className="px-4 py-3 text-muted">{formatDate(lead.created_at)}</td>
-			<td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-				<LeadActionsMenu
-					onEdit={() => onEdit(lead)}
-					onDelete={() => onDelete(lead)}
-				/>
-			</td>
+			{showActions && (
+				<td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+					<LeadActionsMenu
+						onEdit={() => onEdit(lead)}
+						onDelete={() => onDelete(lead)}
+						canEdit={canEdit}
+						canDelete={canDelete}
+					/>
+				</td>
+			)}
 		</tr>
 	);
 };

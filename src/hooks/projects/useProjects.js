@@ -10,14 +10,14 @@ function normalizeList(payload) {
 	return [];
 }
 
-export function useProjects() {
+export function useProjects({ enabled = true } = {}) {
 	return useQuery({
 		queryKey: ["projects", "list"],
 		queryFn: async () => {
 			const response = await getProjects();
 			return normalizeList(extractData(response));
 		},
-		enabled: !!getToken(),
+		enabled: !!getToken() && enabled,
 		staleTime: 5 * 60 * 1000,
 	});
 }

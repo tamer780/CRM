@@ -1,5 +1,6 @@
 import { Check, ChevronDown } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import {
 	LEAD_STATUS_DOT_COLORS,
@@ -8,6 +9,8 @@ import {
 } from "../../../utils/leads/leadConstants";
 
 const STATUS_OPTIONS = LEAD_STATUS_ACTIONABLE;
+const MENU_MAX_HEIGHT = 280;
+const MENU_GAP = 6;
 
 function statusLabel(t, status) {
 	const key = String(status ?? "").toLowerCase();
@@ -27,8 +30,10 @@ const LeadStatusSelect = ({
 }) => {
 	const { t } = useTranslation();
 	const listId = useId();
-	const ref = useRef(null);
+	const triggerRef = useRef(null);
+	const listRef = useRef(null);
 	const [open, setOpen] = useState(false);
+	const [menuStyle, setMenuStyle] = useState(null);
 
 	const key = String(status ?? "").toLowerCase();
 	const styles = LEAD_STATUS_STYLES[key] ?? "bg-background text-muted";
@@ -36,10 +41,57 @@ const LeadStatusSelect = ({
 	const label = statusLabel(t, status);
 	const locked = disabled || isUpdating;
 
+	const updateMenuPosition = () => {
+		const trigger = triggerRef.current;
+		if (!trigger) return;
+		const rect = trigger.getBoundingClientRect();
+		const spaceAbove = rect.top;
+		const spaceBelow = window.innerHeight - rect.bottom;
+		const openUp =
+			placement === "top"
+				? spaceAbove >= Math.min(MENU_MAX_HEIGHT, 120) || spaceAbove > spaceBelow
+				: spaceBelow < Math.min(MENU_MAX_HEIGHT, 120) && spaceAbove > spaceBelow;
+
+		const style = {
+			position: "fixed",
+			left: rect.left,
+			minWidth: Math.max(rect.width, 176),
+			maxHeight: MENU_MAX_HEIGHT,
+			zIndex: 200,
+		};
+
+		if (openUp) {
+			style.bottom = window.innerHeight - rect.top + MENU_GAP;
+			style.top = "auto";
+		} else {
+			style.top = rect.bottom + MENU_GAP;
+			style.bottom = "auto";
+		}
+
+		setMenuStyle(style);
+	};
+
+	useLayoutEffect(() => {
+		if (!open) {
+			setMenuStyle(null);
+			return undefined;
+		}
+		updateMenuPosition();
+		const handleReposition = () => updateMenuPosition();
+		window.addEventListener("resize", handleReposition);
+		window.addEventListener("scroll", handleReposition, true);
+		return () => {
+			window.removeEventListener("resize", handleReposition);
+			window.removeEventListener("scroll", handleReposition, true);
+		};
+	}, [open, placement]);
+
 	useEffect(() => {
 		if (!open) return undefined;
 		const handlePointer = (e) => {
-			if (!ref.current?.contains(e.target)) setOpen(false);
+			const inTrigger = triggerRef.current?.contains(e.target);
+			const inList = listRef.current?.contains(e.target);
+			if (!inTrigger && !inList) setOpen(false);
 		};
 		const handleKey = (e) => {
 			if (e.key === "Escape") setOpen(false);
@@ -58,9 +110,54 @@ const LeadStatusSelect = ({
 		onChange?.(next);
 	};
 
+	const menu =
+		open &&
+		menuStyle &&
+		createPortal(
+			<ul
+				ref={listRef}
+				id={listId}
+				role="listbox"
+				aria-label={t("leads.columns.status")}
+				style={menuStyle}
+				className="custom-scrollbar animate-dropdown-in overflow-y-auto rounded-xl border border-border bg-surface py-1.5 shadow-lg"
+			>
+				{STATUS_OPTIONS.map((option) => {
+					const selected = option === key;
+					const optionDot = LEAD_STATUS_DOT_COLORS[option] ?? "bg-muted";
+					return (
+						<li key={option} role="option" aria-selected={selected}>
+							<button
+								type="button"
+								onClick={() => selectStatus(option)}
+								className={[
+									"flex w-full items-center justify-between gap-2 px-3 py-2 text-start text-sm capitalize transition-colors",
+									selected
+										? "bg-light-gold/60 font-medium text-text"
+										: "text-text hover:bg-background",
+								].join(" ")}
+							>
+								<span className="inline-flex items-center gap-2">
+									<span
+										className={`size-1.5 shrink-0 rounded-full ${optionDot}`}
+										aria-hidden="true"
+									/>
+									{statusLabel(t, option)}
+								</span>
+								{selected && (
+									<Check className="size-4 text-gold" aria-hidden="true" />
+								)}
+							</button>
+						</li>
+					);
+				})}
+			</ul>,
+			document.body,
+		);
+
 	return (
 		<div
-			ref={ref}
+			ref={triggerRef}
 			className="relative inline-flex"
 			onClick={(e) => e.stopPropagation()}
 			onKeyDown={(e) => e.stopPropagation()}
@@ -83,51 +180,7 @@ const LeadStatusSelect = ({
 					aria-hidden="true"
 				/>
 			</button>
-
-			{open && (
-				<ul
-					id={listId}
-					role="listbox"
-					aria-label={t("leads.columns.status")}
-					className={[
-						"animate-dropdown-in absolute inset-s-0 z-50 max-h-56 min-w-44 overflow-y-auto rounded-xl border border-border bg-surface py-1.5 shadow-lg",
-						placement === "top"
-							? "bottom-[calc(100%+0.35rem)]"
-							: "top-[calc(100%+0.35rem)]",
-					].join(" ")}
-				>
-					{STATUS_OPTIONS.map((option) => {
-						const selected = option === key;
-						const optionDot =
-							LEAD_STATUS_DOT_COLORS[option] ?? "bg-muted";
-						return (
-							<li key={option} role="option" aria-selected={selected}>
-								<button
-									type="button"
-									onClick={() => selectStatus(option)}
-									className={[
-										"flex w-full items-center justify-between gap-2 px-3 py-2 text-start text-sm capitalize transition-colors",
-										selected
-											? "bg-light-gold/60 font-medium text-text"
-											: "text-text hover:bg-background",
-									].join(" ")}
-								>
-									<span className="inline-flex items-center gap-2">
-										<span
-											className={`size-1.5 shrink-0 rounded-full ${optionDot}`}
-											aria-hidden="true"
-										/>
-										{statusLabel(t, option)}
-									</span>
-									{selected && (
-										<Check className="size-4 text-gold" aria-hidden="true" />
-									)}
-								</button>
-							</li>
-						);
-					})}
-				</ul>
-			)}
+			{menu}
 		</div>
 	);
 };

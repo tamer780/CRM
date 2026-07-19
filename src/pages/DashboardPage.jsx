@@ -1,7 +1,7 @@
 import { lazy, Suspense, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useAuthMe } from "../hooks/auth/useAuthMe";
+import { usePermissions } from "../hooks/auth/usePermissions";
 import { useCampaigns } from "../hooks/campaigns/useCampaigns";
 import { useManagementDashboard } from "../hooks/dashboards/useManagementDashboard";
 import { useSalesKpis } from "../hooks/health/useSalesKpis";
@@ -29,10 +29,7 @@ import {
 	buildTeamLeaderboard,
 	buildTodaySchedule,
 } from "../utils/dashboard/dashboardAggregators";
-import {
-	getCurrentUserId,
-	getDashboardVariant,
-} from "../utils/dashboard/dashboardRole";
+import { getDashboardVariant } from "../utils/dashboard/dashboardRole";
 import { getLast30DaysRange } from "../utils/date/dateRange";
 
 const TeamLeaderboard = lazy(
@@ -48,13 +45,23 @@ const CampaignsOverview = lazy(
 const DashboardPage = () => {
 	const { t } = useTranslation();
 	const queryClient = useQueryClient();
-	const { data: user, isLoading: userLoading } = useAuthMe();
+	const {
+		user,
+		role,
+		scope,
+		isAuthLoading: userLoading,
+	} = usePermissions();
 
 	const roleReady = !userLoading;
 	const variant = getDashboardVariant(user);
-	const userId = getCurrentUserId(user);
 	const isManager = variant === "manager";
-	const scopeUserId = variant === "sales" ? userId : null;
+	const isFullAdmin = role === "admin" || role === "superadmin";
+	const scopeFilterIds =
+		scope.type === "own"
+			? scope.userId
+			: scope.type === "team"
+				? scope.assigneeIds
+				: null;
 	const fallbackRange = useMemo(() => getLast30DaysRange(), []);
 
 	const management = useManagementDashboard({
@@ -84,8 +91,8 @@ const DashboardPage = () => {
 	});
 
 	const teamsQuery = useTeams({ enabled: roleReady && isManager });
-	const projectsQuery = useProjects();
-	const campaignsQuery = useCampaigns({ enabled: roleReady && isManager });
+	const projectsQuery = useProjects({ enabled: roleReady && isFullAdmin });
+	const campaignsQuery = useCampaigns({ enabled: roleReady && isFullAdmin });
 	const usersQuery = useUsers();
 
 	const displayName =
@@ -97,10 +104,21 @@ const DashboardPage = () => {
 	const scheduledActions = scheduledActionsQuery.data ?? [];
 	const pendingLeads = pendingLeadsQuery.data ?? [];
 
-	const teams =
-		teamKpis.data?.length > 0
-			? teamKpis.data
-			: (management.data?.teams ?? []);
+	const scopedTeamKpis = useMemo(() => {
+		const list = teamKpis.data ?? [];
+		if (scope.type !== "team" || !scope.teamIds?.length) return list;
+		const allowed = new Set(scope.teamIds.map(String));
+		return list.filter((team) =>
+			allowed.has(String(team.id ?? team.team_id)),
+		);
+	}, [teamKpis.data, scope]);
+
+	const teamsForLeaderboard =
+		scopedTeamKpis.length > 0
+			? scopedTeamKpis
+			: scope.type === "team"
+				? []
+				: (management.data?.teams ?? []);
 
 	const teamNamesById = useMemo(() => {
 		const map = {};
@@ -142,10 +160,10 @@ const DashboardPage = () => {
 				leads,
 				scheduledActions,
 				pendingLeads,
-				scopeUserId,
+				scopeUserId: scopeFilterIds,
 				variant,
 			}),
-		[leads, scheduledActions, pendingLeads, scopeUserId, variant],
+		[leads, scheduledActions, pendingLeads, scopeFilterIds, variant],
 	);
 
 	const workQueue = useMemo(
@@ -153,11 +171,11 @@ const DashboardPage = () => {
 			buildWorkQueue({
 				leads,
 				scheduledActions,
-				scopeUserId,
+				scopeUserId: scopeFilterIds,
 				variant,
 				limit: 15,
 			}),
-		[leads, scheduledActions, scopeUserId, variant],
+		[leads, scheduledActions, scopeFilterIds, variant],
 	);
 
 	const schedule = useMemo(
@@ -165,32 +183,39 @@ const DashboardPage = () => {
 			buildTodaySchedule({
 				leads,
 				scheduledActions,
-				scopeUserId,
+				scopeUserId: scopeFilterIds,
 			}),
-		[leads, scheduledActions, scopeUserId],
+		[leads, scheduledActions, scopeFilterIds],
 	);
 
 	const kpiMetrics = useMemo(
 		() =>
 			buildKpiStrip({
 				leads,
-				scopeUserId,
+				scopeUserId: scopeFilterIds,
 				management: management.data,
 				salesKpis: salesKpis.data,
-				teams,
+				teams: teamsForLeaderboard,
 				variant,
 			}),
-		[leads, scopeUserId, management.data, salesKpis.data, teams, variant],
+		[
+			leads,
+			scopeFilterIds,
+			management.data,
+			salesKpis.data,
+			teamsForLeaderboard,
+			variant,
+		],
 	);
 
 	const leaderboard = useMemo(
-		() => buildTeamLeaderboard(teams, teamNamesById),
-		[teams, teamNamesById],
+		() => buildTeamLeaderboard(teamsForLeaderboard, teamNamesById),
+		[teamsForLeaderboard, teamNamesById],
 	);
 
 	const leadCards = useMemo(
-		() => buildLeadCards({ leads, scopeUserId, limit: 8 }),
-		[leads, scopeUserId],
+		() => buildLeadCards({ leads, scopeUserId: scopeFilterIds, limit: 8 }),
+		[leads, scopeFilterIds],
 	);
 
 	const kpiLoading =
@@ -214,7 +239,7 @@ const DashboardPage = () => {
 		leadsQuery.isFetching ||
 		scheduledActionsQuery.isFetching ||
 		pendingLeadsQuery.isFetching ||
-		(isManager && campaignsQuery.isFetching);
+		(isFullAdmin && campaignsQuery.isFetching);
 
 	const handleRefresh = () => {
 		queryClient.invalidateQueries({ queryKey: ["dashboards"] });
@@ -223,9 +248,11 @@ const DashboardPage = () => {
 		queryClient.invalidateQueries({ queryKey: ["pendingLeads"] });
 		queryClient.invalidateQueries({ queryKey: ["scheduled-actions"] });
 		if (isManager) {
+			queryClient.invalidateQueries({ queryKey: ["teams"] });
+		}
+		if (isFullAdmin) {
 			queryClient.invalidateQueries({ queryKey: ["campaigns"] });
 			queryClient.invalidateQueries({ queryKey: ["projects"] });
-			queryClient.invalidateQueries({ queryKey: ["teams"] });
 		}
 	};
 
@@ -253,7 +280,7 @@ const DashboardPage = () => {
 			<NeedsAttentionHero
 				variant={variant}
 				summary={summary}
-				userId={userId}
+				userId={scope.userId}
 				isLoading={attentionLoading}
 			/>
 
@@ -292,7 +319,7 @@ const DashboardPage = () => {
 				</Suspense>
 			)}
 
-			{isManager && (
+			{isFullAdmin && (
 				<div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
 					<Suspense fallback={<LoadingSkeleton variant="table" />}>
 						<ProjectsOverview

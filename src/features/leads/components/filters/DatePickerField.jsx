@@ -2,58 +2,20 @@ import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-function pad2(n) {
-	return String(n).padStart(2, "0");
-}
-
 function toYmd(date) {
-	return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+	const y = date.getFullYear();
+	const m = String(date.getMonth() + 1).padStart(2, "0");
+	const d = String(date.getDate()).padStart(2, "0");
+	return `${y}-${m}-${d}`;
 }
 
 function parseYmd(value) {
 	if (!value || typeof value !== "string") return null;
-	const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-	if (!match) return null;
-	const year = Number(match[1]);
-	const month = Number(match[2]) - 1;
-	const day = Number(match[3]);
-	const date = new Date(year, month, day);
-	if (
-		Number.isNaN(date.getTime()) ||
-		date.getFullYear() !== year ||
-		date.getMonth() !== month ||
-		date.getDate() !== day
-	) {
-		return null;
-	}
+	const [y, m, d] = value.split("-").map(Number);
+	if (!y || !m || !d) return null;
+	const date = new Date(y, m - 1, d);
+	if (Number.isNaN(date.getTime())) return null;
 	return date;
-}
-
-function startOfMonth(date) {
-	return new Date(date.getFullYear(), date.getMonth(), 1);
-}
-
-function addMonths(date, delta) {
-	return new Date(date.getFullYear(), date.getMonth() + delta, 1);
-}
-
-function buildMonthGrid(monthDate) {
-	const year = monthDate.getFullYear();
-	const month = monthDate.getMonth();
-	const firstDow = new Date(year, month, 1).getDay();
-	const daysInMonth = new Date(year, month + 1, 0).getDate();
-	const cells = [];
-
-	for (let i = 0; i < firstDow; i += 1) {
-		cells.push(null);
-	}
-	for (let day = 1; day <= daysInMonth; day += 1) {
-		cells.push(new Date(year, month, day));
-	}
-	while (cells.length % 7 !== 0) {
-		cells.push(null);
-	}
-	return cells;
 }
 
 function formatDisplay(value, locale) {
@@ -66,20 +28,45 @@ function formatDisplay(value, locale) {
 	});
 }
 
-const DateField = ({ value, onChange, placeholder, ariaLabel }) => {
-	const { t, i18n } = useTranslation();
+function startOfMonth(date) {
+	return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function buildMonthDays(viewDate) {
+	const year = viewDate.getFullYear();
+	const month = viewDate.getMonth();
+	const first = new Date(year, month, 1);
+	const startPad = first.getDay(); // Sunday = 0
+	const daysInMonth = new Date(year, month + 1, 0).getDate();
+	const cells = [];
+
+	for (let i = 0; i < startPad; i += 1) {
+		cells.push(null);
+	}
+	for (let day = 1; day <= daysInMonth; day += 1) {
+		cells.push(new Date(year, month, day));
+	}
+	while (cells.length % 7 !== 0) {
+		cells.push(null);
+	}
+	return cells;
+}
+
+const DatePickerField = ({ value, onChange, ariaLabel, placeholder }) => {
+	const { i18n, t } = useTranslation();
 	const listId = useId();
 	const ref = useRef(null);
 	const [open, setOpen] = useState(false);
 	const selected = parseYmd(value);
-	const [viewMonth, setViewMonth] = useState(() =>
+	const [viewDate, setViewDate] = useState(() =>
 		startOfMonth(selected ?? new Date()),
 	);
 
+	const locale = i18n.language?.startsWith("ar") ? "ar" : "en";
+
 	useEffect(() => {
 		if (!open) return undefined;
-		setViewMonth(startOfMonth(parseYmd(value) ?? new Date()));
-
+		setViewDate(startOfMonth(selected ?? new Date()));
 		const handlePointer = (e) => {
 			if (!ref.current?.contains(e.target)) setOpen(false);
 		};
@@ -92,10 +79,7 @@ const DateField = ({ value, onChange, placeholder, ariaLabel }) => {
 			document.removeEventListener("mousedown", handlePointer);
 			document.removeEventListener("keydown", handleKey);
 		};
-	}, [open, value]);
-
-	const locale = i18n.language?.startsWith("ar") ? "ar" : "en";
-	const display = formatDisplay(value, locale) || placeholder;
+	}, [open, selected]);
 
 	const weekdayLabels = useMemo(() => {
 		const base = new Date(2024, 0, 7); // Sunday
@@ -106,14 +90,23 @@ const DateField = ({ value, onChange, placeholder, ariaLabel }) => {
 		});
 	}, [locale]);
 
-	const monthLabel = viewMonth.toLocaleDateString(locale, {
+	const monthLabel = viewDate.toLocaleDateString(locale, {
 		month: "long",
 		year: "numeric",
 	});
 
-	const cells = useMemo(() => buildMonthGrid(viewMonth), [viewMonth]);
+	const cells = useMemo(() => buildMonthDays(viewDate), [viewDate]);
 	const todayYmd = toYmd(new Date());
-	const selectedYmd = selected ? toYmd(selected) : "";
+	const selectedYmd = value || "";
+	const display = value
+		? formatDisplay(value, locale)
+		: (placeholder ?? t("leads.filters.pickDate"));
+
+	const shiftMonth = (delta) => {
+		setViewDate(
+			(prev) => new Date(prev.getFullYear(), prev.getMonth() + delta, 1),
+		);
+	};
 
 	return (
 		<div className="relative min-w-[8rem] flex-1" ref={ref}>
@@ -142,35 +135,35 @@ const DateField = ({ value, onChange, placeholder, ariaLabel }) => {
 					id={listId}
 					role="dialog"
 					aria-label={ariaLabel}
-					className="animate-dropdown-in absolute inset-x-0 top-[calc(100%+0.35rem)] z-50 rounded-xl border border-border bg-surface p-3 shadow-lg"
+					className="animate-dropdown-in absolute inset-x-0 top-[calc(100%+0.35rem)] z-50 w-full min-w-[17rem] rounded-xl border border-border bg-surface p-3 shadow-lg sm:min-w-[18rem]"
 				>
 					<div className="mb-2 flex items-center justify-between gap-2">
 						<button
 							type="button"
-							aria-label={t("leads.filters.prevMonth")}
-							onClick={() => setViewMonth((m) => addMonths(m, -1))}
+							onClick={() => shiftMonth(-1)}
 							className="inline-flex size-8 items-center justify-center rounded-lg text-muted transition hover:bg-background hover:text-text"
+							aria-label={t("leads.filters.prevMonth")}
 						>
 							<ChevronLeft className="size-4 rtl:rotate-180" aria-hidden="true" />
 						</button>
 						<span className="text-sm font-semibold text-text">{monthLabel}</span>
 						<button
 							type="button"
-							aria-label={t("leads.filters.nextMonth")}
-							onClick={() => setViewMonth((m) => addMonths(m, 1))}
+							onClick={() => shiftMonth(1)}
 							className="inline-flex size-8 items-center justify-center rounded-lg text-muted transition hover:bg-background hover:text-text"
+							aria-label={t("leads.filters.nextMonth")}
 						>
 							<ChevronRight className="size-4 rtl:rotate-180" aria-hidden="true" />
 						</button>
 					</div>
 
 					<div className="mb-1 grid grid-cols-7 gap-0.5">
-						{weekdayLabels.map((dayLabel, index) => (
+						{weekdayLabels.map((day) => (
 							<span
-								key={`wd-${index}`}
+								key={day}
 								className="py-1 text-center text-[10px] font-medium uppercase tracking-wide text-muted"
 							>
-								{dayLabel}
+								{day}
 							</span>
 						))}
 					</div>
@@ -194,9 +187,9 @@ const DateField = ({ value, onChange, placeholder, ariaLabel }) => {
 									className={[
 										"inline-flex size-8 items-center justify-center rounded-lg text-sm transition",
 										isSelected
-											? "bg-gold font-semibold text-primary"
+											? "bg-gold font-semibold text-primary shadow-sm"
 											: isToday
-												? "bg-light-gold/50 font-medium text-text hover:bg-light-gold"
+												? "bg-light-gold/70 font-medium text-text hover:bg-light-gold"
 												: "text-text hover:bg-background",
 									].join(" ")}
 								>
@@ -206,16 +199,26 @@ const DateField = ({ value, onChange, placeholder, ariaLabel }) => {
 						})}
 					</div>
 
-					<div className="mt-2 flex justify-end border-t border-border pt-2">
+					<div className="mt-2 flex items-center justify-between gap-2 border-t border-border pt-2">
 						<button
 							type="button"
 							onClick={() => {
 								onChange("");
 								setOpen(false);
 							}}
-							className="rounded-lg px-2.5 py-1 text-xs font-medium text-muted transition hover:bg-background hover:text-text"
+							className="rounded-lg px-2 py-1 text-xs font-medium text-muted transition hover:bg-background hover:text-text"
 						>
 							{t("leads.filters.clearDate")}
+						</button>
+						<button
+							type="button"
+							onClick={() => {
+								onChange(todayYmd);
+								setOpen(false);
+							}}
+							className="rounded-lg px-2 py-1 text-xs font-medium text-accent transition hover:bg-background"
+						>
+							{t("leads.filters.today")}
 						</button>
 					</div>
 				</div>
@@ -224,39 +227,4 @@ const DateField = ({ value, onChange, placeholder, ariaLabel }) => {
 	);
 };
 
-const DateRangePicker = ({
-	label,
-	srLabel,
-	dateFrom,
-	dateTo,
-	onChangeFrom,
-	onChangeTo,
-}) => {
-	const { t } = useTranslation();
-	const accessibleLabel = srLabel || label;
-
-	return (
-		<div className="col-span-full">
-			<span className="mb-1.5 block text-xs font-medium text-muted">{label}</span>
-			<div className="flex flex-wrap items-center gap-2">
-				<DateField
-					value={dateFrom}
-					onChange={onChangeFrom}
-					placeholder={t("leads.filters.dateFrom")}
-					ariaLabel={`${accessibleLabel} ${t("leads.filters.dateFrom")}`}
-				/>
-				<span className="text-sm text-muted" aria-hidden="true">
-					—
-				</span>
-				<DateField
-					value={dateTo}
-					onChange={onChangeTo}
-					placeholder={t("leads.filters.dateTo")}
-					ariaLabel={`${accessibleLabel} ${t("leads.filters.dateTo")}`}
-				/>
-			</div>
-		</div>
-	);
-};
-
-export default DateRangePicker;
+export default DatePickerField;

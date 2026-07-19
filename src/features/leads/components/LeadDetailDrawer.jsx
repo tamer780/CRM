@@ -36,6 +36,7 @@ const LeadDetailDrawer = ({
 	projectsLoading = false,
 	campaignsLoading = false,
 	usersLoading = false,
+	canEdit = true,
 }) => {
 	const { t } = useTranslation();
 	const leadQuery = useLead(open ? leadId : null);
@@ -168,14 +169,16 @@ const LeadDetailDrawer = ({
 									)}
 								</>
 							)}
-							<button
-								type="button"
-								onClick={openEdit}
-								className={actionButtonClassName}
-							>
-								<Pencil className="size-4 text-muted" aria-hidden="true" />
-								{t("leads.editLead")}
-							</button>
+							{canEdit && (
+								<button
+									type="button"
+									onClick={openEdit}
+									className={actionButtonClassName}
+								>
+									<Pencil className="size-4 text-muted" aria-hidden="true" />
+									{t("leads.editLead")}
+								</button>
+							)}
 						</div>
 					) : null
 				}

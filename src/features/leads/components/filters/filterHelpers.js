@@ -5,8 +5,12 @@ export const FILTER_KEYS = [
 	"projectId",
 	"campaignId",
 	"assignedTo",
-	"dateFrom",
-	"dateTo",
+	"assignedAtFrom",
+	"assignedAtTo",
+	"createdFrom",
+	"createdTo",
+	"lastActionFrom",
+	"lastActionTo",
 ];
 
 export const emptyDraftFilters = () => ({
@@ -14,9 +18,13 @@ export const emptyDraftFilters = () => ({
 	source: "",
 	projectId: "",
 	campaignId: "",
-	assignedTo: "",
-	dateFrom: "",
-	dateTo: "",
+	assignedTo: [],
+	assignedAtFrom: "",
+	assignedAtTo: "",
+	createdFrom: "",
+	createdTo: "",
+	lastActionFrom: "",
+	lastActionTo: "",
 });
 
 function normalizeStatusFilter(status) {
@@ -28,15 +36,27 @@ function normalizeStatusFilter(status) {
 	return [String(status)];
 }
 
+function normalizeAssignedToFilter(assignedTo) {
+	if (Array.isArray(assignedTo)) {
+		return assignedTo.map(String).filter(Boolean);
+	}
+	if (assignedTo == null || assignedTo === "") return [];
+	return [String(assignedTo)];
+}
+
 export function pickDraftFromFilters(filters) {
 	return {
 		status: normalizeStatusFilter(filters.status),
 		source: filters.source ?? "",
 		projectId: filters.projectId ?? "",
 		campaignId: filters.campaignId ?? "",
-		assignedTo: filters.assignedTo ?? "",
-		dateFrom: filters.dateFrom ?? "",
-		dateTo: filters.dateTo ?? "",
+		assignedTo: normalizeAssignedToFilter(filters.assignedTo),
+		assignedAtFrom: filters.assignedAtFrom ?? "",
+		assignedAtTo: filters.assignedAtTo ?? "",
+		createdFrom: filters.createdFrom ?? "",
+		createdTo: filters.createdTo ?? "",
+		lastActionFrom: filters.lastActionFrom ?? "",
+		lastActionTo: filters.lastActionTo ?? "",
 	};
 }
 
@@ -49,14 +69,28 @@ export function countActiveFilters(filters) {
 	if (filters.source) count += 1;
 	if (filters.projectId) count += 1;
 	if (filters.campaignId) count += 1;
-	if (filters.assignedTo) count += 1;
-	if (filters.dateFrom || filters.dateTo) count += 1;
+	const assigned = normalizeAssignedToFilter(filters.assignedTo);
+	if (assigned.length > 0) count += 1;
+	if (filters.assignedAtFrom || filters.assignedAtTo) count += 1;
+	if (filters.createdFrom || filters.createdTo) count += 1;
+	if (filters.lastActionFrom || filters.lastActionTo) count += 1;
 	return count;
 }
 
 function resolveOptionLabel(options, value) {
 	const match = options.find((o) => String(o.value) === String(value));
 	return match?.label ?? String(value);
+}
+
+function dateRangeChip(id, labelKey, from, to, clear, t) {
+	if (!from && !to) return null;
+	const fromLabel = from || "…";
+	const toLabel = to || "…";
+	return {
+		id,
+		label: `${t(labelKey)}: ${fromLabel} – ${toLabel}`,
+		clear,
+	};
 }
 
 /**
@@ -106,22 +140,51 @@ export function buildActiveFilterChips(
 			clear: { campaignId: "" },
 		});
 	}
-	if (filters.assignedTo) {
+
+	const assigned = normalizeAssignedToFilter(filters.assignedTo);
+	if (assigned.length === 1) {
 		chips.push({
 			id: "assignedTo",
-			label: `${t("leads.columns.assignedTo")}: ${resolveOptionLabel(userOpts, filters.assignedTo)}`,
-			clear: { assignedTo: "" },
+			label: `${t("leads.columns.assignedTo")}: ${resolveOptionLabel(userOpts, assigned[0])}`,
+			clear: { assignedTo: [] },
 		});
-	}
-	if (filters.dateFrom || filters.dateTo) {
-		const from = filters.dateFrom || "…";
-		const to = filters.dateTo || "…";
+	} else if (assigned.length > 1) {
 		chips.push({
-			id: "dateRange",
-			label: `${t("leads.columns.created")}: ${from} – ${to}`,
-			clear: { dateFrom: "", dateTo: "" },
+			id: "assignedTo",
+			label: `${t("leads.columns.assignedTo")}: ${t("leads.filters.usersSelected", { count: assigned.length })}`,
+			clear: { assignedTo: [] },
 		});
 	}
+
+	const createdChip = dateRangeChip(
+		"createdRange",
+		"leads.filters.createdRange",
+		filters.createdFrom,
+		filters.createdTo,
+		{ createdFrom: "", createdTo: "" },
+		t,
+	);
+	if (createdChip) chips.push(createdChip);
+
+	const assignedAtChip = dateRangeChip(
+		"assignedAtRange",
+		"leads.filters.assignedAtRange",
+		filters.assignedAtFrom,
+		filters.assignedAtTo,
+		{ assignedAtFrom: "", assignedAtTo: "" },
+		t,
+	);
+	if (assignedAtChip) chips.push(assignedAtChip);
+
+	const lastActionChip = dateRangeChip(
+		"lastActionRange",
+		"leads.filters.lastActionRange",
+		filters.lastActionFrom,
+		filters.lastActionTo,
+		{ lastActionFrom: "", lastActionTo: "" },
+		t,
+	);
+	if (lastActionChip) chips.push(lastActionChip);
 
 	return chips;
 }

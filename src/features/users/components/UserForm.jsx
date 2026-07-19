@@ -12,18 +12,34 @@ const UserForm = ({
 	onCancel,
 	isSubmitting = false,
 	errors = {},
+	teams = [],
+	teamsLoading = false,
+	roles = USER_ROLES,
 }) => {
 	const { t } = useTranslation();
 	const set = (key, value) => onChange({ ...values, [key]: value });
 
 	const roleOptions = useMemo(
 		() =>
-			USER_ROLES.map((role) => ({
+			(roles ?? USER_ROLES).map((role) => ({
 				value: role,
 				label: t(`users.roles.${role}`, { defaultValue: role }),
 				searchText: role,
 			})),
-		[t],
+		[t, roles],
+	);
+
+	const teamOptions = useMemo(
+		() =>
+			(teams ?? []).map((team) => {
+				const name = team.name ?? `#${team.id}`;
+				return {
+					value: team.id,
+					label: name,
+					searchText: name,
+				};
+			}),
+		[teams],
 	);
 
 	const handleSubmit = (event) => {
@@ -69,6 +85,28 @@ const UserForm = ({
 						/>
 					</div>
 
+					<FormInput
+						label={t("users.form.phone")}
+						type="tel"
+						value={values.phone}
+						onChange={(e) => set("phone", e.target.value)}
+						error={errors.phone}
+						disabled={isSubmitting}
+						autoComplete="tel"
+					/>
+
+					<SearchableSelect
+						label={t("users.form.team")}
+						value={values.team_id}
+						onChange={(v) => set("team_id", v == null ? "" : String(v))}
+						options={teamOptions}
+						loading={teamsLoading}
+						placeholder={t("users.form.teamPlaceholder")}
+						clearLabel={t("leads.form.none")}
+						error={errors.team_id}
+						disabled={isSubmitting}
+					/>
+
 					<SearchableSelect
 						label={t("users.form.role")}
 						required
@@ -88,6 +126,23 @@ const UserForm = ({
 						error={errors.job_title}
 						disabled={isSubmitting}
 					/>
+
+					{mode === "edit" && (
+						<div className="sm:col-span-2">
+							<label className="flex cursor-pointer items-center gap-3 rounded-xl border border-border bg-background/40 px-4 py-3">
+								<input
+									type="checkbox"
+									checked={Boolean(values.is_active)}
+									onChange={(e) => set("is_active", e.target.checked)}
+									disabled={isSubmitting}
+									className="size-4 rounded border-border text-primary focus:ring-accent/30"
+								/>
+								<span className="text-sm font-medium text-text">
+									{t("users.form.isActive")}
+								</span>
+							</label>
+						</div>
+					)}
 
 					<div className="sm:col-span-2">
 						{mode === "edit" && (

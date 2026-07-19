@@ -5,7 +5,11 @@ import {
 	getAvatarTone,
 	getInitials,
 } from "../../leads/utils/leadAvatars";
-import { getUserRole, isUserActive } from "../utils/userConstants";
+import {
+	getUserRole,
+	getUserTeamName,
+	isUserActive,
+} from "../utils/userConstants";
 
 function formatDateTime(value) {
 	if (!value) return "—";
@@ -72,6 +76,7 @@ const UserDetailModal = ({
 	open,
 	onClose,
 	user,
+	teams = [],
 	isLoading,
 	isError,
 	onRetry,
@@ -80,6 +85,7 @@ const UserDetailModal = ({
 	onToggleActive,
 	onDelete,
 	actionsDisabled = false,
+	canManage = true,
 }) => {
 	const { t } = useTranslation();
 	const titleId = useId();
@@ -89,6 +95,7 @@ const UserDetailModal = ({
 	const displayName = user?.name ?? user?.email ?? t("users.drawer.title");
 	const role = getUserRole(user);
 	const active = isUserActive(user);
+	const teamName = getUserTeamName(user, teams);
 
 	useEffect(() => {
 		if (!open) return undefined;
@@ -213,6 +220,8 @@ const UserDetailModal = ({
 								<div className="grid grid-cols-1 gap-4 rounded-2xl border border-border bg-background/40 p-4 sm:grid-cols-2">
 									<Field label={t("users.form.name")} value={user.name} />
 									<Field label={t("users.form.email")} value={user.email} />
+									<Field label={t("users.form.phone")} value={user.phone} />
+									<Field label={t("users.form.team")} value={teamName} />
 									<Field
 										label={t("users.form.role")}
 										value={
@@ -251,7 +260,7 @@ const UserDetailModal = ({
 					{onEdit && (
 						<button
 							type="button"
-							disabled={actionsDisabled || !user}
+							disabled={actionsDisabled || !user || !canManage}
 							onClick={() => onEdit(user)}
 							className="rounded-xl border border-border bg-surface px-3 py-2 text-sm font-medium text-primary transition hover:bg-light-gold/60 disabled:opacity-50"
 						>
@@ -261,7 +270,7 @@ const UserDetailModal = ({
 					{onToggleActive && (
 						<button
 							type="button"
-							disabled={actionsDisabled || !user}
+							disabled={actionsDisabled || !user || !canManage}
 							onClick={() => onToggleActive(user)}
 							className="rounded-xl border border-border bg-surface px-3 py-2 text-sm font-medium text-text transition hover:bg-background disabled:opacity-50"
 						>
@@ -273,7 +282,7 @@ const UserDetailModal = ({
 					{onDelete && (
 						<button
 							type="button"
-							disabled={actionsDisabled || !user}
+							disabled={actionsDisabled || !user || !canManage}
 							onClick={() => onDelete(user)}
 							className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:opacity-50"
 						>

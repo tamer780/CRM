@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { usePermissions } from "../../../hooks/auth/usePermissions";
+import { useTeams } from "../../../hooks/teams/useTeams";
 import { useActivateUser } from "../../../hooks/users/useActivateUser";
 import { useCreateUser } from "../../../hooks/users/useCreateUser";
 import { useDeactivateUser } from "../../../hooks/users/useDeactivateUser";
@@ -18,6 +20,7 @@ import {
 	userToFormValues,
 	validateUserForm,
 } from "../utils/userConstants";
+import { assignableRoles, canManageUser } from "../utils/permissions";
 import {
 	applyFiltersToSearchParams,
 	applySortingToParams,
@@ -37,8 +40,18 @@ import UsersToolbar from "./UsersToolbar";
 const UsersPage = () => {
 	const { t } = useTranslation();
 	const [searchParams, setSearchParams] = useSearchParams();
+	const { user: currentUser } = usePermissions();
+	const allowedRoles = useMemo(
+		() => assignableRoles(currentUser),
+		[currentUser],
+	);
+	const canManageTarget = useCallback(
+		(target) => canManageUser(currentUser, target),
+		[currentUser],
+	);
 
 	const usersQuery = useUsers();
+	const teamsQuery = useTeams();
 	const createUser = useCreateUser();
 	const deleteUser = useDeleteUser();
 	const activateUser = useActivateUser();
@@ -100,9 +113,11 @@ const UsersPage = () => {
 		[sort, order],
 	);
 
+	const teams = teamsQuery.data ?? [];
+
 	const filteredUsers = useMemo(
-		() => filterUsers(usersQuery.data, filters),
-		[usersQuery.data, filters],
+		() => filterUsers(usersQuery.data, filters, teams),
+		[usersQuery.data, filters, teams],
 	);
 
 	const kpis = useMemo(
@@ -171,6 +186,7 @@ const UsersPage = () => {
 	};
 
 	const openEdit = (user) => {
+		if (!canManageTarget(user)) return;
 		setModalMode("edit");
 		setEditingId(user.id);
 		setFormValues(userToFormValues(user));
@@ -187,9 +203,27 @@ const UsersPage = () => {
 
 	const handleSubmit = (values) => {
 		const errors = validateUserForm(values, t, modalMode);
+		if (
+			values.role &&
+			allowedRoles.length > 0 &&
+			!allowedRoles.includes(values.role)
+		) {
+			errors.role = t("users.validation.roleRequired");
+		}
 		if (Object.keys(errors).length > 0) {
 			setFieldErrors(errors);
 			return;
+		}
+		if (modalMode === "edit" && editingId) {
+			const target =
+				usersQuery.data?.find((item) => String(item.id) === String(editingId)) ??
+				null;
+			if (target && !canManageTarget(target)) {
+				setFieldErrors({
+					api: t("users.errors.updateFailed"),
+				});
+				return;
+			}
 		}
 		setFieldErrors({});
 		const payload = formValuesToPayload(values, modalMode);
@@ -223,6 +257,7 @@ const UsersPage = () => {
 	};
 
 	const handleToggleActive = (user) => {
+		if (!canManageTarget(user)) return;
 		const active = isUserActive(user);
 		const mutation = active ? deactivateUser : activateUser;
 		mutation.mutate(user.id, {
@@ -247,7 +282,7 @@ const UsersPage = () => {
 	};
 
 	const handleDelete = () => {
-		if (!deleteTarget) return;
+		if (!deleteTarget || !canManageTarget(deleteTarget)) return;
 		const id = deleteTarget.id;
 		deleteUser.mutate(id, {
 			onSuccess: () => {
@@ -299,6 +334,7 @@ const UsersPage = () => {
 			<div className="space-y-4">
 				<UsersTable
 					users={filteredUsers}
+					teams={teams}
 					isLoading={usersQuery.isLoading}
 					isError={usersQuery.isError}
 					onRetry={() => usersQuery.refetch()}
@@ -306,10 +342,12 @@ const UsersPage = () => {
 					sorting={sorting}
 					onSortingChange={handleSortingChange}
 					actionsDisabled={actionsPending}
+					canManageUser={canManageTarget}
 					onView={openDetail}
 					onEdit={openEdit}
 					onToggleActive={handleToggleActive}
 					onDelete={(user) => {
+						if (!canManageTarget(user)) return;
 						setDeleteError("");
 						setDeleteTarget(user);
 					}}
@@ -321,14 +359,17 @@ const UsersPage = () => {
 				open={Boolean(selected)}
 				onClose={closeDetail}
 				user={detailUser}
+				teams={teams}
 				isLoading={Boolean(selected) && detailQuery.isLoading && !detailUser}
 				isError={Boolean(selected) && detailQuery.isError && !detailUser}
 				onRetry={() => detailQuery.refetch()}
 				preventClose={actionsPending}
 				actionsDisabled={actionsPending}
+				canManage={detailUser ? canManageTarget(detailUser) : false}
 				onEdit={openEdit}
 				onToggleActive={handleToggleActive}
 				onDelete={(user) => {
+					if (!canManageTarget(user)) return;
 					setDeleteError("");
 					setDeleteTarget(user);
 				}}
@@ -351,6 +392,9 @@ const UsersPage = () => {
 				onSubmit={handleSubmit}
 				isSubmitting={isSubmitting}
 				errors={fieldErrors}
+				teams={teams}
+				teamsLoading={teamsQuery.isLoading}
+				roles={allowedRoles}
 			/>
 
 			<UserDeleteDialog

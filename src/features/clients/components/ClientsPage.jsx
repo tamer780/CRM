@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { usePermissions } from "../../../hooks/auth/usePermissions";
 import { useCampaigns } from "../../../hooks/campaigns/useCampaigns";
 import { useClient } from "../../../hooks/clients/useClient";
 import { useClients } from "../../../hooks/clients/useClients";
@@ -11,6 +12,7 @@ import { useRestoreClient } from "../../../hooks/clients/useRestoreClient";
 import { useUpdateClient } from "../../../hooks/clients/useUpdateClient";
 import { useUsers } from "../../../hooks/users/useUsers";
 import { extractApiError } from "../../../utils/api/apiHelpers";
+import { clientMatchesScope } from "../../users/utils/permissions";
 import {
 	clientToFormValues,
 	computeClientKpis,
@@ -48,6 +50,7 @@ function buildLookupMap(list) {
 const ClientsPage = () => {
 	const { t } = useTranslation();
 	const [searchParams, setSearchParams] = useSearchParams();
+	const { scope } = usePermissions();
 
 	const clientsQuery = useClients();
 	const projectsQuery = useProjects();
@@ -112,19 +115,27 @@ const ClientsPage = () => {
 		[usersQuery.data],
 	);
 
+	const scopedClients = useMemo(
+		() =>
+			(clientsQuery.data ?? []).filter((client) =>
+				clientMatchesScope(client, scope),
+			),
+		[clientsQuery.data, scope],
+	);
+
 	const filteredClients = useMemo(
-		() => filterClients(clientsQuery.data, filters),
-		[clientsQuery.data, filters],
+		() => filterClients(scopedClients, filters),
+		[scopedClients, filters],
 	);
 
 	const kpis = useMemo(
-		() => computeClientKpis(clientsQuery.data),
-		[clientsQuery.data],
+		() => computeClientKpis(scopedClients),
+		[scopedClients],
 	);
 
 	const isFilteredEmpty =
 		!clientsQuery.isLoading &&
-		(clientsQuery.data?.length ?? 0) > 0 &&
+		scopedClients.length > 0 &&
 		filteredClients.length === 0;
 
 	const detailQuery = useClient(selected || null);

@@ -1,4 +1,4 @@
-import { getUserRole, isUserActive } from "./userConstants";
+import { getUserRole, getUserTeamName, isUserActive } from "./userConstants";
 
 export const emptyUserFilters = () => ({
 	search: "",
@@ -46,7 +46,7 @@ export function hasActiveUserFilters(filters) {
 	return FILTER_KEYS.some((key) => Boolean(filters[key]));
 }
 
-export function filterUsers(list, filters) {
+export function filterUsers(list, filters, teams = []) {
 	const q = filters.search.trim().toLowerCase();
 
 	return (list ?? []).filter((user) => {
@@ -60,7 +60,14 @@ export function filterUsers(list, filters) {
 			return false;
 		}
 		if (q) {
-			const haystack = [user.name, user.email, user.job_title, getUserRole(user)]
+			const haystack = [
+				user.name,
+				user.email,
+				user.phone,
+				user.job_title,
+				getUserRole(user),
+				getUserTeamName(user, teams),
+			]
 				.filter(Boolean)
 				.join(" ")
 				.toLowerCase();

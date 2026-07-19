@@ -132,7 +132,7 @@ const LeadAssignSelect = ({
 				role="listbox"
 				aria-label={t("dashboard.quickActions.assignLead")}
 				style={menuStyle}
-				className="animate-dropdown-in overflow-y-auto rounded-xl border border-border bg-surface py-1.5 shadow-lg"
+				className="custom-scrollbar animate-dropdown-in overflow-y-auto rounded-xl border border-border bg-surface py-1.5 shadow-lg"
 			>
 				{options.length === 0 ? (
 					<li className="px-3 py-2 text-sm text-muted">—</li>

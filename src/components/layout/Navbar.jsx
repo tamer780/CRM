@@ -1,6 +1,7 @@
 import { Menu, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuthMe } from "../../hooks/auth/useAuthMe";
+import { getUserRole } from "../../features/users/utils/userConstants";
 
 const Navbar = ({ onOpenMobileMenu }) => {
 	const { t } = useTranslation();
@@ -10,7 +11,10 @@ const Navbar = ({ onOpenMobileMenu }) => {
 		user?.name ??
 		user?.email ??
 		(isLoading ? t("common.loading") : t("common.user"));
-	const role = user?.roles?.[0] ?? t("common.user");
+	const roleSlug = getUserRole(user);
+	const role = roleSlug
+		? t(`users.roles.${roleSlug}`, { defaultValue: roleSlug })
+		: t("common.user");
 
 	return (
 		<header className="sticky top-0 z-30 border-b border-border bg-surface/95 px-4 py-3 backdrop-blur-sm sm:px-6">

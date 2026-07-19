@@ -4,8 +4,16 @@ import { useTranslation } from "react-i18next";
 const actionBtnClass =
 	"inline-flex size-8 items-center justify-center rounded-lg text-muted transition hover:bg-background hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 disabled:opacity-40";
 
-const LeadActionsMenu = ({ onEdit, onDelete, disabled = false }) => {
+const LeadActionsMenu = ({
+	onEdit,
+	onDelete,
+	canEdit = true,
+	canDelete = true,
+	disabled = false,
+}) => {
 	const { t } = useTranslation();
+
+	if (!canEdit && !canDelete) return null;
 
 	return (
 		<div
@@ -13,26 +21,30 @@ const LeadActionsMenu = ({ onEdit, onDelete, disabled = false }) => {
 			onClick={(e) => e.stopPropagation()}
 			onKeyDown={(e) => e.stopPropagation()}
 		>
-			<button
-				type="button"
-				className={actionBtnClass}
-				onClick={onEdit}
-				disabled={disabled}
-				aria-label={t("leads.editLead")}
-				title={t("leads.editLead")}
-			>
-				<Pencil className="size-4" aria-hidden="true" />
-			</button>
-			<button
-				type="button"
-				className={`${actionBtnClass} hover:bg-red-50 hover:text-red-600`}
-				onClick={onDelete}
-				disabled={disabled}
-				aria-label="Delete"
-				title="Delete"
-			>
-				<Trash2 className="size-4" aria-hidden="true" />
-			</button>
+			{canEdit && (
+				<button
+					type="button"
+					className={actionBtnClass}
+					onClick={onEdit}
+					disabled={disabled}
+					aria-label={t("leads.editLead")}
+					title={t("leads.editLead")}
+				>
+					<Pencil className="size-4" aria-hidden="true" />
+				</button>
+			)}
+			{canDelete && (
+				<button
+					type="button"
+					className={`${actionBtnClass} hover:bg-red-50 hover:text-red-600`}
+					onClick={onDelete}
+					disabled={disabled}
+					aria-label="Delete"
+					title="Delete"
+				>
+					<Trash2 className="size-4" aria-hidden="true" />
+				</button>
+			)}
 		</div>
 	);
 };

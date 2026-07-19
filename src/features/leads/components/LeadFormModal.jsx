@@ -15,7 +15,17 @@ const LeadFormModal = ({
 	const descId = useId();
 	const dialogRef = useRef(null);
 	const previousFocusRef = useRef(null);
+	const onCloseRef = useRef(onClose);
+	const preventCloseRef = useRef(preventClose);
 
+	useEffect(() => {
+		onCloseRef.current = onClose;
+		preventCloseRef.current = preventClose;
+	});
+
+	// Only run open/close side effects when `open` changes — not when
+	// onClose/preventClose identities change on each parent re-render
+	// (e.g. typing in the form), which would steal focus.
 	useEffect(() => {
 		if (!open) return undefined;
 
@@ -31,9 +41,9 @@ const LeadFormModal = ({
 
 		const handleKeyDown = (event) => {
 			if (event.key === "Escape") {
-				if (!preventClose) {
+				if (!preventCloseRef.current) {
 					event.preventDefault();
-					onClose();
+					onCloseRef.current();
 				}
 				return;
 			}
@@ -64,7 +74,7 @@ const LeadFormModal = ({
 			document.body.style.overflow = previousOverflow;
 			previousFocusRef.current?.focus?.();
 		};
-	}, [open, onClose, preventClose]);
+	}, [open]);
 
 	if (!open) return null;
 
@@ -73,7 +83,7 @@ const LeadFormModal = ({
 			<div
 				className="absolute inset-0 bg-primary/40 backdrop-blur-sm"
 				onClick={() => {
-					if (!preventClose) onClose();
+					if (!preventCloseRef.current) onCloseRef.current();
 				}}
 				aria-hidden="true"
 			/>
@@ -98,7 +108,7 @@ const LeadFormModal = ({
 					</div>
 					<button
 						type="button"
-						onClick={onClose}
+						onClick={() => onCloseRef.current()}
 						disabled={preventClose}
 						className="rounded-lg p-2 text-muted transition hover:bg-background hover:text-text disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
 						aria-label={t("common.close")}

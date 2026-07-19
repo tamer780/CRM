@@ -73,20 +73,44 @@ const FilterPopover = ({
 					allLabel={t("leads.form.none")}
 					placeholder={t("leads.form.campaign")}
 				/>
-				<FilterDropdown
+				<FilterMultiSelect
 					label={t("leads.columns.assignedTo")}
 					value={draft.assignedTo}
-					onChange={(v) => set("assignedTo", v)}
+					onChange={(v) =>
+						set(
+							"assignedTo",
+							Array.isArray(v) ? v.map(String).filter(Boolean) : [],
+						)
+					}
 					options={userOpts}
 					allLabel={t("leads.form.none")}
+					clearValue={[]}
 					placeholder={t("leads.columns.assignedTo")}
+					selectedCountLabel={(count) =>
+						t("leads.filters.usersSelected", { count })
+					}
 					className="sm:col-span-2"
 				/>
 				<DateRangePicker
-					dateFrom={draft.dateFrom}
-					dateTo={draft.dateTo}
-					onChangeFrom={(v) => set("dateFrom", v)}
-					onChangeTo={(v) => set("dateTo", v)}
+					label={t("leads.filters.createdRange")}
+					dateFrom={draft.createdFrom}
+					dateTo={draft.createdTo}
+					onChangeFrom={(v) => set("createdFrom", v)}
+					onChangeTo={(v) => set("createdTo", v)}
+				/>
+				<DateRangePicker
+					label={t("leads.filters.assignedAtRange")}
+					dateFrom={draft.assignedAtFrom}
+					dateTo={draft.assignedAtTo}
+					onChangeFrom={(v) => set("assignedAtFrom", v)}
+					onChangeTo={(v) => set("assignedAtTo", v)}
+				/>
+				<DateRangePicker
+					label={t("leads.filters.lastActionRange")}
+					dateFrom={draft.lastActionFrom}
+					dateTo={draft.lastActionTo}
+					onChangeFrom={(v) => set("lastActionFrom", v)}
+					onChangeTo={(v) => set("lastActionTo", v)}
 				/>
 			</div>
 

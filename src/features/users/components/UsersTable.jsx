@@ -20,7 +20,7 @@ import {
 	getAvatarTone,
 	getInitials,
 } from "../../leads/utils/leadAvatars";
-import { getUserRole, isUserActive } from "../utils/userConstants";
+import { getUserRole, getUserTeamName, isUserActive } from "../utils/userConstants";
 import UserEmptyState from "./UserEmptyState";
 
 const INITIAL_VISIBLE = 20;
@@ -64,12 +64,14 @@ function StatusBadge({ active, t }) {
 function ActionButtons({
 	user,
 	actionsDisabled,
+	manageDisabled = false,
 	onEdit,
 	onToggleActive,
 	onDelete,
 }) {
 	const { t } = useTranslation();
 	const active = isUserActive(user);
+	const disabled = actionsDisabled || manageDisabled;
 	const btn =
 		"inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-50";
 
@@ -81,7 +83,7 @@ function ActionButtons({
 		>
 			<button
 				type="button"
-				disabled={actionsDisabled}
+				disabled={disabled}
 				onClick={() => onEdit(user)}
 				className={`${btn} text-primary hover:bg-light-gold/60`}
 			>
@@ -90,7 +92,7 @@ function ActionButtons({
 			</button>
 			<button
 				type="button"
-				disabled={actionsDisabled}
+				disabled={disabled}
 				onClick={() => onToggleActive(user)}
 				className={`${btn} text-text hover:bg-background`}
 			>
@@ -105,7 +107,7 @@ function ActionButtons({
 			</button>
 			<button
 				type="button"
-				disabled={actionsDisabled}
+				disabled={disabled}
 				onClick={() => onDelete(user)}
 				className={`${btn} text-red-600 hover:bg-red-50`}
 			>
@@ -138,6 +140,7 @@ const TableSkeleton = () => (
 
 const UsersTable = ({
 	users,
+	teams = [],
 	isLoading,
 	isError,
 	onRetry,
@@ -145,6 +148,7 @@ const UsersTable = ({
 	sorting,
 	onSortingChange,
 	actionsDisabled = false,
+	canManageUser,
 	onView,
 	onEdit,
 	onToggleActive,
@@ -200,6 +204,24 @@ const UsersTable = ({
 				},
 			},
 			{
+				accessorKey: "phone",
+				id: "phone",
+				header: t("users.columns.phone"),
+				cell: ({ getValue }) => (
+					<span className="text-sm text-text">{getValue() || "—"}</span>
+				),
+			},
+			{
+				id: "team",
+				accessorFn: (row) => getUserTeamName(row, teams),
+				header: t("users.columns.team"),
+				cell: ({ row }) => (
+					<span className="text-sm text-text">
+						{getUserTeamName(row.original, teams) || "—"}
+					</span>
+				),
+			},
+			{
 				accessorKey: "job_title",
 				id: "jobTitle",
 				header: t("users.columns.jobTitle"),
@@ -233,6 +255,11 @@ const UsersTable = ({
 					<ActionButtons
 						user={row.original}
 						actionsDisabled={actionsDisabled}
+						manageDisabled={
+							typeof canManageUser === "function"
+								? !canManageUser(row.original)
+								: false
+						}
 						onEdit={onEdit}
 						onToggleActive={onToggleActive}
 						onDelete={onDelete}
@@ -240,7 +267,7 @@ const UsersTable = ({
 				),
 			},
 		],
-		[t, actionsDisabled, onEdit, onToggleActive, onDelete],
+		[t, teams, actionsDisabled, canManageUser, onEdit, onToggleActive, onDelete],
 	);
 
 	const table = useReactTable({
@@ -335,12 +362,24 @@ const UsersTable = ({
 										)}
 										<StatusBadge active={isUserActive(user)} t={t} />
 									</div>
+									{(user.phone || getUserTeamName(user, teams)) && (
+										<p className="mt-2 text-xs text-muted">
+											{[user.phone, getUserTeamName(user, teams)]
+												.filter(Boolean)
+												.join(" · ")}
+										</p>
+									)}
 								</button>
 							</div>
 							<div className="mt-3 border-t border-border/60 pt-3">
 								<ActionButtons
 									user={user}
 									actionsDisabled={actionsDisabled}
+									manageDisabled={
+										typeof canManageUser === "function"
+											? !canManageUser(user)
+											: false
+									}
 									onEdit={onEdit}
 									onToggleActive={onToggleActive}
 									onDelete={onDelete}

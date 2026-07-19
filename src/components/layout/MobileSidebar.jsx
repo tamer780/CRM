@@ -1,6 +1,9 @@
 import { LogOut, X } from "lucide-react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import logoLight from "../../assets/logo-light.png";
+import { canAccessPath } from "../../features/users/utils/permissions";
+import { useAuthMe } from "../../hooks/auth/useAuthMe";
 import { useLogout } from "../../hooks/auth/useLogout";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { navGroups } from "./navConfig";
@@ -9,6 +12,17 @@ import SidebarItem from "./SidebarItem";
 const MobileSidebar = ({ open, onClose }) => {
 	const { t } = useTranslation();
 	const logoutMutation = useLogout();
+	const { data: user, isLoading: isAuthLoading } = useAuthMe();
+
+	const visibleGroups = useMemo(() => {
+		if (isAuthLoading || !user) return [];
+		return navGroups
+			.map((group) => ({
+				...group,
+				items: group.items.filter((item) => canAccessPath(user, item.path)),
+			}))
+			.filter((group) => group.items.length > 0);
+	}, [user, isAuthLoading]);
 
 	return (
 		<>
@@ -47,7 +61,7 @@ const MobileSidebar = ({ open, onClose }) => {
 				</div>
 
 				<nav className="flex-1 space-y-5 overflow-y-auto px-2 py-4">
-					{navGroups.map((group) => (
+					{visibleGroups.map((group) => (
 						<div key={group.id} className="space-y-1">
 							{group.labelKey && (
 								<p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-white/40">

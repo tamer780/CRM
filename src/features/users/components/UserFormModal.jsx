@@ -13,6 +13,9 @@ const UserFormModal = ({
 	onSubmit,
 	isSubmitting,
 	errors,
+	teams = [],
+	teamsLoading = false,
+	roles,
 }) => {
 	return (
 		<LeadFormModal
@@ -30,6 +33,9 @@ const UserFormModal = ({
 				onCancel={onClose}
 				isSubmitting={isSubmitting}
 				errors={errors}
+				teams={teams}
+				teamsLoading={teamsLoading}
+				roles={roles}
 			/>
 		</LeadFormModal>
 	);
