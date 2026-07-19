@@ -21,6 +21,7 @@
 		"teams": "الفرق",
 		"users": "المستخدمون",
 		"scheduledActions": "الإجراءات المجدولة",
+		"meetings": "الاجتماعات",
 		"auditLogs": "السجلات",
 		"role": "الدور",
 		"openMenu": "فتح القائمة",
@@ -429,6 +430,8 @@
 			"project": "المشروع",
 			"campaign": "الحملة",
 			"assignedTo": "مُعيّن إلى",
+			"note": "ملاحظة",
+			"lastComment": "آخر تعليق",
 			"created": "تاريخ الإنشاء"
 		},
 		"scheduledCall": {
@@ -504,20 +507,12 @@
 		},
 		"status": {
 			"new": "جديد",
-			"assigned": "معيّن",
 			"contacted": "تم التواصل",
 			"no_answer": "لا يوجد رد",
-			"follow_up": "متابعة",
 			"meeting_scheduled": "موعد مقابلة",
-			"meeting_completed": "اكتملت المقابلة",
-			"interested": "مهتم",
 			"qualified": "مؤهل",
-			"not_qualified": "غير مؤهل",
 			"low_budget": "ميزانية منخفضة",
 			"not_interested": "غير مهتم",
-			"already_bought_elsewhere": "اشترى من مكان آخر",
-			"postponed": "مؤجل",
-			"lost": "مفقود",
 			"converted": "محوّل",
 			"all_status": "كل الحالات",
 			"default": "افتراضي"
@@ -540,6 +535,7 @@
 		"validation": {
 			"phoneRequired": "الهاتف مطلوب.",
 			"lostReasonRequired": "سبب الفقد مطلوب.",
+			"meetingNoteMax": "ملاحظة المقابلة يجب ألا تتجاوز {{max}} حرفاً.",
 			"fileRequired": "يرجى اختيار ملف للاستيراد.",
 			"sourceRequired": "يرجى اختيار المصدر."
 		},
@@ -566,6 +562,14 @@
 			"reason": "سبب الفقد",
 			"reasonPlaceholder": "غير مهتم / الميزانية / التوقيت…",
 			"confirm": "تعيين كمفقود"
+		},
+		"meetingScheduled": {
+			"title": "جدولة مقابلة",
+			"message": "يمكنك إضافة تاريخ المقابلة وملاحظة اختيارياً لهذا العميل المحتمل.",
+			"date": "تاريخ المقابلة",
+			"note": "ملاحظة المقابلة",
+			"notePlaceholder": "الأجندة، المكان، الحضور…",
+			"confirm": "جدولة المقابلة"
 		},
 		"actions": {
 			"import": "استيراد"
@@ -657,7 +661,70 @@
 			"existingClientId": "معرّف العميل الموجود",
 			"reviewedBy": "راجعه",
 			"reviewedAt": "تاريخ المراجعة",
-			"resolutionNote": "ملاحظة الحل"
+			"resolutionNote": "ملاحظة الحل",
+			"compare": "مقارنة",
+			"pendingPanel": "الطلب المعلق",
+			"existingLeadPanel": "العميل المحتمل الموجود",
+			"existingClientPanel": "العميل الموجود",
+			"sourceDetails": "تفاصيل المصدر",
+			"noDuplicateReason": "لم يتم تقديم سبب للتكرار.",
+			"noMatchTitle": "لا يوجد سجل مطابق",
+			"noMatchMessage": "هذا العميل المعلق غير مرتبط بعميل محتمل أو عميل موجود.",
+			"existingHistory": "سجل العميل المحتمل الموجود",
+			"tabComments": "التعليقات",
+			"tabActivity": "النشاط",
+			"tabAssignments": "التعيينات",
+			"commentsEmptyTitle": "لا توجد تعليقات",
+			"commentsEmptyMessage": "لا توجد تعليقات على العميل المحتمل الموجود بعد.",
+			"activityEmptyTitle": "لا يوجد نشاط",
+			"activityEmptyMessage": "لا يوجد سجل نشاط للعميل المحتمل الموجود.",
+			"assignmentsEmptyTitle": "لا توجد تعيينات",
+			"assignmentsEmptyMessage": "لا يوجد سجل تعيينات للعميل المحتمل الموجود.",
+			"historyUnavailableTitle": "السجل غير متاح",
+			"historyUnavailableMessage": "تفاصيل العميل المحتمل الموجود غير متاحة لهذا السجل المعلق.",
+			"activeAssignment": "نشط",
+			"endedAssignment": "منتهٍ",
+			"reason": "السبب",
+			"changedBy": "تم التغيير بواسطة",
+			"assignedAt": "تاريخ التعيين",
+			"endedAt": "تاريخ الانتهاء",
+			"viewRawSnapshots": "عرض اللقطات الخام",
+			"hideRawSnapshots": "إخفاء اللقطات الخام",
+			"noOldValue": "لا توجد قيمة سابقة",
+			"noNewValue": "لا توجد قيمة جديدة",
+			"moreChanges": "+{{count}} حقول إضافية",
+			"unknownActivity": "نشاط"
+		},
+		"activityTypes": {
+			"lead_created": "إنشاء عميل محتمل",
+			"lead_assigned": "تعيين عميل محتمل",
+			"lead_reassigned": "إعادة تعيين عميل محتمل",
+			"lead_lost": "فقدان عميل محتمل",
+			"status_changed": "تغيير الحالة",
+			"comment_added": "إضافة تعليق",
+			"note_updated": "تحديث ملاحظة"
+		},
+		"diffFields": {
+			"status": "الحالة",
+			"assigned_to": "مُعيَّن إلى",
+			"assigned_by": "عيّنه",
+			"assigned_at": "تاريخ التعيين",
+			"lost_reason": "سبب الفقدان",
+			"lost_at": "تاريخ الفقدان",
+			"qualified_at": "تاريخ التأهيل",
+			"project_id": "المشروع",
+			"campaign_id": "الحملة",
+			"note": "ملاحظة",
+			"last_communication_note": "آخر ملاحظة تواصل",
+			"scheduled_call_at": "مكالمة مجدولة",
+			"next_follow_up_at": "المتابعة التالية",
+			"first_action_at": "أول إجراء",
+			"last_action_at": "آخر إجراء",
+			"source": "المصدر",
+			"source_details": "تفاصيل المصدر",
+			"name": "الاسم",
+			"phone": "الهاتف",
+			"email": "البريد الإلكتروني"
 		},
 		"replace": {
 			"title": "استبدال العميل المعلق",
@@ -1099,6 +1166,8 @@
 			"team": "الفريق",
 			"leader": "قائد الفريق",
 			"supervisor": "المشرف",
+			"members": "الأعضاء",
+			"projects": "المشاريع",
 			"created": "الإنشاء",
 			"updated": "التحديث",
 			"actions": "الإجراءات"
@@ -1124,14 +1193,15 @@
 			"tabs": {
 				"overview": "نظرة عامة",
 				"members": "الأعضاء",
-				"projects": "المشاريع",
-				"performance": "الأداء"
+				"projects": "المشاريع"
 			},
 			"general": "معلومات عامة",
 			"leadership": "القيادة",
 			"timeline": "الجدول الزمني",
 			"createdAt": "تاريخ الإنشاء",
-			"updatedAt": "تاريخ التحديث"
+			"updatedAt": "تاريخ التحديث",
+			"noMembers": "لا يوجد أعضاء في هذا الفريق.",
+			"noProjects": "لا توجد مشاريع معيّنة لهذا الفريق."
 		},
 		"form": {
 			"subtitle": "حدّد اسم الفريق وعيّن أدوار القيادة.",
@@ -1282,6 +1352,110 @@
 			"deleteFailed": "تعذّر حذف المستخدم. يرجى المحاولة مرة أخرى.",
 			"activateFailed": "تعذّر تفعيل المستخدم. يرجى المحاولة مرة أخرى.",
 			"deactivateFailed": "تعذّر إيقاف المستخدم. يرجى المحاولة مرة أخرى."
+		}
+	},
+	"meetings": {
+		"title": "الاجتماعات",
+		"subtitle": "جدولة ومتابعة اجتماعات العقارات من المجدول حتى الشراء.",
+		"refresh": "تحديث",
+		"newMeeting": "اجتماع جديد",
+		"editMeeting": "تعديل الاجتماع",
+		"searchPlaceholder": "ابحث بالعميل المحتمل أو الملاحظات أو المكلّف",
+		"resetFilters": "إعادة تعيين الفلاتر",
+		"kpis": {
+			"total": "الإجمالي",
+			"scheduled": "مجدول",
+			"visit": "زيارة",
+			"bought": "تم الشراء",
+			"canceled": "ملغى"
+		},
+		"filters": {
+			"status": "الحالة",
+			"allStatuses": "كل الحالات",
+			"assignee": "المكلّف",
+			"allAssignees": "كل المكلّفين",
+			"lead": "عميل محتمل",
+			"allLeads": "كل العملاء المحتملين",
+			"dateFrom": "من",
+			"dateTo": "إلى"
+		},
+		"statuses": {
+			"scheduled": "مجدول",
+			"visit": "زيارة",
+			"reserved": "محجوز",
+			"bought": "تم الشراء",
+			"canceled": "ملغى",
+			"didnt_come": "لم يحضر"
+		},
+		"columns": {
+			"meetingDate": "تاريخ الاجتماع",
+			"lead": "عميل محتمل",
+			"assignee": "المكلّف",
+			"status": "الحالة",
+			"notes": "ملاحظات",
+			"creator": "أنشئ بواسطة",
+			"actions": "إجراءات"
+		},
+		"actions": {
+			"view": "عرض",
+			"edit": "تعديل",
+			"delete": "حذف"
+		},
+		"pagination": {
+			"showing": "عرض {{shown}} من {{total}}"
+		},
+		"empty": {
+			"title": "لا توجد اجتماعات",
+			"subtitle": "أنشئ أول اجتماع.",
+			"filteredTitle": "لا توجد اجتماعات مطابقة",
+			"filteredSubtitle": "جرّب تعديل الفلاتر أو البحث."
+		},
+		"drawer": {
+			"title": "اجتماع",
+			"general": "معلومات عامة",
+			"timeline": "الجدول الزمني",
+			"createdBy": "أنشئ بواسطة",
+			"createdAt": "تاريخ الإنشاء",
+			"updatedAt": "تاريخ التحديث"
+		},
+		"form": {
+			"subtitle": "اربط عميلاً محتملاً وعيّن المكلّف والحالة ووقت الاجتماع.",
+			"lead": "عميل محتمل",
+			"leadPlaceholder": "اختر عميلاً محتملاً",
+			"assignee": "المكلّف",
+			"assigneePlaceholder": "اختر مكلّفاً",
+			"status": "الحالة",
+			"statusPlaceholder": "اختر حالة",
+			"meetingDate": "تاريخ الاجتماع",
+			"notes": "ملاحظات",
+			"create": "إنشاء اجتماع",
+			"save": "حفظ التغييرات"
+		},
+		"delete": {
+			"title": "حذف الاجتماع",
+			"message": "هل أنت متأكد من حذف هذا الاجتماع؟",
+			"cannotUndo": "لا يمكن التراجع عن هذا الإجراء.",
+			"confirm": "حذف",
+			"fallback": "اجتماع"
+		},
+		"validation": {
+			"leadRequired": "العميل المحتمل مطلوب.",
+			"assignedRequired": "المكلّف مطلوب.",
+			"statusRequired": "الحالة مطلوبة.",
+			"meetingDateRequired": "تاريخ الاجتماع مطلوب."
+		},
+		"toasts": {
+			"created": "تم إنشاء الاجتماع بنجاح.",
+			"updated": "تم تحديث الاجتماع بنجاح.",
+			"deleted": "تم حذف الاجتماع بنجاح.",
+			"createdFromLeadFailed": "تم تحديث حالة العميل المحتمل، لكن تعذّر إنشاء الاجتماع."
+		},
+		"errors": {
+			"loadFailed": "تعذّر تحميل الاجتماعات. يرجى المحاولة مرة أخرى.",
+			"loadDetailFailed": "تعذّر تحميل تفاصيل الاجتماع.",
+			"createFailed": "تعذّر إنشاء الاجتماع. يرجى المحاولة مرة أخرى.",
+			"updateFailed": "تعذّر تحديث الاجتماع. يرجى المحاولة مرة أخرى.",
+			"deleteFailed": "تعذّر حذف الاجتماع. يرجى المحاولة مرة أخرى."
 		}
 	},
 	"scheduledActions": {

@@ -3,18 +3,18 @@ import { useTranslation } from "react-i18next";
 import {
 	LEAD_SOURCES,
 	LEAD_STATUS_FILTERABLE,
-} from "../../../utils/leads/leadConstants";
-import ActiveFilters from "./filters/ActiveFilters";
-import FilterButton from "./filters/FilterButton";
-import FilterPopover from "./filters/FilterPopover";
-import SearchInput from "./filters/SearchInput";
+} from "../../../../utils/leads/leadConstants";
+import ActiveFilters from "../filters/ActiveFilters";
+import FilterButton from "../filters/FilterButton";
+import FilterPopover from "../filters/FilterPopover";
+import SearchInput from "../filters/SearchInput";
 import {
 	buildActiveFilterChips,
 	clearAllAppliedFilters,
 	countActiveFilters,
 	emptyDraftFilters,
 	pickDraftFromFilters,
-} from "./filters/filterHelpers";
+} from "../filters/filterHelpers";
 
 const statusOptions = LEAD_STATUS_FILTERABLE;
 

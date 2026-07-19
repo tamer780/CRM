@@ -6,10 +6,11 @@ export function useUpdateLeadStatus() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async ({ leadId, status, lost_reason }) => {
+		mutationFn: async ({ leadId, status, meeting_date, meeting_note }) => {
 			const body = { status };
-			if (status === "lost" && lost_reason) {
-				body.lost_reason = lost_reason;
+			if (status === "meeting_scheduled") {
+				body.meeting_date = meeting_date ?? null;
+				body.meeting_note = meeting_note ?? null;
 			}
 			const response = await updateLeadStatus(leadId, body);
 			return extractData(response);
@@ -20,6 +21,9 @@ export function useUpdateLeadStatus() {
 				queryClient.invalidateQueries({
 					queryKey: ["leads", String(variables.leadId)],
 				});
+			}
+			if (variables?.status === "meeting_scheduled") {
+				queryClient.invalidateQueries({ queryKey: ["meetings"] });
 			}
 		},
 	});

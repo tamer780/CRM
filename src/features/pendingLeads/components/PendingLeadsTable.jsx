@@ -16,7 +16,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ErrorState from "../../../components/dashboard/ErrorState";
 import DuplicateStatusBadge from "../../../components/ui/DuplicateStatusBadge";
-import SourceBadge from "../../../components/ui/SourceBadge";
 import {
 	getAvatarTone,
 	getInitials,
@@ -128,8 +127,8 @@ function ActionButtons({
 
 const PendingLeadsTableSkeleton = () => (
 	<div className="rounded-2xl border border-border bg-surface p-4 shadow-sm sm:p-6">
-		<div className="mb-4 hidden gap-4 md:grid md:grid-cols-8">
-			{Array.from({ length: 8 }).map((_, i) => (
+		<div className="mb-4 hidden gap-4 md:grid md:grid-cols-6">
+			{Array.from({ length: 6 }).map((_, i) => (
 				<div key={i} className="h-3 animate-pulse rounded bg-border/70" />
 			))}
 		</div>
@@ -158,7 +157,6 @@ const PendingLeadsTable = ({
 	onRetry,
 	isFilteredEmpty = false,
 	projectsMap,
-	campaignsMap,
 	sorting,
 	onSortingChange,
 	actionsDisabled = false,
@@ -212,22 +210,9 @@ const PendingLeadsTable = ({
 				),
 			},
 			{
-				accessorKey: "source",
-				header: t("pendingLeads.columns.source"),
-				cell: ({ getValue }) => <SourceBadge source={getValue()} />,
-			},
-			{
 				id: "project",
 				accessorFn: (row) => resolveLabel(projectsMap, row.project_id),
 				header: t("pendingLeads.columns.project"),
-				cell: ({ getValue }) => (
-					<span className="text-sm text-muted">{getValue()}</span>
-				),
-			},
-			{
-				id: "campaign",
-				accessorFn: (row) => resolveLabel(campaignsMap, row.campaign_id),
-				header: t("pendingLeads.columns.campaign"),
 				cell: ({ getValue }) => (
 					<span className="text-sm text-muted">{getValue()}</span>
 				),
@@ -287,7 +272,6 @@ const PendingLeadsTable = ({
 		[
 			t,
 			projectsMap,
-			campaignsMap,
 			actionsDisabled,
 			onView,
 			onReplace,
@@ -389,7 +373,6 @@ const PendingLeadsTable = ({
 											{lead.email ? ` · ${lead.email}` : ""}
 										</p>
 										<div className="mt-2 flex flex-wrap gap-2">
-											<SourceBadge source={lead.source} />
 											<DuplicateTypeBadge lead={lead} />
 										</div>
 										<p

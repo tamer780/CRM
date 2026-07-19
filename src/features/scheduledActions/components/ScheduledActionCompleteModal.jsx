@@ -1,8 +1,8 @@
 import { CheckCircle2 } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 import { useTranslation } from "react-i18next";
-import FormInput from "../../leads/components/FormInput";
-import FormTextarea from "../../leads/components/FormTextarea";
+import FormInput from "../../leads/components/form/FormInput";
+import FormTextarea from "../../leads/components/form/FormTextarea";
 import { validateCompleteForm } from "../utils/scheduledActionConstants";
 
 const ScheduledActionCompleteModal = ({

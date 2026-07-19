@@ -18,8 +18,8 @@ export function useCreateLeadComment(leadId) {
 
 			const optimistic = {
 				id: `temp-${Date.now()}`,
-				comment: body.comment,
-				body: body.comment,
+				body: body.body,
+				comment: body.body,
 				created_at: new Date().toISOString(),
 				_optimistic: true,
 			};

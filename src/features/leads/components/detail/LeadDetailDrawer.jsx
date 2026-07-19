@@ -1,24 +1,23 @@
-import { MessageCircle, Pencil, Phone, User } from "lucide-react";
+import { MessageCircle, Pencil, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import ErrorState from "../../../components/dashboard/ErrorState";
-import LoadingSkeleton from "../../../components/dashboard/LoadingSkeleton";
-import StatusBadge from "../../../components/dashboard/StatusBadge";
-import LeadDetailCard from "../../../components/leads/LeadDetailCard";
-import SideDrawer from "../../../components/ui/SideDrawer";
-import SourceBadge from "../../../components/ui/SourceBadge";
-import { useLead } from "../../../hooks/leads/useLead";
-import { useUpdateLead } from "../../../hooks/leads/useUpdateLead";
-import { extractApiError } from "../../../utils/api/apiHelpers";
+import ErrorState from "../../../../components/dashboard/ErrorState";
+import LoadingSkeleton from "../../../../components/dashboard/LoadingSkeleton";
+import SideDrawer from "../../../../components/ui/SideDrawer";
+import { useLead } from "../../../../hooks/leads/useLead";
+import { useUpdateLead } from "../../../../hooks/leads/useUpdateLead";
+import { extractApiError } from "../../../../utils/api/apiHelpers";
 import {
 	formValuesToPayload,
 	leadToFormValues,
 	validateLeadForm,
-} from "../../../utils/leads/leadConstants";
-import { resolveUserLabel } from "../../../utils/leads/resolveLeadLabels";
+} from "../../../../utils/leads/leadConstants";
+import LeadForm from "../form/LeadForm";
+import LeadFormModal from "../form/LeadFormModal";
+import LeadAssignSelect from "../table/LeadAssignSelect";
+import LeadStatusSelect from "../table/LeadStatusSelect";
 import LeadActivityPanel from "./LeadActivityPanel";
-import LeadForm from "./LeadForm";
-import LeadFormModal from "./LeadFormModal";
+import LeadDetailCard from "./LeadDetailCard";
 
 const actionButtonClassName =
 	"inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm font-medium text-text shadow-sm transition hover:bg-background";
@@ -37,6 +36,12 @@ const LeadDetailDrawer = ({
 	campaignsLoading = false,
 	usersLoading = false,
 	canEdit = true,
+	canDelete = false,
+	onDelete,
+	onStatusChange,
+	onAssignChange,
+	statusUpdatingId = null,
+	assignUpdatingId = null,
 }) => {
 	const { t } = useTranslation();
 	const leadQuery = useLead(open ? leadId : null);
@@ -93,40 +98,36 @@ const LeadDetailDrawer = ({
 	};
 
 	const lead = leadQuery.data;
-	const assigneeLabel =
-		lead?.assigned_to != null && lead.assigned_to !== ""
-			? resolveUserLabel(usersMap, lead.assigned_to)
-			: null;
 	const waPhone = lead?.phone ? String(lead.phone).replace(/\D/g, "") : "";
 
 	const title = lead ? (
-		<span className="flex flex-wrap items-center gap-2">
+		<span className="flex min-w-0 items-center gap-2">
 			<span className="truncate">{lead.name}</span>
-			<StatusBadge status={lead.status} />
+			<span className="shrink-0 text-sm font-normal text-muted">
+				#{lead.id}
+			</span>
 		</span>
 	) : (
 		t("leads.title")
 	);
 
 	const subtitle = lead ? (
-		<div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-			{lead.phone && (
-				<span className="inline-flex items-center gap-1.5" dir="ltr">
-					<Phone className="size-3.5 shrink-0" aria-hidden="true" />
-					{lead.phone}
-				</span>
-			)}
-			{lead.source && (
-				<span className="inline-flex items-center">
-					<SourceBadge source={lead.source} />
-				</span>
-			)}
-			{assigneeLabel && assigneeLabel !== "—" && (
-				<span className="inline-flex items-center gap-1.5">
-					<User className="size-3.5 shrink-0" aria-hidden="true" />
-					{assigneeLabel}
-				</span>
-			)}
+		<div className="mt-1.5 flex flex-wrap items-center gap-2">
+			<LeadStatusSelect
+				status={lead.status}
+				onChange={(status) => onStatusChange?.(lead, status)}
+				isUpdating={statusUpdatingId === lead.id}
+				disabled={!canEdit}
+				placement="bottom"
+			/>
+			<LeadAssignSelect
+				assignedTo={lead.assigned_to}
+				users={users}
+				onChange={(userId) => onAssignChange?.(lead, userId)}
+				isUpdating={assignUpdatingId === lead.id}
+				disabled={!canEdit}
+				placement="bottom"
+			/>
 		</div>
 	) : null;
 
@@ -204,12 +205,13 @@ const LeadDetailDrawer = ({
 							projectsMap={projectsMap}
 							campaignsMap={campaignsMap}
 							usersMap={usersMap}
-						/>
-						<LeadActivityPanel
-							leadId={leadId}
-							lead={lead}
-							users={users}
-						/>
+						>
+							<LeadActivityPanel
+								leadId={leadId}
+								lead={lead}
+								users={users}
+							/>
+						</LeadDetailCard>
 					</div>
 				)}
 			</SideDrawer>
@@ -232,6 +234,17 @@ const LeadDetailDrawer = ({
 					}}
 					onSubmit={handleUpdate}
 					onCancel={closeModal}
+					onDelete={
+						canDelete && lead
+							? () => {
+									if (updateLead.isPending) return;
+									setModalOpen(false);
+									setFieldErrors({});
+									onDelete?.(lead);
+								}
+							: undefined
+					}
+					canDelete={canDelete}
 					isSubmitting={updateLead.isPending}
 					errors={fieldErrors}
 					projects={projects}

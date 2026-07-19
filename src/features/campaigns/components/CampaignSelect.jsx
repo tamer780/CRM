@@ -4,7 +4,7 @@ import {
 	FieldLabel,
 	FieldLoading,
 	FieldMessage,
-} from "../../leads/components/formFieldStyles";
+} from "../../leads/components/form/formFieldStyles";
 
 /**
  * Styled listbox select matching CRM filter dropdown look.
@@ -24,6 +24,7 @@ const CampaignSelect = ({
 	placeholder = "Select...",
 	clearable = true,
 	clearLabel = "None",
+	placement = "bottom",
 	className = "",
 }) => {
 	const autoId = useId();
@@ -96,7 +97,12 @@ const CampaignSelect = ({
 				<ul
 					id={listId}
 					role="listbox"
-					className="animate-dropdown-in absolute inset-x-0 top-[calc(100%+0.35rem)] z-50 max-h-56 overflow-y-auto rounded-xl border border-border bg-surface py-1.5 shadow-lg"
+					className={[
+						"animate-dropdown-in absolute inset-x-0 z-50 max-h-56 overflow-y-auto rounded-xl border border-border bg-surface py-1.5 shadow-lg",
+						placement === "top"
+							? "bottom-[calc(100%+0.35rem)]"
+							: "top-[calc(100%+0.35rem)]",
+					].join(" ")}
 				>
 					{clearable && (
 						<li role="option" aria-selected={!hasValue}>

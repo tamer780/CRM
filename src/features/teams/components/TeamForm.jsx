@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import FormInput from "../../leads/components/FormInput";
-import SearchableSelect from "../../leads/components/SearchableSelect";
+import FormInput from "../../leads/components/form/FormInput";
+import SearchableSelect from "../../leads/components/form/SearchableSelect";
 import {
 	getAvatarTone,
 	getInitials,

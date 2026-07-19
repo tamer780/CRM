@@ -2,11 +2,11 @@ import { MessageSquareText, Send } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import ErrorState from "../../../components/dashboard/ErrorState";
-import { useCreateLeadComment } from "../../../hooks/leads/useCreateLeadComment";
-import { useLeadComments } from "../../../hooks/leads/useLeadComments";
-import { extractApiError } from "../../../utils/api/apiHelpers";
-import { getAvatarTone, getInitials } from "../utils/leadAvatars";
+import ErrorState from "../../../../components/dashboard/ErrorState";
+import { useCreateLeadComment } from "../../../../hooks/leads/useCreateLeadComment";
+import { useLeadComments } from "../../../../hooks/leads/useLeadComments";
+import { extractApiError } from "../../../../utils/api/apiHelpers";
+import { getAvatarTone, getInitials } from "../../utils/leadAvatars";
 
 const MAX_LENGTH = 2000;
 
@@ -148,7 +148,7 @@ const LeadCommentsSection = ({ leadId, users = [], variant = "card" }) => {
 		setLocalError("");
 
 		createComment.mutate(
-			{ comment: trimmed },
+			{ body: trimmed },
 			{
 				onSuccess: () => {
 					setDraft("");

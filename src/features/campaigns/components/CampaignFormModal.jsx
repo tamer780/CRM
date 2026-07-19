@@ -1,4 +1,4 @@
-import LeadFormModal from "../../leads/components/LeadFormModal";
+import LeadFormModal from "../../leads/components/form/LeadFormModal";
 import CampaignForm from "./CampaignForm";
 
 const CampaignFormModal = ({

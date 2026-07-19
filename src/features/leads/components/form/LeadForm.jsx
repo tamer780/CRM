@@ -10,6 +10,8 @@ const LeadForm = ({
 	onChange,
 	onSubmit,
 	onCancel,
+	onDelete,
+	canDelete = false,
 	isSubmitting = false,
 	errors = {},
 	projects = [],
@@ -81,6 +83,8 @@ const LeadForm = ({
 					mode={mode}
 					isSubmitting={isSubmitting}
 					onCancel={onCancel}
+					onDelete={onDelete}
+					canDelete={canDelete}
 				/>
 			</div>
 		</form>

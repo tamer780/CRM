@@ -228,10 +228,7 @@ const PendingLeadsPage = () => {
 		});
 	};
 
-	const detailLead =
-		detailQuery.data ??
-		filteredLeads.find((item) => String(item.id) === String(selected)) ??
-		null;
+	const detailLead = detailQuery.data ?? null;
 
 	return (
 		<div className="space-y-5">
@@ -262,7 +259,6 @@ const PendingLeadsPage = () => {
 					onRetry={() => pendingQuery.refetch()}
 					isFilteredEmpty={isFilteredEmpty}
 					projectsMap={projectsMap}
-					campaignsMap={campaignsMap}
 					sorting={sorting}
 					onSortingChange={handleSortingChange}
 					actionsDisabled={actionsPending}
@@ -286,13 +282,30 @@ const PendingLeadsPage = () => {
 				open={Boolean(selected)}
 				onClose={closeDrawer}
 				lead={detailLead}
-				isLoading={Boolean(selected) && detailQuery.isLoading && !detailLead}
-				isError={Boolean(selected) && detailQuery.isError && !detailLead}
+				isLoading={
+					Boolean(selected) &&
+					!detailQuery.data &&
+					(detailQuery.isLoading || detailQuery.isFetching)
+				}
+				isError={Boolean(selected) && detailQuery.isError && !detailQuery.data}
 				onRetry={() => detailQuery.refetch()}
 				preventClose={actionsPending}
 				projectsMap={projectsMap}
 				campaignsMap={campaignsMap}
 				usersMap={usersMap}
+				actionsDisabled={actionsPending}
+				onReplace={(lead) => {
+					setActionError("");
+					setReplaceTarget(lead);
+				}}
+				onMerge={(lead) => {
+					setActionError("");
+					setMergeTarget(lead);
+				}}
+				onRemove={(lead) => {
+					setActionError("");
+					setRemoveTarget(lead);
+				}}
 			/>
 
 			<PendingLeadReplaceModal

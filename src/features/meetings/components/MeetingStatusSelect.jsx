@@ -3,25 +3,22 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import {
-	LEAD_STATUS_DOT_COLORS,
-	LEAD_STATUS_STYLES,
-	LEAD_STATUS_ACTIONABLE,
-} from "../../../utils/leads/leadConstants";
+	MEETING_STATUSES,
+	MEETING_STATUS_DOT_COLORS,
+	MEETING_STATUS_STYLES,
+} from "../utils/meetingConstants";
 
-const STATUS_OPTIONS = LEAD_STATUS_ACTIONABLE;
 const MENU_MAX_HEIGHT = 280;
 const MENU_GAP = 6;
 
 function statusLabel(t, status) {
 	const key = String(status ?? "").toLowerCase();
-	return t(`leads.status.${key}`, {
-		defaultValue: t(`dashboard.status.${key}`, {
-			defaultValue: status ? String(status).replaceAll("_", " ") : "—",
-		}),
+	return t(`meetings.statuses.${key}`, {
+		defaultValue: status ? String(status).replaceAll("_", " ") : "—",
 	});
 }
 
-const LeadStatusSelect = ({
+const MeetingStatusSelect = ({
 	status,
 	onChange,
 	disabled = false,
@@ -36,8 +33,8 @@ const LeadStatusSelect = ({
 	const [menuStyle, setMenuStyle] = useState(null);
 
 	const key = String(status ?? "").toLowerCase();
-	const styles = LEAD_STATUS_STYLES[key] ?? "bg-background text-muted";
-	const dot = LEAD_STATUS_DOT_COLORS[key] ?? "bg-muted";
+	const styles = MEETING_STATUS_STYLES[key] ?? "bg-background text-muted";
+	const dot = MEETING_STATUS_DOT_COLORS[key] ?? "bg-muted";
 	const label = statusLabel(t, status);
 	const locked = disabled || isUpdating;
 
@@ -49,8 +46,10 @@ const LeadStatusSelect = ({
 		const spaceBelow = window.innerHeight - rect.bottom;
 		const openUp =
 			placement === "top"
-				? spaceAbove >= Math.min(MENU_MAX_HEIGHT, 120) || spaceAbove > spaceBelow
-				: spaceBelow < Math.min(MENU_MAX_HEIGHT, 120) && spaceAbove > spaceBelow;
+				? spaceAbove >= Math.min(MENU_MAX_HEIGHT, 120) ||
+					spaceAbove > spaceBelow
+				: spaceBelow < Math.min(MENU_MAX_HEIGHT, 120) &&
+					spaceAbove > spaceBelow;
 
 		const style = {
 			position: "fixed",
@@ -118,13 +117,13 @@ const LeadStatusSelect = ({
 				ref={listRef}
 				id={listId}
 				role="listbox"
-				aria-label={t("leads.columns.status")}
+				aria-label={t("meetings.columns.status")}
 				style={menuStyle}
 				className="custom-scrollbar animate-dropdown-in overflow-y-auto rounded-xl border border-border bg-surface py-1.5 shadow-lg"
 			>
-				{STATUS_OPTIONS.map((option) => {
+				{MEETING_STATUSES.map((option) => {
 					const selected = option === key;
-					const optionDot = LEAD_STATUS_DOT_COLORS[option] ?? "bg-muted";
+					const optionDot = MEETING_STATUS_DOT_COLORS[option] ?? "bg-muted";
 					return (
 						<li key={option} role="option" aria-selected={selected}>
 							<button
@@ -168,12 +167,15 @@ const LeadStatusSelect = ({
 				aria-haspopup="listbox"
 				aria-expanded={open}
 				aria-controls={listId}
-				aria-label={t("leads.columns.status")}
-				title={t("leads.columns.status")}
+				aria-label={t("meetings.columns.status")}
+				title={t("meetings.columns.status")}
 				onClick={() => !locked && setOpen((prev) => !prev)}
 				className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ring-1 ring-inset ring-black/5 transition hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 disabled:opacity-60 ${styles}`}
 			>
-				<span className={`size-1.5 shrink-0 rounded-full ${dot}`} aria-hidden="true" />
+				<span
+					className={`size-1.5 shrink-0 rounded-full ${dot}`}
+					aria-hidden="true"
+				/>
 				{isUpdating ? t("common.loading") : label}
 				<ChevronDown
 					className={`size-3 shrink-0 opacity-70 transition-transform ${open ? "rotate-180" : ""}`}
@@ -185,4 +187,4 @@ const LeadStatusSelect = ({
 	);
 };
 
-export default LeadStatusSelect;
+export default MeetingStatusSelect;

@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import {
 	LEAD_STATUS_DOT_COLORS,
 	LEAD_STATUS_STYLES,
-} from "../../../utils/leads/leadConstants";
+} from "../../../../utils/leads/leadConstants";
 
 const LeadStatusBadge = ({ status }) => {
 	const { t } = useTranslation();

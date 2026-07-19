@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { UserPlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import ErrorState from "../../../components/dashboard/ErrorState";
+import ErrorState from "../../../../components/dashboard/ErrorState";
 import LeadTableRow, { LeadMobileCard } from "./LeadTableRow";
 
 const INITIAL_VISIBLE = 20;
@@ -75,11 +75,9 @@ const LeadTable = ({
 	onAddLead,
 	isFilteredEmpty = false,
 	projectsMap,
-	campaignsMap,
 	users = [],
 	onView,
 	onEdit,
-	onDelete,
 	onStatusChange,
 	onAssignChange,
 	statusUpdatingId,
@@ -88,13 +86,12 @@ const LeadTable = ({
 	onToggleSelect,
 	onToggleSelectAll,
 	canEdit = true,
-	canDelete = true,
 }) => {
 	const { t } = useTranslation();
 	const selectAllRef = useRef(null);
 	const sentinelRef = useRef(null);
 	const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
-	const showActions = canEdit || canDelete;
+	const showActions = canEdit;
 
 	const selectedCount = leads.filter((lead) =>
 		selectedIds?.has(String(lead.id)),
@@ -153,18 +150,15 @@ const LeadTable = ({
 
 	const rowProps = {
 		projectsMap,
-		campaignsMap,
 		users,
 		onView,
 		onEdit,
-		onDelete,
 		onStatusChange,
 		onAssignChange,
 		statusUpdatingId,
 		assignUpdatingId,
 		onToggleSelect,
 		canEdit,
-		canDelete,
 	};
 
 	return (
@@ -197,14 +191,16 @@ const LeadTable = ({
 										/>
 									</th>
 									<th className="px-4 py-3 text-start">{t("leads.columns.name")}</th>
-									<th className="px-4 py-3 text-start">{t("leads.columns.source")}</th>
 									<th className="px-4 py-3 text-start">{t("leads.columns.status")}</th>
 									<th className="px-4 py-3 text-start">
 										{t("leads.columns.scheduledCall")}
 									</th>
 									<th className="px-4 py-3 text-start">{t("leads.columns.project")}</th>
-									<th className="px-4 py-3 text-start">{t("leads.columns.campaign")}</th>
 									<th className="px-4 py-3 text-start">{t("leads.columns.assignedTo")}</th>
+									<th className="px-4 py-3 text-start">{t("leads.columns.note")}</th>
+									<th className="px-4 py-3 text-start">
+										{t("leads.columns.lastComment")}
+									</th>
 									<th className="px-4 py-3 text-start">{t("leads.columns.created")}</th>
 									{showActions && (
 										<th className="px-4 py-3 text-end">

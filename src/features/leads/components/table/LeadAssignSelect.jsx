@@ -2,8 +2,8 @@ import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import { getUserRole } from "../../users/utils/userConstants";
-import { getAvatarTone, getInitials } from "../utils/leadAvatars";
+import { getUserRole } from "../../../users/utils/userConstants";
+import { getAvatarTone, getInitials } from "../../utils/leadAvatars";
 
 const ASSIGNABLE_ROLES = new Set(["sales", "leader", "supervisor"]);
 const MENU_MAX_HEIGHT = 224; // max-h-56

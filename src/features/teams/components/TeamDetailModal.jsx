@@ -5,8 +5,15 @@ import {
 	getAvatarTone,
 	getInitials,
 } from "../../leads/utils/leadAvatars";
+import ProjectStatusBadge from "../../projects/components/ProjectStatusBadge";
+import {
+	getTeamMembers,
+	getTeamProjects,
+	personDisplayName,
+	resolveTeamPerson,
+} from "../utils/teamConstants";
 
-const DRAWER_TABS = ["overview", "members", "projects", "performance"];
+const DRAWER_TABS = ["overview", "members", "projects"];
 
 function formatDateTime(value) {
 	if (!value) return "—";
@@ -34,16 +41,35 @@ function Field({ label, value }) {
 	);
 }
 
-function PersonField({ label, usersMap, userId }) {
-	const missing = userId == null || userId === "" || Number(userId) === 0;
-	const user = !missing
-		? (usersMap?.get(Number(userId)) ?? usersMap?.get(String(userId)))
-		: null;
-	const name = user
-		? (user.name ?? user.email ?? `#${user.id}`)
-		: missing
-			? null
-			: `#${userId}`;
+function StatusBadge({ active, t }) {
+	return (
+		<span
+			className={[
+				"inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium",
+				active
+					? "bg-emerald-50 text-emerald-700"
+					: "bg-red-50 text-red-700",
+			].join(" ")}
+		>
+			{active ? t("users.status.active") : t("users.status.inactive")}
+		</span>
+	);
+}
+
+function RoleChip({ role }) {
+	if (!role) return null;
+	return (
+		<span className="inline-flex rounded-full bg-background px-2 py-0.5 text-[11px] font-medium text-muted ring-1 ring-inset ring-border">
+			{role}
+		</span>
+	);
+}
+
+function PersonField({ label, person, t }) {
+	const name = personDisplayName(person);
+	const email = person?.email;
+	const role = Array.isArray(person?.roles) ? person.roles[0] : null;
+	const inactive = person?.is_active === false;
 
 	return (
 		<div>
@@ -51,18 +77,86 @@ function PersonField({ label, usersMap, userId }) {
 				{label}
 			</p>
 			{name ? (
-				<div className="mt-1.5 flex items-center gap-2">
+				<div className={`mt-1.5 flex items-start gap-2 ${inactive ? "opacity-60" : ""}`}>
 					<span
 						className={`flex size-8 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${getAvatarTone(name)}`}
 					>
 						{getInitials(name)}
 					</span>
-					<span className="text-sm text-text">{name}</span>
+					<div className="min-w-0">
+						<div className="flex flex-wrap items-center gap-2">
+							<span className="text-sm font-medium text-text">{name}</span>
+							{inactive ? <StatusBadge active={false} t={t} /> : null}
+						</div>
+						{email ? (
+							<p className="truncate text-xs text-muted">{email}</p>
+						) : null}
+						{role ? (
+							<div className="mt-1">
+								<RoleChip role={role} />
+							</div>
+						) : null}
+					</div>
 				</div>
 			) : (
 				<p className="mt-1 text-sm text-text">—</p>
 			)}
 		</div>
+	);
+}
+
+function MemberRow({ member, t }) {
+	const name = personDisplayName(member) ?? "—";
+	const inactive = member?.is_active === false;
+	const roles = Array.isArray(member?.roles) ? member.roles : [];
+
+	return (
+		<li
+			className={[
+				"flex items-start gap-3 rounded-xl border border-border/60 bg-surface px-3 py-2.5",
+				inactive ? "opacity-60" : "",
+			].join(" ")}
+		>
+			<span
+				className={`flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${getAvatarTone(name)}`}
+			>
+				{getInitials(name)}
+			</span>
+			<div className="min-w-0 flex-1">
+				<div className="flex flex-wrap items-center gap-2">
+					<p className="truncate text-sm font-medium text-text">{name}</p>
+					<StatusBadge active={!inactive} t={t} />
+				</div>
+				{member?.email ? (
+					<p className="truncate text-xs text-muted">{member.email}</p>
+				) : null}
+				{roles.length > 0 ? (
+					<div className="mt-1.5 flex flex-wrap gap-1">
+						{roles.map((role) => (
+							<RoleChip key={role} role={role} />
+						))}
+					</div>
+				) : null}
+			</div>
+		</li>
+	);
+}
+
+function ProjectRow({ project }) {
+	const name = project?.name ?? (project?.id != null ? `#${project.id}` : "—");
+
+	return (
+		<li className="flex items-center gap-3 rounded-xl border border-border/60 bg-surface px-3 py-2.5">
+			<span
+				className={`flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${getAvatarTone(name)}`}
+			>
+				{getInitials(name)}
+			</span>
+			<div className="min-w-0 flex-1">
+				<p className="truncate text-sm font-medium text-text">{name}</p>
+			</div>
+			<ProjectStatusBadge status={project?.status} />
+		</li>
 	);
 }
 
@@ -101,6 +195,21 @@ const TeamDetailModal = ({
 	const dialogRef = useRef(null);
 	const previousFocusRef = useRef(null);
 	const [activeTab, setActiveTab] = useState("overview");
+
+	const leader = resolveTeamPerson(
+		team,
+		"team_leader",
+		"team_leader_id",
+		usersMap,
+	);
+	const supervisor = resolveTeamPerson(
+		team,
+		"supervisor",
+		"supervisor_id",
+		usersMap,
+	);
+	const members = getTeamMembers(team);
+	const projects = getTeamProjects(team);
 
 	useEffect(() => {
 		if (open) setActiveTab("overview");
@@ -178,23 +287,18 @@ const TeamDetailModal = ({
 						aria-label={t("teams.drawer.tabsLabel")}
 					>
 						{DRAWER_TABS.map((tab) => {
-							const disabled = tab !== "overview";
 							const isActive = activeTab === tab;
 							return (
 								<button
 									key={tab}
 									type="button"
-									disabled={disabled}
-									onClick={() => !disabled && setActiveTab(tab)}
+									onClick={() => setActiveTab(tab)}
 									className={[
 										"shrink-0 rounded-t-lg px-3 py-2 text-sm font-medium transition",
 										isActive
 											? "border-b-2 border-gold text-text"
-											: disabled
-												? "cursor-not-allowed text-muted/50"
-												: "text-muted hover:text-text",
+											: "text-muted hover:text-text",
 									].join(" ")}
-									title={disabled ? t("teams.drawer.comingSoon") : undefined}
 								>
 									{t(`teams.drawer.tabs.${tab}`)}
 								</button>
@@ -239,13 +343,13 @@ const TeamDetailModal = ({
 								<div className="grid grid-cols-1 gap-4 rounded-2xl border border-border bg-background/40 p-4 sm:grid-cols-2">
 									<PersonField
 										label={t("teams.form.leader")}
-										usersMap={usersMap}
-										userId={team.team_leader_id}
+										person={leader}
+										t={t}
 									/>
 									<PersonField
 										label={t("teams.form.supervisor")}
-										usersMap={usersMap}
-										userId={team.supervisor_id}
+										person={supervisor}
+										t={t}
 									/>
 								</div>
 							</section>
@@ -265,6 +369,45 @@ const TeamDetailModal = ({
 									/>
 								</div>
 							</section>
+						</div>
+					)}
+
+					{team && !isLoading && activeTab === "members" && (
+						<div>
+							{members.length === 0 ? (
+								<p className="rounded-xl border border-border bg-background/40 px-4 py-8 text-center text-sm text-muted">
+									{t("teams.drawer.noMembers")}
+								</p>
+							) : (
+								<ul className="space-y-2">
+									{members.map((member) => (
+										<MemberRow
+											key={member.id ?? member.email ?? member.name}
+											member={member}
+											t={t}
+										/>
+									))}
+								</ul>
+							)}
+						</div>
+					)}
+
+					{team && !isLoading && activeTab === "projects" && (
+						<div>
+							{projects.length === 0 ? (
+								<p className="rounded-xl border border-border bg-background/40 px-4 py-8 text-center text-sm text-muted">
+									{t("teams.drawer.noProjects")}
+								</p>
+							) : (
+								<ul className="space-y-2">
+									{projects.map((project) => (
+										<ProjectRow
+											key={project.id ?? project.name}
+											project={project}
+										/>
+									))}
+								</ul>
+							)}
 						</div>
 					)}
 				</div>

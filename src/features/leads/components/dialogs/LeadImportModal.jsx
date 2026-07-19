@@ -1,14 +1,14 @@
 import { Check, ChevronDown, FileUp } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { downloadLeadsImportTemplate } from "../../../services/leads/leadsService";
-import { extractApiError } from "../../../utils/api/apiHelpers";
-import { LEAD_SOURCES } from "../../../utils/leads/leadConstants";
+import { downloadLeadsImportTemplate } from "../../../../services/leads/leadsService";
+import { extractApiError } from "../../../../utils/api/apiHelpers";
+import { LEAD_SOURCES } from "../../../../utils/leads/leadConstants";
 import {
 	FieldLabel,
 	FieldMessage,
 	fieldClassName,
-} from "./formFieldStyles";
+} from "../form/formFieldStyles";
 
 const LeadImportModal = ({
 	open,

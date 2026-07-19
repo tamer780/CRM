@@ -7,6 +7,38 @@ function hasId(value) {
 	return value != null && value !== "" && Number(value) !== 0;
 }
 
+export function personDisplayName(person) {
+	if (!person) return null;
+	if (person.name) return person.name;
+	if (person.email) return person.email;
+	if (person.id != null) return `#${person.id}`;
+	return null;
+}
+
+export function resolveTeamPerson(team, nestedKey, idKey, usersMap) {
+	const nested = team?.[nestedKey];
+	if (nested && (nested.name || nested.email || nested.id != null)) {
+		return nested;
+	}
+
+	const userId = team?.[idKey];
+	if (!hasId(userId)) return null;
+
+	const fromMap =
+		usersMap?.get(Number(userId)) ?? usersMap?.get(String(userId));
+	if (fromMap) return fromMap;
+
+	return { id: userId };
+}
+
+export function getTeamMembers(team) {
+	return Array.isArray(team?.members) ? team.members : [];
+}
+
+export function getTeamProjects(team) {
+	return Array.isArray(team?.projects) ? team.projects : [];
+}
+
 export function computeTeamKpis(list) {
 	const items = list ?? [];
 	const total = items.length;

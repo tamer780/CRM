@@ -10,6 +10,7 @@ import { useMarkClientLost } from "../../../hooks/clients/useMarkClientLost";
 import { useProjects } from "../../../hooks/projects/useProjects";
 import { useRestoreClient } from "../../../hooks/clients/useRestoreClient";
 import { useUpdateClient } from "../../../hooks/clients/useUpdateClient";
+import { useUpdateClientStatus } from "../../../hooks/clients/useUpdateClientStatus";
 import { useUsers } from "../../../hooks/users/useUsers";
 import { extractApiError } from "../../../utils/api/apiHelpers";
 import { clientMatchesScope } from "../../users/utils/permissions";
@@ -58,6 +59,7 @@ const ClientsPage = () => {
 	const usersQuery = useUsers();
 	const markLost = useMarkClientLost();
 	const restore = useRestoreClient();
+	const updateClientStatus = useUpdateClientStatus();
 
 	const filters = useMemo(
 		() => filtersFromSearchParams(searchParams),
@@ -141,7 +143,10 @@ const ClientsPage = () => {
 	const detailQuery = useClient(selected || null);
 
 	const actionsPending =
-		updateClient.isPending || markLost.isPending || restore.isPending;
+		updateClient.isPending ||
+		updateClientStatus.isPending ||
+		markLost.isPending ||
+		restore.isPending;
 
 	const updateFilters = useCallback(
 		(nextFilters) => {
@@ -219,6 +224,23 @@ const ClientsPage = () => {
 		});
 	};
 
+	const handleStatusChange = (client, status) => {
+		if (!client?.id || !status || status === client.status) return;
+		updateClientStatus.mutate(
+			{ client, status },
+			{
+				onSuccess: () => {
+					toast.success(t("clients.toasts.updated"));
+				},
+				onError: (error) => {
+					toast.error(
+						extractApiError(error, t("clients.errors.updateFailed")),
+					);
+				},
+			},
+		);
+	};
+
 	const handleMarkLost = (reason) => {
 		if (!markLostTarget) return;
 		markLost.mutate(
@@ -291,7 +313,6 @@ const ClientsPage = () => {
 					onRetry={() => clientsQuery.refetch()}
 					isFilteredEmpty={isFilteredEmpty}
 					projectsMap={projectsMap}
-					campaignsMap={campaignsMap}
 					usersMap={usersMap}
 					sorting={sorting}
 					onSortingChange={handleSortingChange}
@@ -306,6 +327,12 @@ const ClientsPage = () => {
 						setRestoreError("");
 						setRestoreTarget(client);
 					}}
+					onStatusChange={handleStatusChange}
+					statusUpdatingId={
+						updateClientStatus.isPending
+							? updateClientStatus.variables?.client?.id
+							: null
+					}
 				/>
 			</div>
 

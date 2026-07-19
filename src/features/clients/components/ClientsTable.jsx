@@ -15,13 +15,12 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ErrorState from "../../../components/dashboard/ErrorState";
-import SourceBadge from "../../../components/ui/SourceBadge";
 import {
 	getAvatarTone,
 	getInitials,
 } from "../../leads/utils/leadAvatars";
 import ClientEmptyState from "./ClientEmptyState";
-import ClientStatusBadge from "./ClientStatusBadge";
+import ClientStatusSelect from "./ClientStatusSelect";
 
 const INITIAL_VISIBLE = 20;
 const CHUNK_SIZE = 20;
@@ -163,7 +162,6 @@ const ClientsTable = ({
 	onRetry,
 	isFilteredEmpty = false,
 	projectsMap,
-	campaignsMap,
 	usersMap,
 	sorting,
 	onSortingChange,
@@ -172,6 +170,8 @@ const ClientsTable = ({
 	onEdit,
 	onMarkLost,
 	onRestore,
+	onStatusChange,
+	statusUpdatingId = null,
 }) => {
 	const { t } = useTranslation();
 	const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
@@ -233,14 +233,6 @@ const ClientsTable = ({
 				cell: ({ getValue }) => <ProjectBadge label={getValue()} />,
 			},
 			{
-				id: "campaign",
-				accessorFn: (row) => resolveLabel(campaignsMap, row.campaign_id),
-				header: t("clients.columns.campaign"),
-				cell: ({ getValue }) => (
-					<span className="text-sm text-muted">{getValue()}</span>
-				),
-			},
-			{
 				id: "assignedTo",
 				accessorFn: (row) => resolveLabel(usersMap, row.assigned_to),
 				header: t("clients.columns.assignedTo"),
@@ -252,14 +244,24 @@ const ClientsTable = ({
 				),
 			},
 			{
-				accessorKey: "source",
-				header: t("clients.columns.source"),
-				cell: ({ getValue }) => <SourceBadge source={getValue()} />,
-			},
-			{
 				accessorKey: "status",
 				header: t("clients.columns.status"),
-				cell: ({ getValue }) => <ClientStatusBadge status={getValue()} />,
+				cell: ({ row }) => {
+					const client = row.original;
+					return (
+						<div onClick={(e) => e.stopPropagation()}>
+							<ClientStatusSelect
+								status={client.status}
+								onChange={(status) => onStatusChange?.(client, status)}
+								disabled={actionsDisabled}
+								isUpdating={
+									statusUpdatingId != null &&
+									String(statusUpdatingId) === String(client.id)
+								}
+							/>
+						</div>
+					);
+				},
 			},
 			{
 				accessorKey: "qualified_at",
@@ -309,13 +311,14 @@ const ClientsTable = ({
 		[
 			t,
 			projectsMap,
-			campaignsMap,
 			usersMap,
 			actionsDisabled,
 			onView,
 			onEdit,
 			onMarkLost,
 			onRestore,
+			onStatusChange,
+			statusUpdatingId,
 		],
 	);
 
@@ -395,24 +398,31 @@ const ClientsTable = ({
 										{getInitials(client.name)}
 									</span>
 									<div className="min-w-0 flex-1">
-										<div className="flex flex-wrap items-center gap-2">
-											<p className="font-medium text-text">
-												{client.name ?? "—"}
-											</p>
-											<ClientStatusBadge status={client.status} />
-										</div>
+										<p className="font-medium text-text">
+											{client.name ?? "—"}
+										</p>
 										<p className="mt-1 text-xs text-muted" dir="ltr">
 											{client.phone ?? "—"}
 											{client.email ? ` · ${client.email}` : ""}
 										</p>
 										<div className="mt-2 flex flex-wrap gap-2">
-											<SourceBadge source={client.source} />
 											<ProjectBadge
 												label={resolveLabel(projectsMap, client.project_id)}
 											/>
 										</div>
 									</div>
 								</button>
+								<ClientStatusSelect
+									status={client.status}
+									onChange={(status) =>
+										onStatusChange?.(client, status)
+									}
+									disabled={actionsDisabled}
+									isUpdating={
+										statusUpdatingId != null &&
+										String(statusUpdatingId) === String(client.id)
+									}
+								/>
 							</div>
 							<div className="mt-3 border-t border-border/60 pt-3">
 								<ActionButtons

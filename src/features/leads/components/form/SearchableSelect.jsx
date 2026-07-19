@@ -29,6 +29,7 @@ const SearchableSelect = ({
 	emptyMessage = "No results",
 	clearable = true,
 	clearLabel = "None",
+	searchable = true,
 	placement = "bottom",
 	renderOption,
 	renderValue,
@@ -49,13 +50,14 @@ const SearchableSelect = ({
 	);
 
 	const filtered = useMemo(() => {
+		if (!searchable) return options;
 		const q = query.trim().toLowerCase();
 		if (!q) return options;
 		return options.filter((o) => {
 			const hay = (o.searchText ?? o.label ?? "").toLowerCase();
 			return hay.includes(q);
 		});
-	}, [options, query]);
+	}, [options, query, searchable]);
 
 	useEffect(() => {
 		if (!open) return undefined;
@@ -86,9 +88,11 @@ const SearchableSelect = ({
 	useEffect(() => {
 		if (open) {
 			setHighlight(0);
-			requestAnimationFrame(() => searchRef.current?.focus());
+			if (searchable) {
+				requestAnimationFrame(() => searchRef.current?.focus());
+			}
 		}
-	}, [open]);
+	}, [open, searchable]);
 
 	const selectOption = (option) => {
 		if (option?.disabled) return;
@@ -167,23 +171,25 @@ const SearchableSelect = ({
 					].join(" ")}
 					onKeyDown={handleListKeyDown}
 				>
-					<div className="border-b border-border p-2">
-						<label className="relative block">
-							<span className="sr-only">{searchPlaceholder}</span>
-							<Search
-								className="pointer-events-none absolute start-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted"
-								aria-hidden="true"
-							/>
-							<input
-								ref={searchRef}
-								type="search"
-								value={query}
-								onChange={(e) => setQuery(e.target.value)}
-								placeholder={searchPlaceholder}
-								className="w-full rounded-lg border border-border bg-background py-2 pe-2 ps-8 text-sm text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
-							/>
-						</label>
-					</div>
+					{searchable && (
+						<div className="border-b border-border p-2">
+							<label className="relative block">
+								<span className="sr-only">{searchPlaceholder}</span>
+								<Search
+									className="pointer-events-none absolute start-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted"
+									aria-hidden="true"
+								/>
+								<input
+									ref={searchRef}
+									type="search"
+									value={query}
+									onChange={(e) => setQuery(e.target.value)}
+									placeholder={searchPlaceholder}
+									className="w-full rounded-lg border border-border bg-background py-2 pe-2 ps-8 text-sm text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+								/>
+							</label>
+						</div>
+					)}
 
 					<ul
 						id={listId}

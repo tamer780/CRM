@@ -10,7 +10,6 @@
 
 const TERMINAL_LEAD_STATUSES = new Set([
 	"converted",
-	"lost",
 	"not_interested",
 	"low_budget",
 ]);

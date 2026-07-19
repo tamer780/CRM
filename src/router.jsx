@@ -19,6 +19,7 @@ import ProjectsPage from "./pages/ProjectsPage";
 import TeamsPage from "./pages/TeamsPage";
 import UsersPage from "./pages/UsersPage";
 import ScheduledActionsPage from "./pages/ScheduledActionsPage";
+import MeetingsPage from "./pages/MeetingsPage";
 import AuditLogsPage from "./pages/AuditLogsPage";
 import ReportsPage from "./pages/ReportsPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -93,6 +94,10 @@ const router = createBrowserRouter([
 							{
 								path: "/scheduled-actions",
 								element: <ScheduledActionsPage />,
+							},
+							{
+								path: "/meetings",
+								element: <MeetingsPage />,
 							},
 							{
 								path: "/audit-logs",

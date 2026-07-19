@@ -112,11 +112,10 @@ export function buildTodaySchedule({
 
 /** Funnel stages mapped from existing lead statuses */
 export const FUNNEL_STAGES = [
-	{ key: "new", statuses: ["new", "assigned"] },
+	{ key: "new", statuses: ["new"] },
 	{ key: "contacted", statuses: ["contacted", "no_answer"] },
-	{ key: "qualified", statuses: ["qualified", "follow_up"] },
 	{ key: "meeting", statuses: ["meeting_scheduled"] },
-	{ key: "interested", statuses: ["interested", "postponed"] },
+	{ key: "qualified", statuses: ["qualified"] },
 	{ key: "converted", statuses: ["converted"] },
 ];
 

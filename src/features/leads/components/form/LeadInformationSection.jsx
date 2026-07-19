@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { LEAD_SOURCES } from "../../../utils/leads/leadConstants";
-import { getAvatarTone, getInitials } from "../utils/leadAvatars";
+import { LEAD_SOURCES } from "../../../../utils/leads/leadConstants";
+import { getAvatarTone, getInitials } from "../../utils/leadAvatars";
 import FormInput from "./FormInput";
 import LeadFormSection from "./LeadFormSection";
 import SearchableSelect from "./SearchableSelect";

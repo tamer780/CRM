@@ -5,7 +5,7 @@ import {
 	formatScheduledCallClock,
 	formatScheduledCallRemaining,
 	getScheduledCallUrgency,
-} from "../../../utils/leads/scheduledCallUrgency";
+} from "../../../../utils/leads/scheduledCallUrgency";
 
 const TONE_STYLES = {
 	green: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",

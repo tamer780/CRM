@@ -1,10 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { LEAD_STATUS_ROW_STYLES } from "../../../utils/leads/leadConstants";
-import {
-	resolveCampaignLabel,
-	resolveProjectLabel,
-} from "../../../utils/leads/resolveLeadLabels";
-import { getAvatarTone, getInitials } from "../utils/leadAvatars";
+import { LEAD_STATUS_ROW_STYLES } from "../../../../utils/leads/leadConstants";
+import { resolveProjectLabel } from "../../../../utils/leads/resolveLeadLabels";
+import { getAvatarTone, getInitials } from "../../utils/leadAvatars";
 import LeadActionsMenu from "./LeadActionsMenu";
 import LeadAssignSelect from "./LeadAssignSelect";
 import LeadStatusSelect from "./LeadStatusSelect";
@@ -28,6 +25,29 @@ function formatDate(value) {
 	});
 }
 
+function getLastCommentText(lastComment) {
+	if (!lastComment) return "";
+	if (typeof lastComment === "string") return lastComment;
+
+	const body =
+		lastComment.comment ??
+		lastComment.body ??
+		lastComment.text ??
+		lastComment.note ??
+		lastComment.message ??
+		"";
+	if (!body) return "";
+
+	const author =
+		lastComment.user?.name ??
+		lastComment.author?.name ??
+		lastComment.user_name ??
+		lastComment.author_name ??
+		null;
+
+	return author ? `${author}: ${body}` : body;
+}
+
 const checkboxClass =
 	"size-4 rounded border-border text-gold accent-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30";
 
@@ -36,7 +56,6 @@ export function LeadMobileCard({
 	users = [],
 	onView,
 	onEdit,
-	onDelete,
 	onStatusChange,
 	onAssignChange,
 	statusUpdatingId,
@@ -44,10 +63,10 @@ export function LeadMobileCard({
 	selected = false,
 	onToggleSelect,
 	canEdit = true,
-	canDelete = true,
 }) {
 	const { t } = useTranslation();
-	const showActions = canEdit || canDelete;
+	const showActions = canEdit;
+	const lastCommentText = getLastCommentText(lead.last_comment);
 
 	return (
 		<article
@@ -88,7 +107,12 @@ export function LeadMobileCard({
 					</span>
 					<div className="min-w-0 flex-1">
 						<div className="flex flex-wrap items-center gap-2">
-							<p className="font-medium text-text">{lead.name ?? "—"}</p>
+							<p
+								className="max-w-[12rem] truncate font-medium text-text"
+								title={lead.name ?? undefined}
+							>
+								{lead.name ?? "—"}
+							</p>
 							<div
 								onClick={(e) => e.stopPropagation()}
 								onKeyDown={(e) => e.stopPropagation()}
@@ -120,6 +144,22 @@ export function LeadMobileCard({
 							{lead.phone ?? "—"}
 							{lead.email ? ` · ${lead.email}` : ""}
 						</p>
+						{lead.note ? (
+							<p
+								className="mt-1 truncate text-xs text-muted"
+								title={lead.note}
+							>
+								{lead.note}
+							</p>
+						) : null}
+						{lastCommentText ? (
+							<p
+								className="mt-1 truncate text-xs text-muted"
+								title={lastCommentText}
+							>
+								{lastCommentText}
+							</p>
+						) : null}
 						<p className="mt-1 text-xs text-muted">
 							{formatDate(lead.created_at)}
 						</p>
@@ -128,12 +168,7 @@ export function LeadMobileCard({
 			</div>
 			{showActions && (
 				<div className="mt-3 flex justify-end border-t border-border/60 pt-3">
-					<LeadActionsMenu
-						onEdit={() => onEdit(lead)}
-						onDelete={() => onDelete(lead)}
-						canEdit={canEdit}
-						canDelete={canDelete}
-					/>
+					<LeadActionsMenu onEdit={() => onEdit(lead)} canEdit={canEdit} />
 				</div>
 			)}
 		</article>
@@ -143,11 +178,9 @@ export function LeadMobileCard({
 const LeadTableRow = ({
 	lead,
 	projectsMap,
-	campaignsMap,
 	users = [],
 	onView,
 	onEdit,
-	onDelete,
 	onStatusChange,
 	onAssignChange,
 	statusUpdatingId,
@@ -155,10 +188,11 @@ const LeadTableRow = ({
 	selected = false,
 	onToggleSelect,
 	canEdit = true,
-	canDelete = true,
 }) => {
 	const { t } = useTranslation();
-	const showActions = canEdit || canDelete;
+	const showActions = canEdit;
+	const projectLabel = resolveProjectLabel(projectsMap, lead);
+	const lastCommentText = getLastCommentText(lead.last_comment);
 
 	return (
 		<tr
@@ -188,7 +222,7 @@ const LeadTableRow = ({
 					className={checkboxClass}
 				/>
 			</td>
-			<td className="px-4 py-3">
+			<td className="max-w-[14rem] px-4 py-3">
 				<div className="flex items-center gap-3">
 					<span
 						className={`flex size-10 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${getAvatarTone(lead.name)}`}
@@ -196,24 +230,26 @@ const LeadTableRow = ({
 						{getInitials(lead.name)}
 					</span>
 					<div className="min-w-0">
-						<p className="truncate font-medium text-text">{lead.name ?? "—"}</p>
+						<p
+							className="truncate font-medium text-text"
+							title={lead.name ?? undefined}
+						>
+							{lead.name ?? "—"}
+						</p>
 						<p className="truncate text-xs text-muted" dir="ltr">
 							{lead.phone ?? "—"}
 						</p>
 						{lead.email && (
-							<p className="truncate text-xs text-muted" dir="ltr">
+							<p
+								className="truncate text-xs text-muted"
+								dir="ltr"
+								title={lead.email}
+							>
 								{lead.email}
 							</p>
 						)}
 					</div>
 				</div>
-			</td>
-			<td className="px-4 py-3 text-muted">
-				{lead.source
-					? t(`leads.sources.${lead.source}`, {
-							defaultValue: lead.source.replaceAll("_", " "),
-						})
-					: "—"}
 			</td>
 			<td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
 				<LeadStatusSelect
@@ -225,11 +261,10 @@ const LeadTableRow = ({
 			<td className="px-4 py-3">
 				<ScheduledCallBadge scheduledCallAt={lead.scheduled_call_at} />
 			</td>
-			<td className="px-4 py-3 text-muted">
-				{resolveProjectLabel(projectsMap, lead)}
-			</td>
-			<td className="px-4 py-3 text-muted">
-				{resolveCampaignLabel(campaignsMap, lead)}
+			<td className="max-w-[5rem] px-4 py-3 text-muted">
+				<span className="block truncate" title={projectLabel}>
+					{projectLabel}
+				</span>
 			</td>
 			<td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
 				<LeadAssignSelect
@@ -240,15 +275,23 @@ const LeadTableRow = ({
 					placement="top"
 				/>
 			</td>
+			<td className="max-w-[12rem] px-4 py-3 text-muted">
+				<span className="block truncate" title={lead.note || undefined}>
+					{lead.note || "—"}
+				</span>
+			</td>
+			<td className="max-w-[12rem] px-4 py-3 text-muted">
+				<span
+					className="block truncate"
+					title={lastCommentText || undefined}
+				>
+					{lastCommentText || "—"}
+				</span>
+			</td>
 			<td className="px-4 py-3 text-muted">{formatDate(lead.created_at)}</td>
 			{showActions && (
 				<td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-					<LeadActionsMenu
-						onEdit={() => onEdit(lead)}
-						onDelete={() => onDelete(lead)}
-						canEdit={canEdit}
-						canDelete={canDelete}
-					/>
+					<LeadActionsMenu onEdit={() => onEdit(lead)} canEdit={canEdit} />
 				</td>
 			)}
 		</tr>

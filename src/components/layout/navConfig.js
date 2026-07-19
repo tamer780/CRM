@@ -1,6 +1,7 @@
 import {
 	Activity,
 	BarChart3,
+	CalendarClock,
 	FolderKanban,
 	LayoutDashboard,
 	Megaphone,
@@ -31,6 +32,11 @@ export const navGroups = [
 				path: "/scheduled-actions",
 				labelKey: "nav.scheduledActions",
 				icon: Activity,
+			},
+			{
+				path: "/meetings",
+				labelKey: "nav.meetings",
+				icon: CalendarClock,
 			},
 		],
 	},

@@ -18,6 +18,12 @@ import {
 	getAvatarTone,
 	getInitials,
 } from "../../leads/utils/leadAvatars";
+import {
+	getTeamMembers,
+	getTeamProjects,
+	personDisplayName,
+	resolveTeamPerson,
+} from "../utils/teamConstants";
 import TeamEmptyState from "./TeamEmptyState";
 
 const INITIAL_VISIBLE = 20;
@@ -43,15 +49,11 @@ function SortIcon({ column }) {
 	return <ArrowUpDown className="size-3.5 opacity-40" aria-hidden="true" />;
 }
 
-function UserCell({ usersMap, userId }) {
-	if (userId == null || userId === "" || Number(userId) === 0) {
+function UserCell({ person }) {
+	const name = personDisplayName(person);
+	if (!name) {
 		return <span className="text-sm text-muted">—</span>;
 	}
-	const user =
-		usersMap?.get(Number(userId)) ?? usersMap?.get(String(userId));
-	const name = user
-		? (user.name ?? user.email ?? `#${user.id}`)
-		: `#${userId}`;
 	return (
 		<div className="flex min-w-0 items-center gap-2">
 			<span
@@ -169,33 +171,63 @@ const TeamsTable = ({
 			{
 				id: "leader",
 				accessorFn: (row) => {
-					const user =
-						usersMap?.get(Number(row.team_leader_id)) ??
-						usersMap?.get(String(row.team_leader_id));
-					return user?.name ?? user?.email ?? String(row.team_leader_id ?? "");
+					const person = resolveTeamPerson(
+						row,
+						"team_leader",
+						"team_leader_id",
+						usersMap,
+					);
+					return personDisplayName(person) ?? "";
 				},
 				header: t("teams.columns.leader"),
 				cell: ({ row }) => (
 					<UserCell
-						usersMap={usersMap}
-						userId={row.original.team_leader_id}
+						person={resolveTeamPerson(
+							row.original,
+							"team_leader",
+							"team_leader_id",
+							usersMap,
+						)}
 					/>
 				),
 			},
 			{
 				id: "supervisor",
 				accessorFn: (row) => {
-					const user =
-						usersMap?.get(Number(row.supervisor_id)) ??
-						usersMap?.get(String(row.supervisor_id));
-					return user?.name ?? user?.email ?? String(row.supervisor_id ?? "");
+					const person = resolveTeamPerson(
+						row,
+						"supervisor",
+						"supervisor_id",
+						usersMap,
+					);
+					return personDisplayName(person) ?? "";
 				},
 				header: t("teams.columns.supervisor"),
 				cell: ({ row }) => (
 					<UserCell
-						usersMap={usersMap}
-						userId={row.original.supervisor_id}
+						person={resolveTeamPerson(
+							row.original,
+							"supervisor",
+							"supervisor_id",
+							usersMap,
+						)}
 					/>
+				),
+			},
+			{
+				id: "members",
+				accessorFn: (row) => getTeamMembers(row).length,
+				header: t("teams.columns.members"),
+				cell: ({ getValue }) => (
+					<span className="text-sm tabular-nums text-text">{getValue()}</span>
+				),
+			},
+			{
+				id: "projects",
+				accessorFn: (row) => getTeamProjects(row).length,
+				header: t("teams.columns.projects"),
+				cell: ({ getValue }) => (
+					<span className="text-sm tabular-nums text-text">{getValue()}</span>
 				),
 			},
 			{
@@ -290,6 +322,21 @@ const TeamsTable = ({
 			<div className="rounded-2xl border border-border bg-surface shadow-sm md:hidden">
 				{visibleRows.map((row) => {
 					const team = row.original;
+					const leader = resolveTeamPerson(
+						team,
+						"team_leader",
+						"team_leader_id",
+						usersMap,
+					);
+					const supervisor = resolveTeamPerson(
+						team,
+						"supervisor",
+						"supervisor_id",
+						usersMap,
+					);
+					const memberCount = getTeamMembers(team).length;
+					const projectCount = getTeamProjects(team).length;
+
 					return (
 						<article
 							key={row.id}
@@ -310,15 +357,14 @@ const TeamsTable = ({
 										<p className="font-medium text-text">{team.name ?? "—"}</p>
 									</div>
 									<div className="mt-3 space-y-2">
-										<UserCell
-											usersMap={usersMap}
-											userId={team.team_leader_id}
-										/>
-										<UserCell
-											usersMap={usersMap}
-											userId={team.supervisor_id}
-										/>
+										<UserCell person={leader} />
+										<UserCell person={supervisor} />
 									</div>
+									<p className="mt-3 text-xs text-muted">
+										{t("teams.columns.members")}: {memberCount}
+										{" · "}
+										{t("teams.columns.projects")}: {projectCount}
+									</p>
 								</button>
 							</div>
 							<div className="mt-3 border-t border-border/60 pt-3">

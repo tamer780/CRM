@@ -21,6 +21,7 @@
 		"teams": "Teams",
 		"users": "Users",
 		"scheduledActions": "Scheduled Actions",
+		"meetings": "Meetings",
 		"auditLogs": "Logs",
 		"role": "Role",
 		"openMenu": "Open menu",
@@ -429,6 +430,8 @@
 			"project": "Project",
 			"campaign": "Campaign",
 			"assignedTo": "Assigned To",
+			"note": "Note",
+			"lastComment": "Last comment",
 			"created": "Created"
 		},
 		"scheduledCall": {
@@ -504,20 +507,12 @@
 		},
 		"status": {
 			"new": "New",
-			"assigned": "Assigned",
 			"contacted": "Contacted",
 			"no_answer": "No answer",
-			"follow_up": "Follow up",
 			"meeting_scheduled": "Meeting scheduled",
-			"meeting_completed": "Meeting completed",
-			"interested": "Interested",
 			"qualified": "Qualified",
-			"not_qualified": "Not qualified",
 			"low_budget": "Low budget",
 			"not_interested": "Not interested",
-			"already_bought_elsewhere": "Already bought elsewhere",
-			"postponed": "Postponed",
-			"lost": "Lost",
 			"converted": "Converted",
 			"all_status": "All statuses",
 			"default": "Default"
@@ -540,6 +535,7 @@
 		"validation": {
 			"phoneRequired": "Phone is required.",
 			"lostReasonRequired": "Lost reason is required.",
+			"meetingNoteMax": "Meeting note must be at most {{max}} characters.",
 			"fileRequired": "Please select a file to import.",
 			"sourceRequired": "Please select a source."
 		},
@@ -566,6 +562,14 @@
 			"reason": "Lost Reason",
 			"reasonPlaceholder": "Not interested / budget / timing…",
 			"confirm": "Mark Lost"
+		},
+		"meetingScheduled": {
+			"title": "Schedule Meeting",
+			"message": "Optionally add a meeting date and note for this lead.",
+			"date": "Meeting date",
+			"note": "Meeting note",
+			"notePlaceholder": "Agenda, location, attendees…",
+			"confirm": "Schedule meeting"
 		},
 		"actions": {
 			"import": "Import"
@@ -657,7 +661,70 @@
 			"existingClientId": "Existing Client ID",
 			"reviewedBy": "Reviewed By",
 			"reviewedAt": "Reviewed At",
-			"resolutionNote": "Resolution Note"
+			"resolutionNote": "Resolution Note",
+			"compare": "Compare",
+			"pendingPanel": "Pending submission",
+			"existingLeadPanel": "Existing lead",
+			"existingClientPanel": "Existing client",
+			"sourceDetails": "Source details",
+			"noDuplicateReason": "No duplicate reason provided.",
+			"noMatchTitle": "No matching record",
+			"noMatchMessage": "This pending lead is not linked to an existing lead or client.",
+			"existingHistory": "Existing lead history",
+			"tabComments": "Comments",
+			"tabActivity": "Activity",
+			"tabAssignments": "Assignments",
+			"commentsEmptyTitle": "No comments",
+			"commentsEmptyMessage": "There are no comments on the existing lead yet.",
+			"activityEmptyTitle": "No activity",
+			"activityEmptyMessage": "There is no activity history for the existing lead.",
+			"assignmentsEmptyTitle": "No assignments",
+			"assignmentsEmptyMessage": "There is no assignment history for the existing lead.",
+			"historyUnavailableTitle": "History unavailable",
+			"historyUnavailableMessage": "Existing lead details are not available for this pending record.",
+			"activeAssignment": "Active",
+			"endedAssignment": "Ended",
+			"reason": "Reason",
+			"changedBy": "Changed by",
+			"assignedAt": "Assigned at",
+			"endedAt": "Ended at",
+			"viewRawSnapshots": "View raw snapshots",
+			"hideRawSnapshots": "Hide raw snapshots",
+			"noOldValue": "No previous value",
+			"noNewValue": "No new value",
+			"moreChanges": "+{{count}} more fields",
+			"unknownActivity": "Activity"
+		},
+		"activityTypes": {
+			"lead_created": "Lead created",
+			"lead_assigned": "Lead assigned",
+			"lead_reassigned": "Lead reassigned",
+			"lead_lost": "Lead lost",
+			"status_changed": "Status changed",
+			"comment_added": "Comment added",
+			"note_updated": "Note updated"
+		},
+		"diffFields": {
+			"status": "Status",
+			"assigned_to": "Assigned to",
+			"assigned_by": "Assigned by",
+			"assigned_at": "Assigned at",
+			"lost_reason": "Lost reason",
+			"lost_at": "Lost at",
+			"qualified_at": "Qualified at",
+			"project_id": "Project",
+			"campaign_id": "Campaign",
+			"note": "Note",
+			"last_communication_note": "Last communication note",
+			"scheduled_call_at": "Scheduled call",
+			"next_follow_up_at": "Next follow-up",
+			"first_action_at": "First action",
+			"last_action_at": "Last action",
+			"source": "Source",
+			"source_details": "Source details",
+			"name": "Name",
+			"phone": "Phone",
+			"email": "Email"
 		},
 		"replace": {
 			"title": "Replace Pending Lead",
@@ -1099,6 +1166,8 @@
 			"team": "Team",
 			"leader": "Team Leader",
 			"supervisor": "Supervisor",
+			"members": "Members",
+			"projects": "Projects",
 			"created": "Created",
 			"updated": "Updated",
 			"actions": "Actions"
@@ -1124,14 +1193,15 @@
 			"tabs": {
 				"overview": "Overview",
 				"members": "Members",
-				"projects": "Projects",
-				"performance": "Performance"
+				"projects": "Projects"
 			},
 			"general": "General Information",
 			"leadership": "Leadership",
 			"timeline": "Timeline",
 			"createdAt": "Created At",
-			"updatedAt": "Updated At"
+			"updatedAt": "Updated At",
+			"noMembers": "No members on this team.",
+			"noProjects": "No projects assigned to this team."
 		},
 		"form": {
 			"subtitle": "Define the team name and assign leadership roles.",
@@ -1282,6 +1352,110 @@
 			"deleteFailed": "Unable to delete user. Please try again.",
 			"activateFailed": "Unable to activate user. Please try again.",
 			"deactivateFailed": "Unable to deactivate user. Please try again."
+		}
+	},
+	"meetings": {
+		"title": "Meetings",
+		"subtitle": "Schedule and track property meetings from scheduled to bought.",
+		"refresh": "Refresh",
+		"newMeeting": "New Meeting",
+		"editMeeting": "Edit Meeting",
+		"searchPlaceholder": "Search by lead, notes, or assignee",
+		"resetFilters": "Reset Filters",
+		"kpis": {
+			"total": "Total",
+			"scheduled": "Scheduled",
+			"visit": "Visit",
+			"bought": "Bought",
+			"canceled": "Canceled"
+		},
+		"filters": {
+			"status": "Status",
+			"allStatuses": "All statuses",
+			"assignee": "Assignee",
+			"allAssignees": "All assignees",
+			"lead": "Lead",
+			"allLeads": "All leads",
+			"dateFrom": "From",
+			"dateTo": "To"
+		},
+		"statuses": {
+			"scheduled": "Scheduled",
+			"visit": "Visit",
+			"reserved": "Reserved",
+			"bought": "Bought",
+			"canceled": "Canceled",
+			"didnt_come": "Didn't come"
+		},
+		"columns": {
+			"meetingDate": "Meeting date",
+			"lead": "Lead",
+			"assignee": "Assignee",
+			"status": "Status",
+			"notes": "Notes",
+			"creator": "Created by",
+			"actions": "Actions"
+		},
+		"actions": {
+			"view": "View",
+			"edit": "Edit",
+			"delete": "Delete"
+		},
+		"pagination": {
+			"showing": "Showing {{shown}} of {{total}}"
+		},
+		"empty": {
+			"title": "No Meetings",
+			"subtitle": "Create your first meeting.",
+			"filteredTitle": "No matching meetings",
+			"filteredSubtitle": "Try adjusting your filters or search query."
+		},
+		"drawer": {
+			"title": "Meeting",
+			"general": "General Information",
+			"timeline": "Timeline",
+			"createdBy": "Created By",
+			"createdAt": "Created At",
+			"updatedAt": "Updated At"
+		},
+		"form": {
+			"subtitle": "Link a lead, set assignee, status, and meeting time.",
+			"lead": "Lead",
+			"leadPlaceholder": "Select a lead",
+			"assignee": "Assignee",
+			"assigneePlaceholder": "Select an assignee",
+			"status": "Status",
+			"statusPlaceholder": "Select a status",
+			"meetingDate": "Meeting date",
+			"notes": "Notes",
+			"create": "Create Meeting",
+			"save": "Save Changes"
+		},
+		"delete": {
+			"title": "Delete Meeting",
+			"message": "Are you sure you want to delete this meeting?",
+			"cannotUndo": "This action cannot be undone.",
+			"confirm": "Delete",
+			"fallback": "Meeting"
+		},
+		"validation": {
+			"leadRequired": "Lead is required.",
+			"assignedRequired": "Assignee is required.",
+			"statusRequired": "Status is required.",
+			"meetingDateRequired": "Meeting date is required."
+		},
+		"toasts": {
+			"created": "Meeting created successfully.",
+			"updated": "Meeting updated successfully.",
+			"deleted": "Meeting deleted successfully.",
+			"createdFromLeadFailed": "Lead status updated, but the meeting could not be created."
+		},
+		"errors": {
+			"loadFailed": "Unable to load meetings. Please try again.",
+			"loadDetailFailed": "Unable to load meeting details.",
+			"createFailed": "Unable to create meeting. Please try again.",
+			"updateFailed": "Unable to update meeting. Please try again.",
+			"deleteFailed": "Unable to delete meeting. Please try again."
 		}
 	},
 	"scheduledActions": {

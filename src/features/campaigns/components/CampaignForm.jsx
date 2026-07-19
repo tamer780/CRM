@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import FormInput from "../../leads/components/FormInput";
+import FormInput from "../../leads/components/form/FormInput";
 import {
 	CAMPAIGN_PLATFORMS,
 	CAMPAIGN_STATUSES,

@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import SourceBadge from "../ui/SourceBadge";
+import SourceBadge from "../../../../components/ui/SourceBadge";
 import {
 	resolveCampaignLabel,
 	resolveProjectLabel,
 	resolveUserLabel,
-} from "../../utils/leads/resolveLeadLabels";
+} from "../../../../utils/leads/resolveLeadLabels";
 
 function formatDateTime(value) {
 	if (!value) return "—";
@@ -46,6 +46,7 @@ const LeadDetailCard = ({
 	projectsMap,
 	campaignsMap,
 	usersMap,
+	children,
 }) => {
 	const { t } = useTranslation();
 
@@ -223,6 +224,8 @@ const LeadDetailCard = ({
 					</div>
 				</div>
 			</section>
+
+			{children}
 
 			<section className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
 				<h2 className="mb-4 text-lg font-semibold text-text">

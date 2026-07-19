@@ -26,15 +26,15 @@ import {
 	validateLeadForm,
 } from "../../../utils/leads/leadConstants";
 import { buildLookupMap } from "../../../utils/leads/resolveLeadLabels";
-import LeadBulkAssignBar from "./LeadBulkAssignBar";
-import LeadDeleteDialog from "./LeadDeleteDialog";
-import LeadDetailDrawer from "./LeadDetailDrawer";
-import LeadForm from "./LeadForm";
-import LeadFormModal from "./LeadFormModal";
-import LeadImportModal from "./LeadImportModal";
-import LeadMarkLostModal from "./LeadMarkLostModal";
-import LeadTable from "./LeadTable";
-import LeadToolbar from "./LeadToolbar";
+import LeadDetailDrawer from "./detail/LeadDetailDrawer";
+import LeadDeleteDialog from "./dialogs/LeadDeleteDialog";
+import LeadImportModal from "./dialogs/LeadImportModal";
+import LeadMeetingScheduledModal from "./dialogs/LeadMeetingScheduledModal";
+import LeadForm from "./form/LeadForm";
+import LeadFormModal from "./form/LeadFormModal";
+import LeadBulkAssignBar from "./table/LeadBulkAssignBar";
+import LeadTable from "./table/LeadTable";
+import LeadToolbar from "./toolbar/LeadToolbar";
 
 const emptyFilters = () => ({
 	search: "",
@@ -69,11 +69,11 @@ const LeadPage = () => {
 	const [deleteError, setDeleteError] = useState("");
 	const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
 	const [bulkDeleteError, setBulkDeleteError] = useState("");
-	const [lostLeadTarget, setLostLeadTarget] = useState(null);
-	const [lostError, setLostError] = useState("");
 	const [selectedIds, setSelectedIds] = useState(() => new Set());
 	const [importOpen, setImportOpen] = useState(false);
 	const [importError, setImportError] = useState("");
+	const [meetingTarget, setMeetingTarget] = useState(null);
+	const [meetingError, setMeetingError] = useState("");
 
 	const leadsQuery = useLeads({
 		status: filters.status,
@@ -336,40 +336,50 @@ const LeadPage = () => {
 
 	const handleStatusChange = (lead, status) => {
 		if (!lead?.id || !status) return;
-		if (status === "lost") {
-			setLostError("");
-			setLostLeadTarget(lead);
+		if (status === "meeting_scheduled") {
+			setMeetingError("");
+			setMeetingTarget(lead);
 			return;
 		}
 		updateLeadStatus.mutate({ leadId: lead.id, status });
 	};
 
-	const handleMarkLost = (lost_reason) => {
-		if (!lostLeadTarget) return;
-		setLostError("");
+	const handleMeetingScheduledConfirm = ({ meeting_date, meeting_note }) => {
+		if (!meetingTarget?.id) return;
+		setMeetingError("");
+
 		updateLeadStatus.mutate(
 			{
-				leadId: lostLeadTarget.id,
-				status: "lost",
-				lost_reason,
+				leadId: meetingTarget.id,
+				status: "meeting_scheduled",
+				meeting_date,
+				meeting_note,
 			},
 			{
+				onSuccess: () => {
+					setMeetingTarget(null);
+					setMeetingError("");
+				},
 				onError: (error) => {
-					setLostError(
+					setMeetingError(
 						extractApiError(error, t("leads.errors.updateFailed")),
 					);
-				},
-				onSuccess: () => {
-					setLostLeadTarget(null);
 				},
 			},
 		);
 	};
 
+	const openDeleteLead = (lead) => {
+		if (!canDeleteLeads || !lead?.id) return;
+		setDeleteError("");
+		setDeleteLeadTarget(lead);
+	};
+
 	const handleDelete = () => {
 		if (!deleteLeadTarget) return;
+		const deletedId = deleteLeadTarget.id;
 		setDeleteError("");
-		deleteLead.mutate(deleteLeadTarget.id, {
+		deleteLead.mutate(deletedId, {
 			onError: (error) => {
 				setDeleteError(
 					extractApiError(error, t("leads.errors.updateFailed")),
@@ -377,6 +387,9 @@ const LeadPage = () => {
 			},
 			onSuccess: () => {
 				setDeleteLeadTarget(null);
+				if (selectedLeadId && String(selectedLeadId) === String(deletedId)) {
+					closeDetail();
+				}
 			},
 		});
 	};
@@ -481,15 +494,9 @@ const LeadPage = () => {
 				onAddLead={openCreate}
 				isFilteredEmpty={isFilteredEmpty}
 				projectsMap={projectsMap}
-				campaignsMap={campaignsMap}
 				users={usersQuery.data ?? []}
 				onView={openDetail}
 				onEdit={openEdit}
-				onDelete={(lead) => {
-					if (!canDeleteLeads) return;
-					setDeleteError("");
-					setDeleteLeadTarget(lead);
-				}}
 				onStatusChange={handleStatusChange}
 				onAssignChange={handleAssignChange}
 				statusUpdatingId={
@@ -504,7 +511,6 @@ const LeadPage = () => {
 				onToggleSelect={toggleSelect}
 				onToggleSelectAll={toggleSelectAll}
 				canEdit={canEditLeads}
-				canDelete={canDeleteLeads}
 			/>
 
 			<LeadDetailDrawer
@@ -521,6 +527,18 @@ const LeadPage = () => {
 				campaignsLoading={campaignsQuery.isLoading}
 				usersLoading={usersQuery.isLoading}
 				canEdit={canEditLeads}
+				canDelete={canDeleteLeads}
+				onDelete={openDeleteLead}
+				onStatusChange={handleStatusChange}
+				onAssignChange={handleAssignChange}
+				statusUpdatingId={
+					updateLeadStatus.isPending
+						? updateLeadStatus.variables?.leadId
+						: null
+				}
+				assignUpdatingId={
+					assignLead.isPending ? assignLead.variables?.leadId : null
+				}
 			/>
 
 			<LeadFormModal
@@ -543,6 +561,26 @@ const LeadPage = () => {
 					}}
 					onSubmit={handleFormSubmit}
 					onCancel={closeModal}
+					onDelete={
+						modalMode === "edit"
+							? () => {
+									const lead =
+										filteredLeads.find(
+											(item) =>
+												String(item.id) === String(editingLeadId),
+										) ?? {
+											id: editingLeadId,
+											name: formValues.name,
+										};
+									if (isFormSubmitting) return;
+									setModalOpen(false);
+									setFieldErrors({});
+									setEditingLeadId(null);
+									openDeleteLead(lead);
+								}
+							: undefined
+					}
+					canDelete={modalMode === "edit" && canDeleteLeads}
 					isSubmitting={isFormSubmitting}
 					errors={fieldErrors}
 					projects={projectsQuery.data ?? []}
@@ -576,17 +614,6 @@ const LeadPage = () => {
 				onConfirm={handleBulkDelete}
 			/>
 
-			<LeadMarkLostModal
-				open={Boolean(lostLeadTarget)}
-				lead={lostLeadTarget}
-				isSubmitting={updateLeadStatus.isPending}
-				error={lostError}
-				onClose={() => {
-					if (!updateLeadStatus.isPending) setLostLeadTarget(null);
-				}}
-				onConfirm={handleMarkLost}
-			/>
-
 			{canImportLeads && (
 				<LeadImportModal
 					open={importOpen}
@@ -596,6 +623,28 @@ const LeadPage = () => {
 					onConfirm={handleImport}
 				/>
 			)}
+
+			<LeadMeetingScheduledModal
+				open={Boolean(meetingTarget)}
+				lead={meetingTarget}
+				isSubmitting={
+					updateLeadStatus.isPending &&
+					updateLeadStatus.variables?.status === "meeting_scheduled"
+				}
+				error={meetingError}
+				onClose={() => {
+					if (
+						!(
+							updateLeadStatus.isPending &&
+							updateLeadStatus.variables?.status === "meeting_scheduled"
+						)
+					) {
+						setMeetingTarget(null);
+						setMeetingError("");
+					}
+				}}
+				onConfirm={handleMeetingScheduledConfirm}
+			/>
 		</div>
 	);
 };

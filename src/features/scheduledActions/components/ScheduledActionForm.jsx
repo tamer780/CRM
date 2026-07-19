@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import FormDateTime from "../../leads/components/FormDateTime";
-import FormTextarea from "../../leads/components/FormTextarea";
-import SearchableSelect from "../../leads/components/SearchableSelect";
+import FormDateTime from "../../leads/components/form/FormDateTime";
+import FormTextarea from "../../leads/components/form/FormTextarea";
+import SearchableSelect from "../../leads/components/form/SearchableSelect";
 import {
 	getAvatarTone,
 	getInitials,

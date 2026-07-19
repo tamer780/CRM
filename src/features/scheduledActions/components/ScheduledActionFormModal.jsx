@@ -1,4 +1,4 @@
-import LeadFormModal from "../../leads/components/LeadFormModal";
+import LeadFormModal from "../../leads/components/form/LeadFormModal";
 import ScheduledActionForm from "./ScheduledActionForm";
 
 const ScheduledActionFormModal = ({
