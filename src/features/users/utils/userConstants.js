@@ -13,8 +13,8 @@ export const USER_ROLES = [
 export const ROLE_API_VALUES = {
 	superadmin: "Super Admin",
 	admin: "Admin",
-	leader: "Leader",
-	supervisor: "Supervisor",
+	leader: "Team Leader",
+	supervisor: "Sales Supervisor",
 	sales: "Sales",
 };
 
@@ -33,6 +33,9 @@ const ROLE_ALIASES = {
 	sales_supervisor: "supervisor",
 	"sales-supervisor": "supervisor",
 	"sales supervisor": "supervisor",
+	sales_admin: "supervisor",
+	"sales-admin": "supervisor",
+	"sales admin": "supervisor",
 	sales: "sales",
 };
 

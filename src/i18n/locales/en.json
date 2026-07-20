@@ -1349,7 +1349,7 @@
 			"admin": "Admin",
 			"sales": "Sales",
 			"leader": "Team Leader",
-			"supervisor": "Sales Supervisor"
+			"supervisor": "Sales Admin"
 		},
 		"columns": {
 			"selectAll": "Select all",

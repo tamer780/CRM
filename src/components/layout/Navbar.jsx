@@ -39,7 +39,7 @@ const Navbar = ({ onOpenMobileMenu }) => {
 					</div>
 					<div className="hidden min-w-0 sm:block">
 						<p className="truncate font-medium text-text">{displayName}</p>
-						<p className="truncate text-xs text-muted">{role}</p>
+						
 					</div>
 				</div>
 			</div>
