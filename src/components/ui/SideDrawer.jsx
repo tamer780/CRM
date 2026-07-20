@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { useEffect, useId } from "react";
 import { useTranslation } from "react-i18next";
+import { useBodyScrollLock } from "../../hooks/ui/useBodyScrollLock";
 
 const SIZE_CLASSES = {
 	md: "max-w-md",
@@ -24,17 +25,16 @@ const SideDrawer = ({
 	const resolvedSize = size ?? (wide ? "lg" : "md");
 	const sizeClass = SIZE_CLASSES[resolvedSize] ?? SIZE_CLASSES.md;
 
+	useBodyScrollLock(open);
+
 	useEffect(() => {
 		if (!open) return undefined;
 		const handleKey = (e) => {
 			if (e.key === "Escape" && !preventClose) onClose();
 		};
 		document.addEventListener("keydown", handleKey);
-		const prev = document.body.style.overflow;
-		document.body.style.overflow = "hidden";
 		return () => {
 			document.removeEventListener("keydown", handleKey);
-			document.body.style.overflow = prev;
 		};
 	}, [open, preventClose, onClose]);
 

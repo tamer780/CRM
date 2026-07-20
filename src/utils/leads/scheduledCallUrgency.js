@@ -1,10 +1,7 @@
 export const SCHEDULED_CALL_WINDOW_MS = 30 * 60 * 1000;
+export const SCHEDULED_CALL_REMINDER_BEFORE_MS = 5 * 60 * 1000;
 
-/**
- * @param {string|null|undefined} iso
- * @param {number} [now]
- * @returns {{ tone: "green"|"yellow"|"red", diffMs: number, scheduledAt: Date } | null}
- */
+
 export function getScheduledCallUrgency(iso, now = Date.now()) {
 	if (iso == null || iso === "") return null;
 	const scheduledAt = new Date(iso);
@@ -18,10 +15,7 @@ export function getScheduledCallUrgency(iso, now = Date.now()) {
 	return { tone, diffMs, scheduledAt };
 }
 
-/**
- * @param {number} diffMs - scheduledAt - now (positive = future)
- * @param {(key: string, options?: object) => string} t
- */
+
 export function formatScheduledCallRemaining(diffMs, t) {
 	const abs = Math.abs(diffMs);
 	const totalMinutes = Math.round(abs / 60_000);

@@ -182,6 +182,7 @@ const CampaignsPage = () => {
 	};
 
 	const openEdit = (campaign) => {
+		if (selected) closeDetail();
 		setModalMode("edit");
 		setEditingId(campaign.id);
 		setFormValues(campaignToFormValues(campaign));

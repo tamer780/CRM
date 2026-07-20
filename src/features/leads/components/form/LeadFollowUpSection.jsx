@@ -1,10 +1,17 @@
 import { CalendarClock } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import {
+	SCHEDULED_CALL_MAX_AHEAD_MS,
+	toDatetimeLocalValue,
+} from "../../../../utils/leads/leadConstants";
 import FormDateTime from "./FormDateTime";
 import LeadFormSection from "./LeadFormSection";
 
 const LeadFollowUpSection = ({ values, onFieldChange, errors = {}, disabled }) => {
 	const { t } = useTranslation();
+	const scheduledCallMax = toDatetimeLocalValue(
+		new Date(Date.now() + SCHEDULED_CALL_MAX_AHEAD_MS),
+	);
 
 	return (
 		<LeadFormSection
@@ -19,6 +26,7 @@ const LeadFollowUpSection = ({ values, onFieldChange, errors = {}, disabled }) =
 					value={values.scheduled_call_at}
 					onChange={(e) => onFieldChange("scheduled_call_at", e.target.value)}
 					error={errors.scheduled_call_at}
+					max={scheduledCallMax}
 					disabled={disabled}
 				/>
 				<FormDateTime

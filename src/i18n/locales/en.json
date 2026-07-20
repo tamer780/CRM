@@ -102,6 +102,49 @@
 			"qualificationRateDesc": "Qualified ÷ contacted",
 			"conversionRate": "Conversion Rate",
 			"conversionRateDesc": "Converted ÷ qualified"
+		},
+		"teams": {
+			"title": "Team performance",
+			"subtitle": "Compare teams at a glance, then open a team for member and funnel details.",
+			"viewDetails": "View details",
+			"inactive": "No activity in this period",
+			"lowContact": "Below contact-rate target",
+			"emptyTitle": "No team data",
+			"emptyMessage": "Team performance will appear here once KPIs are available.",
+			"tabsLabel": "Team KPI sections",
+			"tabs": {
+				"leads": "Leads",
+				"meetings": "Meetings",
+				"members": "Members"
+			},
+			"meetings": {
+				"pipeline": "Pipeline",
+				"outcomes": "Outcomes",
+				"rates": "Rates",
+				"scheduled": "Scheduled",
+				"visit": "Visit",
+				"reserved": "Reserved",
+				"bought": "Bought",
+				"completed": "Completed",
+				"canceled": "Canceled",
+				"didntCome": "Didn't come",
+				"showRate": "Show rate",
+				"visitRate": "Visit rate",
+				"reservationRate": "Reservation rate",
+				"purchaseRate": "Purchase rate"
+			},
+			"members": {
+				"empty": "No members in this team for the selected period.",
+				"columns": {
+					"name": "Member",
+					"assigned": "Assigned",
+					"contactRate": "Contact",
+					"conversionRate": "Conversion",
+					"meetingsTotal": "Meetings",
+					"showRate": "Show",
+					"purchaseRate": "Purchase"
+				}
+			}
 		}
 	},
 	"reports": {
@@ -439,7 +482,9 @@
 			"inHoursMinutes": "in {{hours}}h {{minutes}}m",
 			"now": "now",
 			"overdueMinutes": "overdue {{count}}m",
-			"overdueHoursMinutes": "overdue {{hours}}h {{minutes}}m"
+			"overdueHoursMinutes": "overdue {{hours}}h {{minutes}}m",
+			"reminder": "Call reminder: {{name}} — {{when}}",
+			"open": "Open lead"
 		},
 		"form": {
 			"name": "Name",
@@ -537,7 +582,8 @@
 			"lostReasonRequired": "Lost reason is required.",
 			"meetingNoteMax": "Meeting note must be at most {{max}} characters.",
 			"fileRequired": "Please select a file to import.",
-			"sourceRequired": "Please select a source."
+			"sourceRequired": "Please select a source.",
+			"scheduledCallMaxOneWeek": "Scheduled call cannot be more than one week from now."
 		},
 		"assign": {
 			"reason": "Assignment Reason",
@@ -554,7 +600,9 @@
 			"deleteMessage": "Are you sure you want to delete {{count}} leads? This cannot be undone."
 		},
 		"pagination": {
-			"showing": "Showing {{shown}} of {{total}}"
+			"showing": "Showing {{shown}} of {{total}}",
+			"loadingMore": "Loading more…",
+			"end": "You've reached the end"
 		},
 		"markLost": {
 			"title": "Mark Lead as Lost",
@@ -637,7 +685,6 @@
 		"actions": {
 			"view": "View",
 			"replace": "Replace",
-			"merge": "Merge",
 			"remove": "Remove"
 		},
 		"pagination": {
@@ -663,6 +710,8 @@
 			"reviewedAt": "Reviewed At",
 			"resolutionNote": "Resolution Note",
 			"compare": "Compare",
+			"oldPanel": "Old",
+			"newPanel": "New",
 			"pendingPanel": "Pending submission",
 			"existingLeadPanel": "Existing lead",
 			"existingClientPanel": "Existing client",
@@ -734,11 +783,6 @@
 			"noteRequired": "Please enter a resolution note.",
 			"confirm": "Replace Lead"
 		},
-		"merge": {
-			"title": "Merge Pending Lead",
-			"message": "Merge this duplicate into the existing lead/client.",
-			"confirm": "Merge"
-		},
 		"remove": {
 			"title": "Remove Pending Lead",
 			"message": "Are you sure you want to remove this pending duplicate?",
@@ -746,14 +790,12 @@
 		},
 		"toasts": {
 			"replaced": "Pending lead replaced successfully.",
-			"merged": "Pending lead merged successfully.",
 			"removed": "Pending lead removed successfully."
 		},
 		"errors": {
 			"loadFailed": "Unable to load pending leads. Please try again.",
 			"loadDetailFailed": "Unable to load pending lead details.",
 			"replaceFailed": "Unable to replace this pending lead.",
-			"mergeFailed": "Unable to merge this pending lead.",
 			"removeFailed": "Unable to remove this pending lead."
 		}
 	},
@@ -935,16 +977,23 @@
 			"bought": "Bought",
 			"canceled": "Canceled",
 			"lost": "Lost",
-			"archived": "Archived"
+			"archived": "Archived",
+			"all_status": "All statuses",
+			"default": "Default"
 		},
 		"actions": {
 			"view": "View",
 			"edit": "Edit",
-			"markLost": "Mark Lost",
-			"restore": "Restore"
+			"delete": "Delete"
+		},
+		"delete": {
+			"title": "Delete client",
+			"message": "Are you sure you want to delete {{name}}? This cannot be undone."
 		},
 		"pagination": {
-			"showing": "Showing {{shown}} of {{total}}"
+			"showing": "Showing {{shown}} of {{total}}",
+			"loadingMore": "Loading more…",
+			"end": "You've reached the end"
 		},
 		"empty": {
 			"title": "No Clients Found",
@@ -955,17 +1004,17 @@
 		"drawer": {
 			"title": "Client",
 			"tabsLabel": "Client detail sections",
-			"comingSoon": "Coming soon",
 			"tabs": {
 				"overview": "Overview",
 				"activities": "Activities",
 				"comments": "Comments",
 				"timeline": "Timeline",
-				"files": "Files"
+				"scheduledActions": "Scheduled Actions"
 			},
 			"general": "General Information",
 			"assignment": "Assignment",
-			"timeline": "Timeline",
+			"dates": "Dates",
+			"team": "Team",
 			"lostInfo": "Lost Information",
 			"originalLeadId": "Original Lead ID",
 			"qualifiedAt": "Qualified At",
@@ -974,7 +1023,45 @@
 			"updatedAt": "Updated At",
 			"lostAt": "Lost At",
 			"lostBy": "Lost By",
-			"lostReason": "Lost Reason"
+			"lostReason": "Lost Reason",
+			"scheduledAt": "Scheduled At",
+			"completedAt": "Completed At",
+			"assignee": "Assignee",
+			"outcome": "Outcome",
+			"timelineComment": "Comment",
+			"timelineSources": {
+				"lead": "Lead",
+				"client": "Client"
+			},
+			"unknownActivity": "Activity",
+			"unknownAuthor": "Unknown",
+			"activitiesEmptyTitle": "No activities",
+			"activitiesEmptyMessage": "There is no activity history for this client yet.",
+			"commentsEmptyTitle": "No comments",
+			"commentsEmptyMessage": "No comments have been posted for this client yet.",
+			"timelineEmptyTitle": "No timeline events",
+			"timelineEmptyMessage": "There is no timeline history for this client yet.",
+			"scheduledActionsEmptyTitle": "No scheduled actions",
+			"scheduledActionsEmptyMessage": "There are no scheduled actions for this client yet.",
+			"viewRawSnapshots": "View snapshots",
+			"hideRawSnapshots": "Hide snapshots",
+			"noOldValue": "No previous value",
+			"noNewValue": "No new value",
+			"moreChanges": "+{{count}} more changes",
+			"activityTypes": {
+				"converted_to_client": "Converted to client",
+				"client_lost": "Marked as lost",
+				"client_restored": "Restored",
+				"status_changed": "Status changed"
+			},
+			"diffFields": {
+				"status": "Status",
+				"assigned_to": "Assigned to",
+				"lost_reason": "Lost reason",
+				"lost_at": "Lost at",
+				"project_id": "Project",
+				"campaign_id": "Campaign"
+			}
 		},
 		"form": {
 			"subtitle": "Update client details, assignment, and status.",
@@ -1007,15 +1094,13 @@
 		},
 		"toasts": {
 			"updated": "Client updated successfully.",
-			"markedLost": "Client marked as lost.",
-			"restored": "Client restored successfully."
+			"deleted": "Client deleted successfully."
 		},
 		"errors": {
 			"loadFailed": "Unable to load clients. Please try again.",
 			"loadDetailFailed": "Unable to load client details.",
 			"updateFailed": "Unable to update client. Please try again.",
-			"markLostFailed": "Unable to mark client as lost. Please try again.",
-			"restoreFailed": "Unable to restore client. Please try again."
+			"deleteFailed": "Unable to delete client. Please try again."
 		}
 	},
 	"projects": {
@@ -1178,7 +1263,9 @@
 			"delete": "Delete"
 		},
 		"pagination": {
-			"showing": "Showing {{shown}} of {{total}}"
+			"showing": "Showing {{shown}} of {{total}}",
+			"loadingMore": "Loading more…",
+			"end": "You've reached the end"
 		},
 		"empty": {
 			"title": "No Teams Found",
@@ -1402,7 +1489,9 @@
 			"delete": "Delete"
 		},
 		"pagination": {
-			"showing": "Showing {{shown}} of {{total}}"
+			"showing": "Showing {{shown}} of {{total}}",
+			"loadingMore": "Loading more…",
+			"end": "You've reached the end"
 		},
 		"empty": {
 			"title": "No Meetings",

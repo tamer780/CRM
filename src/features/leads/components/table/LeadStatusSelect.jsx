@@ -10,6 +10,15 @@ import {
 
 const MENU_MAX_HEIGHT = 280;
 const MENU_GAP = 6;
+const MENU_ITEM_HEIGHT = 40;
+const MENU_PADDING = 12;
+
+function estimateMenuHeight(optionCount) {
+	return Math.min(
+		MENU_MAX_HEIGHT,
+		optionCount * MENU_ITEM_HEIGHT + MENU_PADDING,
+	);
+}
 
 function statusLabel(t, status) {
 	const key = String(status ?? "").toLowerCase();
@@ -20,7 +29,7 @@ function statusLabel(t, status) {
 	});
 }
 
-/** Converted is only offered when the lead is already qualified (or already converted). */
+
 function getStatusOptions(currentStatus) {
 	const key = String(currentStatus ?? "").toLowerCase();
 	const canConvert = key === "qualified" || key === "converted";
@@ -56,16 +65,22 @@ const LeadStatusSelect = ({
 		const rect = trigger.getBoundingClientRect();
 		const spaceAbove = rect.top;
 		const spaceBelow = window.innerHeight - rect.bottom;
+		const needed = estimateMenuHeight(statusOptions.length);
 		const openUp =
 			placement === "top"
-				? spaceAbove >= Math.min(MENU_MAX_HEIGHT, 120) || spaceAbove > spaceBelow
-				: spaceBelow < Math.min(MENU_MAX_HEIGHT, 120) && spaceAbove > spaceBelow;
+				? spaceAbove >= needed || spaceAbove > spaceBelow
+				: spaceBelow < needed && spaceAbove > spaceBelow;
+		const availableSpace = openUp ? spaceAbove : spaceBelow;
+		const maxHeight = Math.min(
+			MENU_MAX_HEIGHT,
+			Math.max(availableSpace - MENU_GAP, 0),
+		);
 
 		const style = {
 			position: "fixed",
 			left: rect.left,
 			minWidth: Math.max(rect.width, 176),
-			maxHeight: MENU_MAX_HEIGHT,
+			maxHeight,
 			zIndex: 200,
 		};
 
@@ -93,7 +108,7 @@ const LeadStatusSelect = ({
 			window.removeEventListener("resize", handleReposition);
 			window.removeEventListener("scroll", handleReposition, true);
 		};
-	}, [open, placement]);
+	}, [open, placement, statusOptions.length]);
 
 	useEffect(() => {
 		if (!open) return undefined;

@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-	mergePendingLead,
 	removePendingLead,
 	replacePendingLead,
 } from "../../services/pendingLeads/pendingLeadsService";
@@ -56,13 +55,6 @@ function useOptimisticPendingLeadMutation(mutationFn) {
 export function useReplacePendingLead() {
 	return useOptimisticPendingLeadMutation(async ({ id, note }) => {
 		const response = await replacePendingLead(id, { note });
-		return extractData(response);
-	});
-}
-
-export function useMergePendingLead() {
-	return useOptimisticPendingLeadMutation(async (id) => {
-		const response = await mergePendingLead(id, {});
 		return extractData(response);
 	});
 }

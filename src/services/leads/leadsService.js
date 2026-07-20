@@ -1,6 +1,7 @@
 import api from "../../api/client";
 
 export async function getLeads({
+	page,
 	per_page,
 	status,
 	assigned_to,
@@ -12,6 +13,7 @@ export async function getLeads({
 	last_action_to,
 } = {}) {
 	const params = {};
+	if (page) params.page = page;
 	if (per_page) params.per_page = per_page;
 	if (Array.isArray(status) && status.length > 0) {
 		params.status = status.map(String);

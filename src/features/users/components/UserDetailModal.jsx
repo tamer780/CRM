@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { useEffect, useId, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useBodyScrollLock } from "../../../hooks/ui/useBodyScrollLock";
 import {
 	getAvatarTone,
 	getInitials,
@@ -97,12 +98,12 @@ const UserDetailModal = ({
 	const active = isUserActive(user);
 	const teamName = getUserTeamName(user, teams);
 
+	useBodyScrollLock(open);
+
 	useEffect(() => {
 		if (!open) return undefined;
 
 		previousFocusRef.current = document.activeElement;
-		const previousOverflow = document.body.style.overflow;
-		document.body.style.overflow = "hidden";
 
 		const dialog = dialogRef.current;
 		const focusable = dialog?.querySelector(
@@ -122,7 +123,6 @@ const UserDetailModal = ({
 		document.addEventListener("keydown", handleKeyDown);
 		return () => {
 			document.removeEventListener("keydown", handleKeyDown);
-			document.body.style.overflow = previousOverflow;
 			previousFocusRef.current?.focus?.();
 		};
 	}, [open, onClose, preventClose]);

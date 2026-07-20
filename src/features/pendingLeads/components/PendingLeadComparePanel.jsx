@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import SourceBadge from "../../../components/ui/SourceBadge";
 import LeadStatusBadge from "../../leads/components/table/LeadStatusBadge";
+import { nestedEntityName } from "../../../utils/api/nestedRelations";
 
 function formatDateTime(value) {
 	if (!value) return "—";
@@ -16,22 +17,6 @@ function formatDateTime(value) {
 	});
 }
 
-function resolveUserLabel(usersMap, id, fallbackName) {
-	if (fallbackName) return fallbackName;
-	if (id == null || id === "") return null;
-	const user = usersMap?.get(Number(id)) ?? usersMap?.get(String(id));
-	if (!user) return id != null ? String(id) : null;
-	return user.name ?? user.email ?? String(id);
-}
-
-function resolveEntityLabel(map, id, nested) {
-	if (nested?.name) return nested.name;
-	if (id == null || id === "") return null;
-	const item = map?.get(Number(id)) ?? map?.get(String(id));
-	if (!item) return id != null ? String(id) : null;
-	return item.name ?? item.title ?? String(id);
-}
-
 function normalizeComparable(value) {
 	if (value == null || value === "") return "";
 	return String(value).trim().toLowerCase();
@@ -41,89 +26,115 @@ function valuesDiffer(a, b) {
 	return normalizeComparable(a) !== normalizeComparable(b);
 }
 
-function CompareRow({
-	label,
-	left,
-	right,
-	differ,
-	dir,
-	leftCaption,
-	rightCaption,
-}) {
+function resolveProjectName(row, projectsMap) {
+	const nested = nestedEntityName(row?.project);
+	if (nested !== "—") return nested;
+	const id = row?.project_id;
+	if (id == null) return "—";
+	const entity =
+		projectsMap?.get(Number(id)) ?? projectsMap?.get(String(id));
+	return entity?.name ?? `#${id}`;
+}
+
+function resolveCampaignName(row, campaignsMap) {
+	const nested = nestedEntityName(row?.campaign);
+	if (nested !== "—") return nested;
+	const id = row?.campaign_id;
+	if (id == null) return "—";
+	const entity =
+		campaignsMap?.get(Number(id)) ?? campaignsMap?.get(String(id));
+	return entity?.name ?? `#${id}`;
+}
+
+function resolveAssigneeName(row, usersMap) {
+	const nested = nestedEntityName(row?.assignee);
+	if (nested !== "—") return nested;
+	const id = row?.assigned_to;
+	if (id == null) return "—";
+	const user = usersMap?.get(Number(id)) ?? usersMap?.get(String(id));
+	return user?.name ?? user?.email ?? `#${id}`;
+}
+
+function renderCellValue(row, side) {
+	if (row.type === "source") {
+		const source = side === "old" ? row.oldSource : row.newSource;
+		return source ? (
+			<SourceBadge source={source} />
+		) : (
+			<span className="text-sm text-muted">—</span>
+		);
+	}
+
+	if (row.type === "status") {
+		const status = side === "old" ? row.oldStatus : row.newStatus;
+		return status ? (
+			<LeadStatusBadge status={status} />
+		) : (
+			<span className="text-sm text-muted">—</span>
+		);
+	}
+
+	const value = side === "old" ? row.oldValue : row.newValue;
 	return (
-		<div
-			className={[
-				"rounded-xl px-3 py-2.5",
-				differ ? "bg-amber-50/80 ring-1 ring-inset ring-amber-200/70" : "",
-			]
-				.filter(Boolean)
-				.join(" ")}
-		>
-			<p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted">
-				{label}
-			</p>
-			<div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
-				<div className="min-w-0">
-					<p className="text-[10px] font-medium uppercase tracking-wide text-muted sm:hidden">
-						{leftCaption}
-					</p>
-					<p className="mt-0.5 text-sm text-text" dir={dir}>
-						{left == null || left === "" ? "—" : left}
-					</p>
-				</div>
-				<div className="min-w-0">
-					<p className="text-[10px] font-medium uppercase tracking-wide text-muted sm:hidden">
-						{rightCaption}
-					</p>
-					<p className="mt-0.5 text-sm text-text" dir={dir}>
-						{right == null || right === "" ? "—" : right}
-					</p>
-				</div>
-			</div>
-		</div>
+		<span className="text-sm text-text" dir={row.dir}>
+			{value == null || value === "" ? "—" : value}
+		</span>
 	);
 }
 
-function CompareRowCustom({
-	label,
-	left,
-	right,
-	differ,
-	leftCaption,
-	rightCaption,
-}) {
+function FieldValueTable({ title, subtitle, recordName, rows, side, className }) {
 	return (
 		<div
 			className={[
-				"rounded-xl px-3 py-2.5",
-				differ ? "bg-amber-50/80 ring-1 ring-inset ring-amber-200/70" : "",
+				"flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-background/40",
+				className,
 			]
 				.filter(Boolean)
 				.join(" ")}
 		>
-			<p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted">
-				{label}
-			</p>
-			<div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
-				<div className="min-w-0">
-					<p className="text-[10px] font-medium uppercase tracking-wide text-muted sm:hidden">
-						{leftCaption}
-					</p>
-					<div className="mt-0.5">{left}</div>
-				</div>
-				<div className="min-w-0">
-					<p className="text-[10px] font-medium uppercase tracking-wide text-muted sm:hidden">
-						{rightCaption}
-					</p>
-					<div className="mt-0.5">{right}</div>
-				</div>
+			<div className="sticky top-0 z-1 border-b border-border bg-surface px-4 py-3">
+				<p className="text-xs font-semibold uppercase tracking-wide text-muted">
+					{title}
+				</p>
+				<p className="mt-0.5 text-[11px] text-muted">{subtitle}</p>
+				<p className="mt-1 truncate text-sm font-medium text-text">
+					{recordName ?? "—"}
+				</p>
+			</div>
+
+			<div className="min-h-0 flex-1 overflow-x-auto">
+				<table className="w-full min-w-[220px] border-collapse text-sm">
+					<tbody>
+						{rows.map((row) => (
+							<tr
+								key={row.key}
+								className={[
+									"border-b border-border/70 last:border-b-0",
+									row.differ
+										? "bg-amber-50/80 ring-1 ring-inset ring-amber-200/70"
+										: "",
+								]
+									.filter(Boolean)
+									.join(" ")}
+							>
+								<th
+									scope="row"
+									className="w-[38%] px-4 py-2.5 text-start align-top text-[11px] font-medium uppercase tracking-wide text-muted"
+								>
+									{row.label}
+								</th>
+								<td className="px-4 py-2.5 align-top">{renderCellValue(row, side)}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
 			</div>
 		</div>
 	);
 }
 
 /**
- * Side-by-side comparison of pending lead vs existing lead/client.
+ * Side-by-side Old vs New tables for pending lead vs existing lead/client.
  */
 const PendingLeadComparePanel = ({
 	lead,
@@ -142,62 +153,39 @@ const PendingLeadComparePanel = ({
 			? "client"
 			: null;
 
-	const pendingProject = resolveEntityLabel(
-		projectsMap,
-		lead?.project_id,
-		null,
-	);
-	const existingProject = resolveEntityLabel(
-		projectsMap,
-		match?.project_id,
-		match?.project,
-	);
-	const pendingCampaign = resolveEntityLabel(
-		campaignsMap,
-		lead?.campaign_id,
-		null,
-	);
-	const existingCampaign = resolveEntityLabel(
-		campaignsMap,
-		match?.campaign_id,
-		match?.campaign,
-	);
-	const pendingAssignee = resolveUserLabel(usersMap, lead?.assigned_to);
-	const existingAssignee = resolveUserLabel(
-		usersMap,
-		match?.assigned_to,
-		match?.assignee?.name,
-	);
-
 	const rows = useMemo(() => {
 		if (!lead) return [];
 
+		const oldProject = resolveProjectName(match, projectsMap);
+		const newProject = resolveProjectName(lead, projectsMap);
+		const oldCampaign = resolveCampaignName(match, campaignsMap);
+		const newCampaign = resolveCampaignName(lead, campaignsMap);
+		const oldAssignee = resolveAssigneeName(match, usersMap);
+		const newAssignee = resolveAssigneeName(lead, usersMap);
 		const existingNote =
-			match?.note ||
-			match?.last_communication_note ||
-			null;
+			match?.note || match?.last_communication_note || null;
 
-		return [
+		const fieldRows = [
 			{
 				key: "name",
 				label: t("leads.form.name"),
-				left: lead.name,
-				right: match?.name,
+				oldValue: match?.name,
+				newValue: lead.name,
 				differ: match ? valuesDiffer(lead.name, match?.name) : false,
 			},
 			{
 				key: "phone",
 				label: t("leads.form.phone"),
-				left: lead.phone,
-				right: match?.phone,
-				differ: false,
+				oldValue: match?.phone,
+				newValue: lead.phone,
+				differ: match ? valuesDiffer(lead.phone, match?.phone) : false,
 				dir: "ltr",
 			},
 			{
 				key: "email",
 				label: t("leads.form.email"),
-				left: lead.email,
-				right: match?.email,
+				oldValue: match?.email,
+				newValue: lead.email,
 				differ: match ? valuesDiffer(lead.email, match?.email) : false,
 				dir: "ltr",
 			},
@@ -205,15 +193,15 @@ const PendingLeadComparePanel = ({
 				key: "source",
 				label: t("leads.form.source"),
 				type: "source",
-				leftSource: lead.source,
-				rightSource: match?.source,
+				oldSource: match?.source,
+				newSource: lead.source,
 				differ: match ? valuesDiffer(lead.source, match?.source) : false,
 			},
 			{
 				key: "source_details",
 				label: t("pendingLeads.drawer.sourceDetails"),
-				left: lead.source_details,
-				right: match?.source_details,
+				oldValue: match?.source_details,
+				newValue: lead.source_details,
 				differ: match
 					? valuesDiffer(lead.source_details, match?.source_details)
 					: false,
@@ -221,66 +209,64 @@ const PendingLeadComparePanel = ({
 			{
 				key: "project",
 				label: t("leads.form.project"),
-				left: pendingProject,
-				right: existingProject,
-				differ: match
-					? valuesDiffer(pendingProject, existingProject)
-					: false,
+				oldValue: oldProject,
+				newValue: newProject,
+				differ: match ? valuesDiffer(newProject, oldProject) : false,
 			},
 			{
 				key: "campaign",
 				label: t("leads.form.campaign"),
-				left: pendingCampaign,
-				right: existingCampaign,
-				differ: match
-					? valuesDiffer(pendingCampaign, existingCampaign)
-					: false,
+				oldValue: oldCampaign,
+				newValue: newCampaign,
+				differ: match ? valuesDiffer(newCampaign, oldCampaign) : false,
 			},
 			{
 				key: "assignee",
 				label: t("leads.columns.assignedTo"),
-				left: pendingAssignee,
-				right: existingAssignee,
+				oldValue: oldAssignee,
+				newValue: newAssignee,
+				differ: match ? valuesDiffer(newAssignee, oldAssignee) : false,
+			},
+			{
+				key: "scheduled_call_at",
+				label: t("pendingLeads.diffFields.scheduled_call_at"),
+				oldValue: formatDateTime(match?.scheduled_call_at),
+				newValue: formatDateTime(lead.scheduled_call_at),
 				differ: match
-					? valuesDiffer(pendingAssignee, existingAssignee)
+					? valuesDiffer(
+							lead.scheduled_call_at,
+							match?.scheduled_call_at,
+						)
 					: false,
 			},
 			{
 				key: "status",
 				label: t("leads.columns.status"),
 				type: "status",
-				leftStatus: null,
-				rightStatus: match?.status ?? null,
+				oldStatus: match?.status ?? null,
+				newStatus: null,
 				differ: false,
 			},
 			{
 				key: "note",
 				label: t("pendingLeads.drawer.notes"),
-				left: lead.note,
-				right: existingNote,
+				oldValue: existingNote,
+				newValue: lead.note,
 				differ: match ? valuesDiffer(lead.note, existingNote) : false,
 			},
 			{
 				key: "created",
 				label: t("pendingLeads.drawer.createdAt"),
-				left: formatDateTime(lead.created_at),
-				right: match ? formatDateTime(match.created_at) : null,
+				oldValue: match ? formatDateTime(match.created_at) : null,
+				newValue: formatDateTime(lead.created_at),
 				differ: false,
 			},
 		];
-	}, [
-		lead,
-		match,
-		pendingProject,
-		existingProject,
-		pendingCampaign,
-		existingCampaign,
-		pendingAssignee,
-		existingAssignee,
-		t,
-	]);
 
-	const rightTitle =
+		return fieldRows;
+	}, [lead, match, projectsMap, campaignsMap, usersMap, t]);
+
+	const oldSubtitle =
 		matchKind === "client"
 			? t("pendingLeads.drawer.existingClientPanel")
 			: t("pendingLeads.drawer.existingLeadPanel");
@@ -312,77 +298,23 @@ const PendingLeadComparePanel = ({
 					</p>
 				</div>
 			) : (
-				<div className="overflow-hidden rounded-2xl border border-border bg-background/40">
-					<div className="hidden grid-cols-2 gap-4 border-b border-border bg-surface px-3 py-3 sm:grid sm:px-4">
-						<div>
-							<p className="text-xs font-semibold uppercase tracking-wide text-muted">
-								{t("pendingLeads.drawer.pendingPanel")}
-							</p>
-							<p className="mt-0.5 truncate text-sm font-medium text-text">
-								{lead?.name ?? "—"}
-							</p>
-						</div>
-						<div>
-							<p className="text-xs font-semibold uppercase tracking-wide text-muted">
-								{rightTitle}
-							</p>
-							<p className="mt-0.5 truncate text-sm font-medium text-text">
-								{match?.name ?? "—"}
-							</p>
-						</div>
-					</div>
-
-					<div className="space-y-1 p-2 sm:p-3">
-						{rows.map((row) => {
-							const leftCaption = t("pendingLeads.drawer.pendingPanel");
-							const rightCaption = rightTitle;
-
-							if (row.type === "source") {
-								return (
-									<CompareRowCustom
-										key={row.key}
-										label={row.label}
-										differ={row.differ}
-										leftCaption={leftCaption}
-										rightCaption={rightCaption}
-										left={<SourceBadge source={row.leftSource} />}
-										right={<SourceBadge source={row.rightSource} />}
-									/>
-								);
-							}
-							if (row.type === "status") {
-								return (
-									<CompareRowCustom
-										key={row.key}
-										label={row.label}
-										differ={false}
-										leftCaption={leftCaption}
-										rightCaption={rightCaption}
-										left={<span className="text-sm text-muted">—</span>}
-										right={
-											row.rightStatus ? (
-												<LeadStatusBadge status={row.rightStatus} />
-											) : (
-												<span className="text-sm text-muted">—</span>
-											)
-										}
-									/>
-								);
-							}
-							return (
-								<CompareRow
-									key={row.key}
-									label={row.label}
-									left={row.left}
-									right={row.right}
-									differ={row.differ}
-									dir={row.dir}
-									leftCaption={leftCaption}
-									rightCaption={rightCaption}
-								/>
-							);
-						})}
-					</div>
+				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+					<FieldValueTable
+						title={t("pendingLeads.drawer.newPanel")}
+						subtitle={t("pendingLeads.drawer.pendingPanel")}
+						recordName={lead?.name}
+						rows={rows}
+						side="new"
+						className="order-1 sm:order-2"
+					/>
+					<FieldValueTable
+						title={t("pendingLeads.drawer.oldPanel")}
+						subtitle={oldSubtitle}
+						recordName={match?.name}
+						rows={rows}
+						side="old"
+						className="order-2 sm:order-1"
+					/>
 				</div>
 			)}
 		</section>

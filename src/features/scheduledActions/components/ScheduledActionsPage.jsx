@@ -201,6 +201,7 @@ const ScheduledActionsPage = () => {
 	};
 
 	const openEdit = (action) => {
+		if (selected) closeDetail();
 		setModalMode("edit");
 		setEditingId(action.id);
 		setFormValues(scheduledActionToFormValues(action));

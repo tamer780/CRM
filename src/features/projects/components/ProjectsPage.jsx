@@ -191,6 +191,7 @@ const ProjectsPage = () => {
 	};
 
 	const openEdit = (project) => {
+		if (selected) closeDetail();
 		setModalMode("edit");
 		setEditingId(project.id);
 		setFormValues(projectToFormValues(project));

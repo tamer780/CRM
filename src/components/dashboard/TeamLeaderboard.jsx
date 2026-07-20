@@ -72,7 +72,12 @@ const TeamLeaderboard = ({ teams, isLoading, isError, onRetry }) => {
 										#{team.rank}
 									</div>
 									<div>
-										<p className="font-semibold text-text">{team.displayName}</p>
+										<p className="font-semibold text-text">
+											{team.displayName ??
+												team.team_name ??
+												team.name ??
+												"—"}
+										</p>
 										{team.isLowContact && (
 											<p className="mt-0.5 text-xs font-medium text-warning">
 												{t("dashboard.leaderboard.lowContact")}

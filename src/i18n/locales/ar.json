@@ -102,6 +102,49 @@
 			"qualificationRateDesc": "مؤهلون ÷ تم التواصل",
 			"conversionRate": "معدل التحويل",
 			"conversionRateDesc": "محوّلون ÷ مؤهلون"
+		},
+		"teams": {
+			"title": "أداء الفرق",
+			"subtitle": "قارن الفرق بسرعة، ثم افتح فريقاً لعرض تفاصيل الأعضاء ومسارات الأداء.",
+			"viewDetails": "عرض التفاصيل",
+			"inactive": "لا نشاط في هذه الفترة",
+			"lowContact": "أقل من هدف معدل التواصل",
+			"emptyTitle": "لا توجد بيانات للفرق",
+			"emptyMessage": "سيظهر أداء الفرق هنا عند توفر مؤشرات الأداء.",
+			"tabsLabel": "أقسام مؤشرات الفريق",
+			"tabs": {
+				"leads": "العملاء",
+				"meetings": "الاجتماعات",
+				"members": "الأعضاء"
+			},
+			"meetings": {
+				"pipeline": "مسار العمل",
+				"outcomes": "النتائج",
+				"rates": "المعدلات",
+				"scheduled": "مجدولة",
+				"visit": "زيارة",
+				"reserved": "محجوز",
+				"bought": "مشترى",
+				"completed": "مكتملة",
+				"canceled": "ملغاة",
+				"didntCome": "لم يحضر",
+				"showRate": "معدل الحضور",
+				"visitRate": "معدل الزيارة",
+				"reservationRate": "معدل الحجز",
+				"purchaseRate": "معدل الشراء"
+			},
+			"members": {
+				"empty": "لا يوجد أعضاء في هذا الفريق للفترة المحددة.",
+				"columns": {
+					"name": "العضو",
+					"assigned": "المعيّنون",
+					"contactRate": "التواصل",
+					"conversionRate": "التحويل",
+					"meetingsTotal": "الاجتماعات",
+					"showRate": "الحضور",
+					"purchaseRate": "الشراء"
+				}
+			}
 		}
 	},
 	"reports": {
@@ -439,7 +482,9 @@
 			"inHoursMinutes": "خلال {{hours}} س {{minutes}} د",
 			"now": "الآن",
 			"overdueMinutes": "متأخر {{count}} د",
-			"overdueHoursMinutes": "متأخر {{hours}} س {{minutes}} د"
+			"overdueHoursMinutes": "متأخر {{hours}} س {{minutes}} د",
+			"reminder": "تذكير مكالمة: {{name}} — {{when}}",
+			"open": "فتح العميل المحتمل"
 		},
 		"form": {
 			"name": "الاسم",
@@ -537,7 +582,8 @@
 			"lostReasonRequired": "سبب الفقد مطلوب.",
 			"meetingNoteMax": "ملاحظة المقابلة يجب ألا تتجاوز {{max}} حرفاً.",
 			"fileRequired": "يرجى اختيار ملف للاستيراد.",
-			"sourceRequired": "يرجى اختيار المصدر."
+			"sourceRequired": "يرجى اختيار المصدر.",
+			"scheduledCallMaxOneWeek": "لا يمكن جدولة المكالمة لأكثر من أسبوع من الآن."
 		},
 		"assign": {
 			"reason": "سبب التعيين",
@@ -554,7 +600,9 @@
 			"deleteMessage": "هل أنت متأكد من حذف {{count}} عملاء محتملين؟ لا يمكن التراجع عن هذا الإجراء."
 		},
 		"pagination": {
-			"showing": "عرض {{shown}} من {{total}}"
+			"showing": "عرض {{shown}} من {{total}}",
+			"loadingMore": "جاري تحميل المزيد…",
+			"end": "لقد وصلت إلى النهاية"
 		},
 		"markLost": {
 			"title": "تعيين العميل المحتمل كمفقود",
@@ -637,7 +685,6 @@
 		"actions": {
 			"view": "عرض",
 			"replace": "استبدال",
-			"merge": "دمج",
 			"remove": "إزالة"
 		},
 		"pagination": {
@@ -663,6 +710,8 @@
 			"reviewedAt": "تاريخ المراجعة",
 			"resolutionNote": "ملاحظة الحل",
 			"compare": "مقارنة",
+			"oldPanel": "قديم",
+			"newPanel": "جديد",
 			"pendingPanel": "الطلب المعلق",
 			"existingLeadPanel": "العميل المحتمل الموجود",
 			"existingClientPanel": "العميل الموجود",
@@ -734,11 +783,6 @@
 			"noteRequired": "يرجى إدخال ملاحظة الحل.",
 			"confirm": "استبدال العميل المحتمل"
 		},
-		"merge": {
-			"title": "دمج العميل المعلق",
-			"message": "دمج هذا التكرار في العميل المحتمل/العميل الموجود.",
-			"confirm": "دمج"
-		},
 		"remove": {
 			"title": "إزالة العميل المعلق",
 			"message": "هل أنت متأكد من إزالة هذا التكرار المعلق؟",
@@ -746,14 +790,12 @@
 		},
 		"toasts": {
 			"replaced": "تم استبدال العميل المعلق بنجاح.",
-			"merged": "تم دمج العميل المعلق بنجاح.",
 			"removed": "تمت إزالة العميل المعلق بنجاح."
 		},
 		"errors": {
 			"loadFailed": "تعذّر تحميل العملاء المعلقين. يرجى المحاولة مرة أخرى.",
 			"loadDetailFailed": "تعذّر تحميل تفاصيل العميل المعلق.",
 			"replaceFailed": "تعذّر استبدال هذا العميل المعلق.",
-			"mergeFailed": "تعذّر دمج هذا العميل المعلق.",
 			"removeFailed": "تعذّر إزالة هذا العميل المعلق."
 		}
 	},
@@ -935,16 +977,23 @@
 			"bought": "مشترى",
 			"canceled": "ملغى",
 			"lost": "مفقود",
-			"archived": "مؤرشف"
+			"archived": "مؤرشف",
+			"all_status": "كل الحالات",
+			"default": "افتراضي"
 		},
 		"actions": {
 			"view": "عرض",
 			"edit": "تعديل",
-			"markLost": "تعيين كمفقود",
-			"restore": "استعادة"
+			"delete": "حذف"
+		},
+		"delete": {
+			"title": "حذف العميل",
+			"message": "هل أنت متأكد من حذف {{name}}؟ لا يمكن التراجع عن هذا الإجراء."
 		},
 		"pagination": {
-			"showing": "عرض {{shown}} من {{total}}"
+			"showing": "عرض {{shown}} من {{total}}",
+			"loadingMore": "جاري تحميل المزيد…",
+			"end": "لقد وصلت إلى النهاية"
 		},
 		"empty": {
 			"title": "لا يوجد عملاء",
@@ -955,17 +1004,17 @@
 		"drawer": {
 			"title": "عميل",
 			"tabsLabel": "أقسام تفاصيل العميل",
-			"comingSoon": "قريباً",
 			"tabs": {
 				"overview": "نظرة عامة",
 				"activities": "الأنشطة",
 				"comments": "التعليقات",
 				"timeline": "الجدول الزمني",
-				"files": "الملفات"
+				"scheduledActions": "الإجراءات المجدولة"
 			},
 			"general": "معلومات عامة",
 			"assignment": "التعيين",
-			"timeline": "الجدول الزمني",
+			"dates": "التواريخ",
+			"team": "الفريق",
 			"lostInfo": "معلومات الفقدان",
 			"originalLeadId": "معرّف العميل المحتمل الأصلي",
 			"qualifiedAt": "تاريخ التأهيل",
@@ -974,7 +1023,45 @@
 			"updatedAt": "تاريخ التحديث",
 			"lostAt": "تاريخ الفقدان",
 			"lostBy": "فُقد بواسطة",
-			"lostReason": "سبب الفقدان"
+			"lostReason": "سبب الفقدان",
+			"scheduledAt": "مجدول في",
+			"completedAt": "اكتمل في",
+			"assignee": "المكلّف",
+			"outcome": "النتيجة",
+			"timelineComment": "تعليق",
+			"timelineSources": {
+				"lead": "عميل محتمل",
+				"client": "عميل"
+			},
+			"unknownActivity": "نشاط",
+			"unknownAuthor": "غير معروف",
+			"activitiesEmptyTitle": "لا توجد أنشطة",
+			"activitiesEmptyMessage": "لا يوجد سجل أنشطة لهذا العميل بعد.",
+			"commentsEmptyTitle": "لا توجد تعليقات",
+			"commentsEmptyMessage": "لم يُنشر أي تعليق لهذا العميل بعد.",
+			"timelineEmptyTitle": "لا توجد أحداث",
+			"timelineEmptyMessage": "لا يوجد سجل زمني لهذا العميل بعد.",
+			"scheduledActionsEmptyTitle": "لا توجد إجراءات مجدولة",
+			"scheduledActionsEmptyMessage": "لا توجد إجراءات مجدولة لهذا العميل بعد.",
+			"viewRawSnapshots": "عرض اللقطات",
+			"hideRawSnapshots": "إخفاء اللقطات",
+			"noOldValue": "لا توجد قيمة سابقة",
+			"noNewValue": "لا توجد قيمة جديدة",
+			"moreChanges": "+{{count}} تغييرات إضافية",
+			"activityTypes": {
+				"converted_to_client": "تحوّل إلى عميل",
+				"client_lost": "تعيين كمفقود",
+				"client_restored": "استعادة",
+				"status_changed": "تغيير الحالة"
+			},
+			"diffFields": {
+				"status": "الحالة",
+				"assigned_to": "مُعيَّن إلى",
+				"lost_reason": "سبب الفقدان",
+				"lost_at": "تاريخ الفقدان",
+				"project_id": "المشروع",
+				"campaign_id": "الحملة"
+			}
 		},
 		"form": {
 			"subtitle": "حدّث تفاصيل العميل والتعيين والحالة.",
@@ -1007,15 +1094,13 @@
 		},
 		"toasts": {
 			"updated": "تم تحديث العميل بنجاح.",
-			"markedLost": "تم تعيين العميل كمفقود.",
-			"restored": "تمت استعادة العميل بنجاح."
+			"deleted": "تم حذف العميل بنجاح."
 		},
 		"errors": {
 			"loadFailed": "تعذّر تحميل العملاء. يرجى المحاولة مرة أخرى.",
 			"loadDetailFailed": "تعذّر تحميل تفاصيل العميل.",
 			"updateFailed": "تعذّر تحديث العميل. يرجى المحاولة مرة أخرى.",
-			"markLostFailed": "تعذّر تعيين العميل كمفقود. يرجى المحاولة مرة أخرى.",
-			"restoreFailed": "تعذّر استعادة العميل. يرجى المحاولة مرة أخرى."
+			"deleteFailed": "تعذّر حذف العميل. يرجى المحاولة مرة أخرى."
 		}
 	},
 	"projects": {
@@ -1178,7 +1263,9 @@
 			"delete": "حذف"
 		},
 		"pagination": {
-			"showing": "عرض {{shown}} من {{total}}"
+			"showing": "عرض {{shown}} من {{total}}",
+			"loadingMore": "جاري تحميل المزيد…",
+			"end": "لقد وصلت إلى النهاية"
 		},
 		"empty": {
 			"title": "لا توجد فرق",
@@ -1402,7 +1489,9 @@
 			"delete": "حذف"
 		},
 		"pagination": {
-			"showing": "عرض {{shown}} من {{total}}"
+			"showing": "عرض {{shown}} من {{total}}",
+			"loadingMore": "جاري تحميل المزيد…",
+			"end": "لقد وصلت إلى النهاية"
 		},
 		"empty": {
 			"title": "لا توجد اجتماعات",

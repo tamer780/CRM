@@ -11,7 +11,7 @@ import { useCampaigns } from "../../../hooks/campaigns/useCampaigns";
 import { useCreateLead } from "../../../hooks/leads/useCreateLead";
 import { useDeleteLead } from "../../../hooks/leads/useDeleteLead";
 import { useImportLeads } from "../../../hooks/leads/useImportLeads";
-import { useLeads } from "../../../hooks/leads/useLeads";
+import { useInfiniteLeads } from "../../../hooks/leads/useInfiniteLeads";
 import { useProjects } from "../../../hooks/projects/useProjects";
 import { useUpdateLead } from "../../../hooks/leads/useUpdateLead";
 import { useUpdateLeadStatus } from "../../../hooks/leads/useUpdateLeadStatus";
@@ -25,7 +25,10 @@ import {
 	leadToFormValues,
 	validateLeadForm,
 } from "../../../utils/leads/leadConstants";
-import { buildLookupMap } from "../../../utils/leads/resolveLeadLabels";
+import {
+	mergeEntityLists,
+	relationId,
+} from "../../../utils/api/nestedRelations";
 import LeadDetailDrawer from "./detail/LeadDetailDrawer";
 import LeadDeleteDialog from "./dialogs/LeadDeleteDialog";
 import LeadImportModal from "./dialogs/LeadImportModal";
@@ -75,7 +78,7 @@ const LeadPage = () => {
 	const [meetingTarget, setMeetingTarget] = useState(null);
 	const [meetingError, setMeetingError] = useState("");
 
-	const leadsQuery = useLeads({
+	const leadsQuery = useInfiniteLeads({
 		status: filters.status,
 		assignedTo: filters.assignedTo,
 		assignedAtFrom: filters.assignedAtFrom,
@@ -115,17 +118,27 @@ const LeadPage = () => {
 		setSearchParams(next, { replace: true });
 	}, [searchParams, setSearchParams]);
 
-	const projectsMap = useMemo(
-		() => buildLookupMap(projectsQuery.data),
-		[projectsQuery.data],
+	const usersMap = useMemo(() => {
+		const map = new Map();
+		for (const user of usersQuery.data ?? []) {
+			if (user?.id == null) continue;
+			map.set(Number(user.id), user);
+			map.set(String(user.id), user);
+		}
+		return map;
+	}, [usersQuery.data]);
+
+	const toolbarProjects = useMemo(
+		() => mergeEntityLists(projectsQuery.data, leadsQuery.data, "project"),
+		[projectsQuery.data, leadsQuery.data],
 	);
-	const campaignsMap = useMemo(
-		() => buildLookupMap(campaignsQuery.data),
-		[campaignsQuery.data],
+	const toolbarCampaigns = useMemo(
+		() => mergeEntityLists(campaignsQuery.data, leadsQuery.data, "campaign"),
+		[campaignsQuery.data, leadsQuery.data],
 	);
-	const usersMap = useMemo(
-		() => buildLookupMap(usersQuery.data),
-		[usersQuery.data],
+	const toolbarUsers = useMemo(
+		() => mergeEntityLists(usersQuery.data, leadsQuery.data, "assignee"),
+		[usersQuery.data, leadsQuery.data],
 	);
 
 	const filteredLeads = useMemo(() => {
@@ -136,13 +149,15 @@ const LeadPage = () => {
 			if (filters.source && lead.source !== filters.source) return false;
 			if (
 				filters.projectId &&
-				String(lead.project_id) !== String(filters.projectId)
+				String(relationId(lead, "project", "project_id")) !==
+					String(filters.projectId)
 			) {
 				return false;
 			}
 			if (
 				filters.campaignId &&
-				String(lead.campaign_id) !== String(filters.campaignId)
+				String(relationId(lead, "campaign", "campaign_id")) !==
+					String(filters.campaignId)
 			) {
 				return false;
 			}
@@ -197,6 +212,7 @@ const LeadPage = () => {
 
 	const openEdit = (lead) => {
 		if (!canEditLeads) return;
+		if (selectedLeadId) closeDetail();
 		setModalMode("edit");
 		setEditingLeadId(lead.id);
 		setFormValues(leadToFormValues(lead));
@@ -424,7 +440,11 @@ const LeadPage = () => {
 					</h1>
 					<p className="mt-1.5 text-muted">{t("leads.subtitle")}</p>
 					<p className="mt-2 text-sm text-muted">
-						{t("leads.count", { count: filteredLeads.length })}
+						{t("leads.count", {
+							count: isFilteredEmpty
+								? 0
+								: (leadsQuery.total ?? filteredLeads.length),
+						})}
 					</p>
 				</div>
 
@@ -468,9 +488,9 @@ const LeadPage = () => {
 			<LeadToolbar
 				filters={filters}
 				onFiltersChange={setFilters}
-				projects={projectsQuery.data ?? []}
-				campaigns={campaignsQuery.data ?? []}
-				users={usersQuery.data ?? []}
+				projects={toolbarProjects}
+				campaigns={toolbarCampaigns}
+				users={toolbarUsers}
 			/>
 
 			<LeadBulkAssignBar
@@ -491,10 +511,13 @@ const LeadPage = () => {
 				isLoading={leadsQuery.isLoading}
 				isError={leadsQuery.isError}
 				onRetry={() => leadsQuery.refetch()}
+				hasNextPage={leadsQuery.hasNextPage}
+				isFetchingNextPage={leadsQuery.isFetchingNextPage}
+				fetchNextPage={leadsQuery.fetchNextPage}
+				serverTotal={leadsQuery.total}
 				onAddLead={openCreate}
 				isFilteredEmpty={isFilteredEmpty}
-				projectsMap={projectsMap}
-				users={usersQuery.data ?? []}
+				users={toolbarUsers}
 				onView={openDetail}
 				onEdit={openEdit}
 				onStatusChange={handleStatusChange}
@@ -517,8 +540,6 @@ const LeadPage = () => {
 				open={Boolean(selectedLeadId)}
 				onClose={closeDetail}
 				leadId={selectedLeadId}
-				projectsMap={projectsMap}
-				campaignsMap={campaignsMap}
 				usersMap={usersMap}
 				projects={projectsQuery.data ?? []}
 				campaigns={campaignsQuery.data ?? []}

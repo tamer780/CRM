@@ -1,3 +1,5 @@
+import { relationId } from "../../../utils/api/nestedRelations";
+
 export const emptyPendingFilters = () => ({
 	search: "",
 	status: "",
@@ -97,13 +99,15 @@ export function filterPendingLeads(list, filters) {
 		}
 		if (
 			filters.projectId &&
-			String(lead.project_id) !== String(filters.projectId)
+			String(relationId(lead, "project", "project_id")) !==
+				String(filters.projectId)
 		) {
 			return false;
 		}
 		if (
 			filters.campaignId &&
-			String(lead.campaign_id) !== String(filters.campaignId)
+			String(relationId(lead, "campaign", "campaign_id")) !==
+				String(filters.campaignId)
 		) {
 			return false;
 		}

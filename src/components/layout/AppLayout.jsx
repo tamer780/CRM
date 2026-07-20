@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
+import { useScheduledCallReminders } from "../../hooks/leads/useScheduledCallReminders";
 import MobileSidebar from "./MobileSidebar";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
@@ -7,6 +8,8 @@ import Sidebar from "./Sidebar";
 const AppLayout = () => {
 	const [collapsed, setCollapsed] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
+
+	useScheduledCallReminders();
 
 	return (
 		<div className="min-h-screen bg-background text-text">

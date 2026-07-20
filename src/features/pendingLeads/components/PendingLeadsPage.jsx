@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { useCampaigns } from "../../../hooks/campaigns/useCampaigns";
 import { usePendingLead } from "../../../hooks/pendingLeads/usePendingLead";
 import {
-	useMergePendingLead,
 	useRemovePendingLead,
 	useReplacePendingLead,
 } from "../../../hooks/pendingLeads/usePendingLeadMutations";
@@ -13,6 +12,10 @@ import { usePendingLeads } from "../../../hooks/pendingLeads/usePendingLeads";
 import { useProjects } from "../../../hooks/projects/useProjects";
 import { useUsers } from "../../../hooks/users/useUsers";
 import { extractApiError } from "../../../utils/api/apiHelpers";
+import {
+	mergeEntityLists,
+	relationId,
+} from "../../../utils/api/nestedRelations";
 import {
 	applyFiltersToSearchParams,
 	applySortingToParams,
@@ -23,7 +26,6 @@ import {
 	sortingFromParams,
 } from "../utils/pendingLeadFilters";
 import PendingLeadDetailModal from "./PendingLeadDetailModal";
-import PendingLeadMergeModal from "./PendingLeadMergeModal";
 import PendingLeadRemoveModal from "./PendingLeadRemoveModal";
 import PendingLeadReplaceModal from "./PendingLeadReplaceModal";
 import PendingLeadsHeader from "./PendingLeadsHeader";
@@ -50,7 +52,6 @@ const PendingLeadsPage = () => {
 	const usersQuery = useUsers();
 
 	const replaceMutation = useReplacePendingLead();
-	const mergeMutation = useMergePendingLead();
 	const removeMutation = useRemovePendingLead();
 
 	const filters = useMemo(
@@ -64,7 +65,6 @@ const PendingLeadsPage = () => {
 
 	const [searchInput, setSearchInput] = useState(filters.search);
 	const [replaceTarget, setReplaceTarget] = useState(null);
-	const [mergeTarget, setMergeTarget] = useState(null);
 	const [removeTarget, setRemoveTarget] = useState(null);
 	const [actionError, setActionError] = useState("");
 
@@ -90,17 +90,25 @@ const PendingLeadsPage = () => {
 		[sort, order],
 	);
 
-	const projectsMap = useMemo(
-		() => buildLookupMap(projectsQuery.data),
-		[projectsQuery.data],
+	const toolbarProjects = useMemo(
+		() => mergeEntityLists(projectsQuery.data, pendingQuery.data, "project"),
+		[projectsQuery.data, pendingQuery.data],
 	);
-	const campaignsMap = useMemo(
-		() => buildLookupMap(campaignsQuery.data),
-		[campaignsQuery.data],
+	const toolbarCampaigns = useMemo(
+		() => mergeEntityLists(campaignsQuery.data, pendingQuery.data, "campaign"),
+		[campaignsQuery.data, pendingQuery.data],
 	);
 	const usersMap = useMemo(
 		() => buildLookupMap(usersQuery.data),
 		[usersQuery.data],
+	);
+	const projectsMap = useMemo(
+		() => buildLookupMap(toolbarProjects),
+		[toolbarProjects],
+	);
+	const campaignsMap = useMemo(
+		() => buildLookupMap(toolbarCampaigns),
+		[toolbarCampaigns],
 	);
 
 	const filteredLeads = useMemo(
@@ -117,7 +125,6 @@ const PendingLeadsPage = () => {
 
 	const actionsPending =
 		replaceMutation.isPending ||
-		mergeMutation.isPending ||
 		removeMutation.isPending;
 
 	const updateFilters = useCallback(
@@ -163,7 +170,6 @@ const PendingLeadsPage = () => {
 
 	const closeActionModals = () => {
 		setReplaceTarget(null);
-		setMergeTarget(null);
 		setRemoveTarget(null);
 		setActionError("");
 	};
@@ -192,23 +198,6 @@ const PendingLeadsPage = () => {
 				},
 			},
 		);
-	};
-
-	const handleMerge = () => {
-		if (!mergeTarget) return;
-		const id = mergeTarget.id;
-		mergeMutation.mutate(id, {
-			onSuccess: () => {
-				toast.success(t("pendingLeads.toasts.merged"));
-				closeActionModals();
-				closeDrawerIfSelected(id);
-			},
-			onError: (error) => {
-				setActionError(
-					extractApiError(error, t("pendingLeads.errors.mergeFailed")),
-				);
-			},
-		});
 	};
 
 	const handleRemove = () => {
@@ -246,8 +235,8 @@ const PendingLeadsPage = () => {
 					onSearchInputChange={setSearchInput}
 					onFiltersChange={updateFilters}
 					onReset={resetFilters}
-					projects={projectsQuery.data ?? []}
-					campaigns={campaignsQuery.data ?? []}
+					projects={toolbarProjects}
+					campaigns={toolbarCampaigns}
 				/>
 			)}
 
@@ -258,7 +247,6 @@ const PendingLeadsPage = () => {
 					isError={pendingQuery.isError}
 					onRetry={() => pendingQuery.refetch()}
 					isFilteredEmpty={isFilteredEmpty}
-					projectsMap={projectsMap}
 					sorting={sorting}
 					onSortingChange={handleSortingChange}
 					actionsDisabled={actionsPending}
@@ -266,10 +254,6 @@ const PendingLeadsPage = () => {
 					onReplace={(lead) => {
 						setActionError("");
 						setReplaceTarget(lead);
-					}}
-					onMerge={(lead) => {
-						setActionError("");
-						setMergeTarget(lead);
 					}}
 					onRemove={(lead) => {
 						setActionError("");
@@ -290,17 +274,13 @@ const PendingLeadsPage = () => {
 				isError={Boolean(selected) && detailQuery.isError && !detailQuery.data}
 				onRetry={() => detailQuery.refetch()}
 				preventClose={actionsPending}
+				usersMap={usersMap}
 				projectsMap={projectsMap}
 				campaignsMap={campaignsMap}
-				usersMap={usersMap}
 				actionsDisabled={actionsPending}
 				onReplace={(lead) => {
 					setActionError("");
 					setReplaceTarget(lead);
-				}}
-				onMerge={(lead) => {
-					setActionError("");
-					setMergeTarget(lead);
 				}}
 				onRemove={(lead) => {
 					setActionError("");
@@ -315,15 +295,6 @@ const PendingLeadsPage = () => {
 				error={actionError}
 				onClose={() => !replaceMutation.isPending && closeActionModals()}
 				onConfirm={handleReplace}
-			/>
-
-			<PendingLeadMergeModal
-				open={Boolean(mergeTarget)}
-				lead={mergeTarget}
-				isSubmitting={mergeMutation.isPending}
-				error={actionError}
-				onClose={() => !mergeMutation.isPending && closeActionModals()}
-				onConfirm={handleMerge}
 			/>
 
 			<PendingLeadRemoveModal

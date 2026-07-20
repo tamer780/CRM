@@ -187,6 +187,7 @@ const UsersPage = () => {
 
 	const openEdit = (user) => {
 		if (!canManageTarget(user)) return;
+		if (selected) closeDetail();
 		setModalMode("edit");
 		setEditingId(user.id);
 		setFormValues(userToFormValues(user));

@@ -68,7 +68,6 @@ export function filtersToApiParams(filters) {
 		date_from: filters.dateFrom || undefined,
 		date_to: filters.dateTo || undefined,
 		lead_id: filters.leadId || undefined,
-		per_page: 100,
 	};
 }
 

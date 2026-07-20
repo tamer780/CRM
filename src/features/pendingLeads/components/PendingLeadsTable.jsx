@@ -8,7 +8,6 @@ import {
 	ArrowDown,
 	ArrowUp,
 	ArrowUpDown,
-	GitMerge,
 	Replace,
 	Trash2,
 } from "lucide-react";
@@ -37,13 +36,6 @@ function formatDate(value) {
 		month: "short",
 		day: "numeric",
 	});
-}
-
-function resolveLabel(map, id) {
-	if (id == null || id === "") return "—";
-	const item = map.get(Number(id)) ?? map.get(String(id));
-	if (!item) return String(id);
-	return item.name ?? item.title ?? String(id);
 }
 
 function SortIcon({ column }) {
@@ -80,7 +72,6 @@ function ActionButtons({
 	lead,
 	actionsDisabled,
 	onReplace,
-	onMerge,
 	onRemove,
 	compact = false,
 }) {
@@ -106,15 +97,6 @@ function ActionButtons({
 			<button
 				type="button"
 				disabled={actionsDisabled || lead.duplicate_status !== "pending"}
-				onClick={() => onMerge(lead)}
-				className={`${btn} text-primary hover:bg-light-gold/60`}
-			>
-				<GitMerge className="size-3.5" aria-hidden="true" />
-				{t("pendingLeads.actions.merge")}
-			</button>
-			<button
-				type="button"
-				disabled={actionsDisabled || lead.duplicate_status !== "pending"}
 				onClick={() => onRemove(lead)}
 				className={`${btn} text-red-600 hover:bg-red-50`}
 			>
@@ -127,8 +109,8 @@ function ActionButtons({
 
 const PendingLeadsTableSkeleton = () => (
 	<div className="rounded-2xl border border-border bg-surface p-4 shadow-sm sm:p-6">
-		<div className="mb-4 hidden gap-4 md:grid md:grid-cols-6">
-			{Array.from({ length: 6 }).map((_, i) => (
+		<div className="mb-4 hidden gap-4 md:grid md:grid-cols-5">
+			{Array.from({ length: 5 }).map((_, i) => (
 				<div key={i} className="h-3 animate-pulse rounded bg-border/70" />
 			))}
 		</div>
@@ -156,13 +138,11 @@ const PendingLeadsTable = ({
 	isError,
 	onRetry,
 	isFilteredEmpty = false,
-	projectsMap,
 	sorting,
 	onSortingChange,
 	actionsDisabled = false,
 	onView,
 	onReplace,
-	onMerge,
 	onRemove,
 }) => {
 	const { t } = useTranslation();
@@ -207,14 +187,6 @@ const PendingLeadsTable = ({
 					<span className="text-sm text-text" dir="ltr">
 						{getValue() || "—"}
 					</span>
-				),
-			},
-			{
-				id: "project",
-				accessorFn: (row) => resolveLabel(projectsMap, row.project_id),
-				header: t("pendingLeads.columns.project"),
-				cell: ({ getValue }) => (
-					<span className="text-sm text-muted">{getValue()}</span>
 				),
 			},
 			{
@@ -263,7 +235,6 @@ const PendingLeadsTable = ({
 						lead={row.original}
 						actionsDisabled={actionsDisabled}
 						onReplace={onReplace}
-						onMerge={onMerge}
 						onRemove={onRemove}
 					/>
 				),
@@ -271,11 +242,9 @@ const PendingLeadsTable = ({
 		],
 		[
 			t,
-			projectsMap,
 			actionsDisabled,
 			onView,
 			onReplace,
-			onMerge,
 			onRemove,
 		],
 	);
@@ -389,7 +358,6 @@ const PendingLeadsTable = ({
 									lead={lead}
 									actionsDisabled={actionsDisabled}
 									onReplace={onReplace}
-									onMerge={onMerge}
 									onRemove={onRemove}
 									compact
 								/>

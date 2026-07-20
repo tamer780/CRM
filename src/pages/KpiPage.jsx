@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import KpiHeader from "../components/kpi/KpiHeader";
 import SalesKpiStats from "../components/kpi/SalesKpiStats";
-import TeamPerformanceTable from "../components/dashboard/TeamPerformanceTable";
+import TeamKpiCards from "../components/kpi/TeamKpiCards";
+import TeamKpiDetailDrawer from "../components/kpi/TeamKpiDetailDrawer";
 import { usePermissions } from "../hooks/auth/usePermissions";
 import { useSalesKpis } from "../hooks/health/useSalesKpis";
 import { useTeamKpis } from "../hooks/health/useTeamKpis";
@@ -11,6 +12,7 @@ import { getLast30DaysRange } from "../utils/date/dateRange";
 const KpiPage = () => {
 	const queryClient = useQueryClient();
 	const [range, setRange] = useState(() => getLast30DaysRange());
+	const [selectedTeam, setSelectedTeam] = useState(null);
 	const { role, scope } = usePermissions();
 
 	const { date_from, date_to } = range;
@@ -49,6 +51,14 @@ const KpiPage = () => {
 		queryClient.invalidateQueries({ queryKey: ["kpis"] });
 	};
 
+	const handleSelectTeam = (team) => {
+		setSelectedTeam(team);
+	};
+
+	const handleCloseDrawer = () => {
+		setSelectedTeam(null);
+	};
+
 	return (
 		<div className="space-y-6">
 			<KpiHeader
@@ -75,13 +85,23 @@ const KpiPage = () => {
 			)}
 
 			{showTeamKpis && (
-				<TeamPerformanceTable
+				<TeamKpiCards
 					teams={scopedTeams}
 					isLoading={hasPeriod && teamKpis.isLoading}
 					isError={teamKpis.isError}
 					onRetry={() => teamKpis.refetch()}
+					hasPeriod={hasPeriod}
+					onSelectTeam={handleSelectTeam}
 				/>
 			)}
+
+			<TeamKpiDetailDrawer
+				team={selectedTeam}
+				open={Boolean(selectedTeam)}
+				onClose={handleCloseDrawer}
+				dateFrom={date_from}
+				dateTo={date_to}
+			/>
 		</div>
 	);
 };

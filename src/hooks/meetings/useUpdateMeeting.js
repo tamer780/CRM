@@ -16,8 +16,14 @@ export function useUpdateMeeting() {
 				queryClient.setQueryData(["meetings", String(id)], meeting);
 			}
 		},
-		onSettled: () => {
+		onSettled: (_data, _error, variables) => {
 			queryClient.invalidateQueries({ queryKey: ["meetings"] });
+
+			const status = variables?.body?.status;
+			if (status === "visit" || status === "bought") {
+				queryClient.invalidateQueries({ queryKey: ["clients"] });
+				queryClient.invalidateQueries({ queryKey: ["leads"] });
+			}
 		},
 	});
 }

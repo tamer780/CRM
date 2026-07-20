@@ -16,6 +16,7 @@ function serializeParams(raw) {
 }
 
 export async function getMeetings({
+	page,
 	assigned_to,
 	status,
 	date_from,
@@ -24,6 +25,7 @@ export async function getMeetings({
 	per_page,
 } = {}) {
 	const params = {};
+	if (page) params.page = page;
 	if (Array.isArray(assigned_to) && assigned_to.length > 0) {
 		params.assigned_to = assigned_to.map(String);
 	}

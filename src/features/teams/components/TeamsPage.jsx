@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useCreateTeam } from "../../../hooks/teams/useCreateTeam";
 import { useDeleteTeam } from "../../../hooks/teams/useDeleteTeam";
 import { useTeam } from "../../../hooks/teams/useTeam";
-import { useTeams } from "../../../hooks/teams/useTeams";
+import { useInfiniteTeams } from "../../../hooks/teams/useInfiniteTeams";
 import { useUpdateTeam } from "../../../hooks/teams/useUpdateTeam";
 import { useUsers } from "../../../hooks/users/useUsers";
 import { extractApiError } from "../../../utils/api/apiHelpers";
@@ -46,7 +46,7 @@ const TeamsPage = () => {
 	const { t } = useTranslation();
 	const [searchParams, setSearchParams] = useSearchParams();
 
-	const teamsQuery = useTeams();
+	const teamsQuery = useInfiniteTeams();
 	const usersQuery = useUsers();
 	const createTeam = useCreateTeam();
 	const deleteTeam = useDeleteTeam();
@@ -179,6 +179,7 @@ const TeamsPage = () => {
 	};
 
 	const openEdit = (team) => {
+		if (selected) closeDetail();
 		setModalMode("edit");
 		setEditingId(team.id);
 		setFormValues(teamToFormValues(team));
@@ -287,6 +288,10 @@ const TeamsPage = () => {
 					isLoading={teamsQuery.isLoading}
 					isError={teamsQuery.isError}
 					onRetry={() => teamsQuery.refetch()}
+					hasNextPage={teamsQuery.hasNextPage}
+					isFetchingNextPage={teamsQuery.isFetchingNextPage}
+					fetchNextPage={teamsQuery.fetchNextPage}
+					serverTotal={teamsQuery.total}
 					isFilteredEmpty={isFilteredEmpty}
 					usersMap={usersMap}
 					sorting={sorting}

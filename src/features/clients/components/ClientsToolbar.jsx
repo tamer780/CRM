@@ -1,7 +1,7 @@
 import { Check, ChevronDown, RotateCcw, Search } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CLIENT_SOURCES, CLIENT_STATUSES } from "../utils/clientConstants";
+import { CLIENT_SOURCES, CLIENT_DEFAULT_STATUS, CLIENT_STATUS_FILTERABLE } from "../utils/clientConstants";
 import { hasActiveClientFilters } from "../utils/clientFilters";
 
 function FilterDropdown({
@@ -11,14 +11,17 @@ function FilterDropdown({
 	options,
 	allLabel,
 	placeholder,
+	clearValue = "",
 	className = "",
 }) {
 	const listId = useId();
 	const ref = useRef(null);
 	const [open, setOpen] = useState(false);
 
+	const isDefault =
+		value === clearValue || (clearValue === "" && !value);
 	const selected = options.find((o) => String(o.value) === String(value));
-	const display = selected ? selected.label : allLabel;
+	const display = selected && !isDefault ? selected.label : allLabel;
 
 	useEffect(() => {
 		if (!open) return undefined;
@@ -60,7 +63,7 @@ function FilterDropdown({
 						: "border-border hover:border-accent/50",
 				].join(" ")}
 			>
-				<span className={`truncate ${value ? "text-text" : "text-muted"}`}>
+				<span className={`truncate ${isDefault ? "text-muted" : "text-text"}`}>
 					{display}
 				</span>
 				<ChevronDown
@@ -74,22 +77,22 @@ function FilterDropdown({
 					role="listbox"
 					className="animate-dropdown-in absolute inset-x-0 top-[calc(100%+0.35rem)] z-40 max-h-64 overflow-y-auto rounded-xl border border-border bg-surface py-1.5 shadow-lg"
 				>
-					<li role="option" aria-selected={!value}>
+					<li role="option" aria-selected={isDefault}>
 						<button
 							type="button"
 							onClick={() => {
-								onChange("");
+								onChange(clearValue);
 								setOpen(false);
 							}}
 							className={[
 								"flex w-full items-center justify-between gap-2 px-3 py-2.5 text-start text-sm transition-colors",
-								!value
+								isDefault
 									? "bg-light-gold/60 font-medium text-text"
 									: "text-muted hover:bg-background hover:text-text",
 							].join(" ")}
 						>
 							<span>{allLabel}</span>
-							{!value && (
+							{isDefault && (
 								<Check className="size-4 text-gold" aria-hidden="true" />
 							)}
 						</button>
@@ -152,7 +155,7 @@ const ClientsToolbar = ({
 
 	const statusOpts = useMemo(
 		() =>
-			CLIENT_STATUSES.map((s) => ({
+			CLIENT_STATUS_FILTERABLE.map((s) => ({
 				value: s,
 				label: t(`clients.status.${s}`),
 			})),
@@ -218,7 +221,8 @@ const ClientsToolbar = ({
 					value={filters.status}
 					onChange={(v) => set("status", v)}
 					options={statusOpts}
-					allLabel={t("clients.filters.allStatuses")}
+					allLabel={t("clients.status.default")}
+					clearValue={CLIENT_DEFAULT_STATUS}
 					placeholder={t("clients.filters.status")}
 				/>
 

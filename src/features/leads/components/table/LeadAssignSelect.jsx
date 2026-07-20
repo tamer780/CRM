@@ -8,9 +8,19 @@ import { getAvatarTone, getInitials } from "../../utils/leadAvatars";
 const ASSIGNABLE_ROLES = new Set(["sales", "leader", "supervisor"]);
 const MENU_MAX_HEIGHT = 224; // max-h-56
 const MENU_GAP = 6;
+const MENU_ITEM_HEIGHT = 56;
+const MENU_PADDING = 12;
+
+function estimateMenuHeight(optionCount) {
+	return Math.min(
+		MENU_MAX_HEIGHT,
+		optionCount * MENU_ITEM_HEIGHT + MENU_PADDING,
+	);
+}
 
 const LeadAssignSelect = ({
 	assignedTo,
+	assignee,
 	users = [],
 	onChange,
 	disabled = false,
@@ -51,7 +61,15 @@ const LeadAssignSelect = ({
 		[users, t],
 	);
 
-	const selected = options.find((opt) => opt.value === currentId) ?? null;
+	const selected =
+		options.find((opt) => opt.value === currentId) ??
+		(currentId && assignee
+			? {
+					value: currentId,
+					name: assignee.name ?? assignee.email ?? `#${assignee.id}`,
+					role: "",
+				}
+			: null);
 
 	const updateMenuPosition = () => {
 		const trigger = triggerRef.current;
@@ -59,16 +77,23 @@ const LeadAssignSelect = ({
 		const rect = trigger.getBoundingClientRect();
 		const spaceAbove = rect.top;
 		const spaceBelow = window.innerHeight - rect.bottom;
+		const optionCount = Math.max(options.length, 1);
+		const needed = estimateMenuHeight(optionCount);
 		const openUp =
 			placement === "top"
-				? spaceAbove >= Math.min(MENU_MAX_HEIGHT, 120) || spaceAbove > spaceBelow
-				: spaceBelow < Math.min(MENU_MAX_HEIGHT, 120) && spaceAbove > spaceBelow;
+				? spaceAbove >= needed || spaceAbove > spaceBelow
+				: spaceBelow < needed && spaceAbove > spaceBelow;
+		const availableSpace = openUp ? spaceAbove : spaceBelow;
+		const maxHeight = Math.min(
+			MENU_MAX_HEIGHT,
+			Math.max(availableSpace - MENU_GAP, 0),
+		);
 
 		const style = {
 			position: "fixed",
 			left: rect.left,
 			minWidth: Math.max(rect.width, 208),
-			maxHeight: MENU_MAX_HEIGHT,
+			maxHeight,
 			zIndex: 200,
 		};
 
@@ -96,7 +121,7 @@ const LeadAssignSelect = ({
 			window.removeEventListener("resize", handleReposition);
 			window.removeEventListener("scroll", handleReposition, true);
 		};
-	}, [open, placement]);
+	}, [open, placement, options.length]);
 
 	useEffect(() => {
 		if (!open) return undefined;

@@ -1,7 +1,9 @@
 import { X } from "lucide-react";
 import { useEffect, useId, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useBodyScrollLock } from "../../../hooks/ui/useBodyScrollLock";
 import DuplicateStatusBadge from "../../../components/ui/DuplicateStatusBadge";
+import { nestedEntityName } from "../../../utils/api/nestedRelations";
 import { getDuplicateType } from "../utils/pendingLeadConstants";
 import PendingLeadComparePanel from "./PendingLeadComparePanel";
 import PendingLeadHistoryTabs from "./PendingLeadHistoryTabs";
@@ -17,13 +19,6 @@ function formatDateTime(value) {
 		hour: "2-digit",
 		minute: "2-digit",
 	});
-}
-
-function resolveUserLabel(usersMap, id) {
-	if (id == null || id === "") return "—";
-	const user = usersMap?.get(Number(id)) ?? usersMap?.get(String(id));
-	if (!user) return String(id);
-	return user.name ?? user.email ?? String(id);
 }
 
 function PendingLeadDetailSkeleton() {
@@ -44,11 +39,10 @@ const PendingLeadDetailModal = ({
 	isError,
 	onRetry,
 	preventClose = false,
+	usersMap,
 	projectsMap,
 	campaignsMap,
-	usersMap,
 	onReplace,
-	onMerge,
 	onRemove,
 	actionsDisabled = false,
 }) => {
@@ -62,14 +56,14 @@ const PendingLeadDetailModal = ({
 	const subtitle = lead?.email || lead?.phone || undefined;
 	const isPending = lead?.duplicate_status === "pending";
 	const showActions =
-		isPending && (onReplace || onMerge || onRemove) && !isLoading && !isError;
+		isPending && (onReplace || onRemove) && !isLoading && !isError;
+
+	useBodyScrollLock(open);
 
 	useEffect(() => {
 		if (!open) return undefined;
 
 		previousFocusRef.current = document.activeElement;
-		const previousOverflow = document.body.style.overflow;
-		document.body.style.overflow = "hidden";
 
 		const dialog = dialogRef.current;
 		const focusable = dialog?.querySelector(
@@ -109,7 +103,6 @@ const PendingLeadDetailModal = ({
 		document.addEventListener("keydown", handleKeyDown);
 		return () => {
 			document.removeEventListener("keydown", handleKeyDown);
-			document.body.style.overflow = previousOverflow;
 			previousFocusRef.current?.focus?.();
 		};
 	}, [open, onClose, preventClose]);
@@ -207,7 +200,9 @@ const PendingLeadDetailModal = ({
 												{t("pendingLeads.drawer.reviewedBy")}
 											</p>
 											<p className="mt-1 text-sm text-amber-950">
-												{resolveUserLabel(usersMap, lead.reviewed_by)}
+												{nestedEntityName(lead.reviewed_by_user) !== "—"
+													? nestedEntityName(lead.reviewed_by_user)
+													: lead.reviewed_by ?? "—"}
 											</p>
 										</div>
 										<div>
@@ -263,16 +258,6 @@ const PendingLeadDetailModal = ({
 								className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-60"
 							>
 								{t("pendingLeads.actions.remove")}
-							</button>
-						)}
-						{onMerge && (
-							<button
-								type="button"
-								onClick={() => onMerge(lead)}
-								disabled={actionsDisabled}
-								className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text transition hover:bg-background disabled:opacity-60"
-							>
-								{t("pendingLeads.actions.merge")}
 							</button>
 						)}
 						{onReplace && (

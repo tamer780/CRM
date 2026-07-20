@@ -1,7 +1,11 @@
 import api from "../../api/client";
 
-export async function getClients() {
-	const response = await api.get("/clients");
+export async function getClients({ page, per_page } = {}) {
+	const params = {};
+	if (page) params.page = page;
+	if (per_page) params.per_page = per_page;
+
+	const response = await api.get("/clients", { params });
 	return response.data;
 }
 
@@ -15,12 +19,7 @@ export async function updateClient(clientId, body) {
 	return response.data;
 }
 
-export async function markClientLost(clientId, body) {
-	const response = await api.post(`/clients/${clientId}/mark-lost`, body);
-	return response.data;
-}
-
-export async function restoreClient(clientId) {
-	const response = await api.post(`/clients/${clientId}/restore`);
+export async function deleteClient(clientId) {
+	const response = await api.delete(`/clients/${clientId}`);
 	return response.data;
 }

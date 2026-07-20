@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { UserPlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ErrorState from "../../../../components/dashboard/ErrorState";
+import InfiniteScrollFooter from "../../../../components/ui/InfiniteScrollFooter";
+import { useInfiniteScrollSentinel } from "../../../../hooks/ui/useInfiniteScrollSentinel";
 import LeadTableRow, { LeadMobileCard } from "./LeadTableRow";
-
-const INITIAL_VISIBLE = 20;
-const CHUNK_SIZE = 20;
 
 const checkboxClass =
 	"size-4 rounded border-border text-gold accent-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30";
@@ -74,7 +73,6 @@ const LeadTable = ({
 	onRetry,
 	onAddLead,
 	isFilteredEmpty = false,
-	projectsMap,
 	users = [],
 	onView,
 	onEdit,
@@ -86,11 +84,18 @@ const LeadTable = ({
 	onToggleSelect,
 	onToggleSelectAll,
 	canEdit = true,
+	hasNextPage = false,
+	isFetchingNextPage = false,
+	fetchNextPage,
+	serverTotal,
 }) => {
 	const { t } = useTranslation();
 	const selectAllRef = useRef(null);
-	const sentinelRef = useRef(null);
-	const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+	const sentinelRef = useInfiniteScrollSentinel({
+		hasNextPage,
+		isFetchingNextPage,
+		fetchNextPage,
+	});
 	const showActions = canEdit;
 
 	const selectedCount = leads.filter((lead) =>
@@ -100,37 +105,14 @@ const LeadTable = ({
 	const someSelected = selectedCount > 0 && !allSelected;
 
 	const totalCount = leads?.length ?? 0;
-	const visibleLeads = (leads ?? []).slice(0, visibleCount);
-	const hasMore = visibleCount < totalCount;
-
-	useEffect(() => {
-		setVisibleCount(INITIAL_VISIBLE);
-	}, [leads]);
+	const shownCount = totalCount;
+	const totalFromServer = serverTotal ?? totalCount;
 
 	useEffect(() => {
 		if (selectAllRef.current) {
 			selectAllRef.current.indeterminate = someSelected;
 		}
 	}, [someSelected]);
-
-	useEffect(() => {
-		const node = sentinelRef.current;
-		if (!node || !hasMore) return undefined;
-
-		const observer = new IntersectionObserver(
-			(entries) => {
-				if (entries[0]?.isIntersecting) {
-					setVisibleCount((prev) =>
-						Math.min(prev + CHUNK_SIZE, totalCount),
-					);
-				}
-			},
-			{ root: null, rootMargin: "200px", threshold: 0 },
-		);
-
-		observer.observe(node);
-		return () => observer.disconnect();
-	}, [hasMore, totalCount, visibleCount]);
 
 	if (isLoading) {
 		return <LeadTableSkeleton />;
@@ -149,7 +131,6 @@ const LeadTable = ({
 	}
 
 	const rowProps = {
-		projectsMap,
 		users,
 		onView,
 		onEdit,
@@ -165,7 +146,7 @@ const LeadTable = ({
 		<>
 			<section className="overflow-visible rounded-2xl border border-border bg-surface shadow-sm">
 				<div className="md:hidden overflow-visible">
-					{visibleLeads.map((lead) => (
+					{(leads ?? []).map((lead) => (
 						<LeadMobileCard
 							key={lead.id}
 							lead={lead}
@@ -212,7 +193,7 @@ const LeadTable = ({
 								</tr>
 							</thead>
 							<tbody className="relative z-10 divide-y divide-border bg-surface">
-								{visibleLeads.map((lead) => (
+								{(leads ?? []).map((lead) => (
 									<LeadTableRow
 										key={lead.id}
 										lead={lead}
@@ -226,19 +207,15 @@ const LeadTable = ({
 				</div>
 			</section>
 
-			<p className="text-center text-sm text-muted">
-				{t("leads.pagination.showing", {
-					shown: Math.min(visibleCount, totalCount),
-					total: totalCount,
-				})}
-			</p>
-			{hasMore ? (
-				<div
-					ref={sentinelRef}
-					className="h-4 w-full"
-					aria-hidden="true"
-				/>
-			) : null}
+			<InfiniteScrollFooter
+				shown={shownCount}
+				total={totalFromServer}
+				hasNextPage={hasNextPage}
+				isFetchingNextPage={isFetchingNextPage}
+				sentinelRef={sentinelRef}
+				loadingMoreKey="leads.pagination.loadingMore"
+				endKey="leads.pagination.end"
+			/>
 		</>
 	);
 };

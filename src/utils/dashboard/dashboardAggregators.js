@@ -240,11 +240,13 @@ export function buildTeamLeaderboard(teams = [], teamNamesById = {}) {
 			...team,
 			rank: index + 1,
 			displayName:
+				team.team_name ??
 				teamNamesById[String(id)] ??
 				team.name ??
 				(id != null ? `Team #${id}` : "Team"),
 			isTop: index === 0,
-			isLowContact: (Number(team.contact_rate) || 0) < 50,
+			isLowContact:
+				(Number(team.contact_rate ?? team.leads?.contact_rate) || 0) < 50,
 		};
 	});
 }

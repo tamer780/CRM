@@ -11,18 +11,17 @@ import {
 	Pencil,
 	Trash2,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import ErrorState from "../../../components/dashboard/ErrorState";
+import InfiniteScrollFooter from "../../../components/ui/InfiniteScrollFooter";
+import { useInfiniteScrollSentinel } from "../../../hooks/ui/useInfiniteScrollSentinel";
 import {
 	getAvatarTone,
 	getInitials,
 } from "../../leads/utils/leadAvatars";
 import MeetingEmptyState from "./MeetingEmptyState";
 import MeetingStatusSelect from "./MeetingStatusSelect";
-
-const INITIAL_VISIBLE = 20;
-const CHUNK_SIZE = 20;
 
 function formatDateTime(value) {
 	if (!value) return "—";
@@ -149,14 +148,17 @@ const MeetingsTable = ({
 	onDelete,
 	onStatusChange,
 	onCreate,
+	hasNextPage = false,
+	isFetchingNextPage = false,
+	fetchNextPage,
+	serverTotal,
 }) => {
 	const { t } = useTranslation();
-	const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
-	const sentinelRef = useRef(null);
-
-	useEffect(() => {
-		setVisibleCount(INITIAL_VISIBLE);
-	}, [meetings]);
+	const sentinelRef = useInfiniteScrollSentinel({
+		hasNextPage,
+		isFetchingNextPage,
+		fetchNextPage,
+	});
 
 	const columns = useMemo(
 		() => [
@@ -262,27 +264,8 @@ const MeetingsTable = ({
 
 	const allRows = table.getRowModel().rows;
 	const totalCount = allRows.length;
-	const visibleRows = allRows.slice(0, visibleCount);
-	const hasMore = visibleCount < totalCount;
-
-	useEffect(() => {
-		const node = sentinelRef.current;
-		if (!node || !hasMore) return undefined;
-
-		const observer = new IntersectionObserver(
-			(entries) => {
-				if (entries[0]?.isIntersecting) {
-					setVisibleCount((prev) =>
-						Math.min(prev + CHUNK_SIZE, totalCount),
-					);
-				}
-			},
-			{ root: null, rootMargin: "200px", threshold: 0 },
-		);
-
-		observer.observe(node);
-		return () => observer.disconnect();
-	}, [hasMore, totalCount, visibleCount]);
+	const visibleRows = allRows;
+	const totalFromServer = serverTotal ?? totalCount;
 
 	if (isLoading) return <TableSkeleton />;
 
@@ -440,19 +423,16 @@ const MeetingsTable = ({
 				</div>
 			</section>
 
-			<p className="text-center text-sm text-muted">
-				{t("meetings.pagination.showing", {
-					shown: Math.min(visibleCount, totalCount),
-					total: totalCount,
-				})}
-			</p>
-			{hasMore ? (
-				<div
-					ref={sentinelRef}
-					className="h-4 w-full"
-					aria-hidden="true"
-				/>
-			) : null}
+			<InfiniteScrollFooter
+				shown={totalCount}
+				total={totalFromServer}
+				hasNextPage={hasNextPage}
+				isFetchingNextPage={isFetchingNextPage}
+				sentinelRef={sentinelRef}
+				showingKey="meetings.pagination.showing"
+				loadingMoreKey="meetings.pagination.loadingMore"
+				endKey="meetings.pagination.end"
+			/>
 		</>
 	);
 };

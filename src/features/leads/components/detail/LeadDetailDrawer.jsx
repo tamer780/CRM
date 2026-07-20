@@ -26,8 +26,6 @@ const LeadDetailDrawer = ({
 	open,
 	onClose,
 	leadId,
-	projectsMap,
-	campaignsMap,
 	usersMap,
 	projects = [],
 	campaigns = [],
@@ -122,6 +120,7 @@ const LeadDetailDrawer = ({
 			/>
 			<LeadAssignSelect
 				assignedTo={lead.assigned_to}
+				assignee={lead.assignee}
 				users={users}
 				onChange={(userId) => onAssignChange?.(lead, userId)}
 				isUpdating={assignUpdatingId === lead.id}
@@ -200,15 +199,9 @@ const LeadDetailDrawer = ({
 
 				{lead && (
 					<div className="space-y-6">
-						<LeadDetailCard
-							lead={lead}
-							projectsMap={projectsMap}
-							campaignsMap={campaignsMap}
-							usersMap={usersMap}
-						>
+						<LeadDetailCard lead={lead} usersMap={usersMap}>
 							<LeadActivityPanel
 								leadId={leadId}
-								lead={lead}
 								users={users}
 							/>
 						</LeadDetailCard>

@@ -6,7 +6,7 @@ import { useCreateMeeting } from "../../../hooks/meetings/useCreateMeeting";
 import { useDeleteMeeting } from "../../../hooks/meetings/useDeleteMeeting";
 import { useLeads } from "../../../hooks/leads/useLeads";
 import { useMeeting } from "../../../hooks/meetings/useMeeting";
-import { useMeetings } from "../../../hooks/meetings/useMeetings";
+import { useInfiniteMeetings } from "../../../hooks/meetings/useInfiniteMeetings";
 import { useUpdateMeeting } from "../../../hooks/meetings/useUpdateMeeting";
 import { useUsers } from "../../../hooks/users/useUsers";
 import { extractApiError } from "../../../utils/api/apiHelpers";
@@ -55,7 +55,7 @@ const MeetingsPage = () => {
 	);
 
 	const apiFilters = useMemo(() => filtersToApiParams(filters), [filters]);
-	const meetingsQuery = useMeetings(apiFilters);
+	const meetingsQuery = useInfiniteMeetings(apiFilters);
 
 	const [searchInput, setSearchInput] = useState(filters.search);
 	const [modalOpen, setModalOpen] = useState(false);
@@ -310,6 +310,10 @@ const MeetingsPage = () => {
 					isLoading={meetingsQuery.isLoading}
 					isError={meetingsQuery.isError}
 					onRetry={() => meetingsQuery.refetch()}
+					hasNextPage={meetingsQuery.hasNextPage}
+					isFetchingNextPage={meetingsQuery.isFetchingNextPage}
+					fetchNextPage={meetingsQuery.fetchNextPage}
+					serverTotal={meetingsQuery.total}
 					isFilteredEmpty={isFilteredEmpty}
 					sorting={sorting}
 					onSortingChange={handleSortingChange}

@@ -5,14 +5,16 @@ import { toast } from "sonner";
 import { usePermissions } from "../../../hooks/auth/usePermissions";
 import { useCampaigns } from "../../../hooks/campaigns/useCampaigns";
 import { useClient } from "../../../hooks/clients/useClient";
-import { useClients } from "../../../hooks/clients/useClients";
-import { useMarkClientLost } from "../../../hooks/clients/useMarkClientLost";
+import { useDeleteClient } from "../../../hooks/clients/useDeleteClient";
+import { useInfiniteClients } from "../../../hooks/clients/useInfiniteClients";
 import { useProjects } from "../../../hooks/projects/useProjects";
-import { useRestoreClient } from "../../../hooks/clients/useRestoreClient";
 import { useUpdateClient } from "../../../hooks/clients/useUpdateClient";
 import { useUpdateClientStatus } from "../../../hooks/clients/useUpdateClientStatus";
 import { useUsers } from "../../../hooks/users/useUsers";
 import { extractApiError } from "../../../utils/api/apiHelpers";
+import {
+	mergeEntityLists,
+} from "../../../utils/api/nestedRelations";
 import { clientMatchesScope } from "../../users/utils/permissions";
 import {
 	clientToFormValues,
@@ -30,35 +32,23 @@ import {
 	parseTableState,
 	sortingFromParams,
 } from "../utils/clientFilters";
+import ClientDeleteDialog from "./ClientDeleteDialog";
 import ClientDetailModal from "./ClientDetailModal";
 import ClientFormModal from "./ClientFormModal";
-import ClientMarkLostModal from "./ClientMarkLostModal";
-import ClientRestoreModal from "./ClientRestoreModal";
 import ClientsHeader from "./ClientsHeader";
 import ClientsTable from "./ClientsTable";
 import ClientsToolbar from "./ClientsToolbar";
-
-function buildLookupMap(list) {
-	const map = new Map();
-	for (const item of list ?? []) {
-		if (item?.id == null) continue;
-		map.set(Number(item.id), item);
-		map.set(String(item.id), item);
-	}
-	return map;
-}
 
 const ClientsPage = () => {
 	const { t } = useTranslation();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const { scope } = usePermissions();
 
-	const clientsQuery = useClients();
+	const clientsQuery = useInfiniteClients();
 	const projectsQuery = useProjects();
 	const campaignsQuery = useCampaigns();
 	const usersQuery = useUsers();
-	const markLost = useMarkClientLost();
-	const restore = useRestoreClient();
+	const deleteClient = useDeleteClient();
 	const updateClientStatus = useUpdateClientStatus();
 
 	const filters = useMemo(
@@ -75,10 +65,8 @@ const ClientsPage = () => {
 	const [editingId, setEditingId] = useState(null);
 	const [formValues, setFormValues] = useState(emptyClientFormValues());
 	const [fieldErrors, setFieldErrors] = useState({});
-	const [markLostTarget, setMarkLostTarget] = useState(null);
-	const [markLostError, setMarkLostError] = useState("");
-	const [restoreTarget, setRestoreTarget] = useState(null);
-	const [restoreError, setRestoreError] = useState("");
+	const [deleteTarget, setDeleteTarget] = useState(null);
+	const [deleteError, setDeleteError] = useState("");
 
 	const updateClient = useUpdateClient(editingId);
 
@@ -104,17 +92,17 @@ const ClientsPage = () => {
 		[sort, order],
 	);
 
-	const projectsMap = useMemo(
-		() => buildLookupMap(projectsQuery.data),
-		[projectsQuery.data],
+	const toolbarProjects = useMemo(
+		() => mergeEntityLists(projectsQuery.data, clientsQuery.data, "project"),
+		[projectsQuery.data, clientsQuery.data],
 	);
-	const campaignsMap = useMemo(
-		() => buildLookupMap(campaignsQuery.data),
-		[campaignsQuery.data],
+	const toolbarCampaigns = useMemo(
+		() => mergeEntityLists(campaignsQuery.data, clientsQuery.data, "campaign"),
+		[campaignsQuery.data, clientsQuery.data],
 	);
-	const usersMap = useMemo(
-		() => buildLookupMap(usersQuery.data),
-		[usersQuery.data],
+	const toolbarUsers = useMemo(
+		() => mergeEntityLists(usersQuery.data, clientsQuery.data, "assignee"),
+		[usersQuery.data, clientsQuery.data],
 	);
 
 	const scopedClients = useMemo(
@@ -145,8 +133,7 @@ const ClientsPage = () => {
 	const actionsPending =
 		updateClient.isPending ||
 		updateClientStatus.isPending ||
-		markLost.isPending ||
-		restore.isPending;
+		deleteClient.isPending;
 
 	const updateFilters = useCallback(
 		(nextFilters) => {
@@ -189,6 +176,7 @@ const ClientsPage = () => {
 	}, [searchParams, setSearchParams]);
 
 	const openEdit = (client) => {
+		if (selected) closeDetail();
 		setEditingId(client.id);
 		setFormValues(clientToFormValues(client));
 		setFieldErrors({});
@@ -241,45 +229,32 @@ const ClientsPage = () => {
 		);
 	};
 
-	const handleMarkLost = (reason) => {
-		if (!markLostTarget) return;
-		markLost.mutate(
-			{ clientId: markLostTarget.id, reason },
-			{
-				onSuccess: () => {
-					toast.success(t("clients.toasts.markedLost"));
-					setMarkLostTarget(null);
-					setMarkLostError("");
-				},
-				onError: (error) => {
-					setMarkLostError(
-						extractApiError(error, t("clients.errors.markLostFailed")),
-					);
-				},
-			},
-		);
-	};
-
-	const handleRestore = () => {
-		if (!restoreTarget) return;
-		restore.mutate(restoreTarget.id, {
+	const handleDelete = () => {
+		if (!deleteTarget) return;
+		const deletedId = deleteTarget.id;
+		deleteClient.mutate(deletedId, {
 			onSuccess: () => {
-				toast.success(t("clients.toasts.restored"));
-				setRestoreTarget(null);
-				setRestoreError("");
+				toast.success(t("clients.toasts.deleted"));
+				setDeleteTarget(null);
+				setDeleteError("");
+				if (selected && String(selected) === String(deletedId)) {
+					closeDetail();
+				}
 			},
 			onError: (error) => {
-				setRestoreError(
-					extractApiError(error, t("clients.errors.restoreFailed")),
+				setDeleteError(
+					extractApiError(error, t("clients.errors.deleteFailed")),
 				);
 			},
 		});
 	};
 
-	const detailClient =
-		detailQuery.data ??
-		filteredClients.find((item) => String(item.id) === String(selected)) ??
-		null;
+	const detailClient = detailQuery.data ?? null;
+	const detailPreview =
+		!detailQuery.data && selected
+			? filteredClients.find((item) => String(item.id) === String(selected)) ??
+				null
+			: null;
 
 	return (
 		<div className="space-y-5">
@@ -299,9 +274,9 @@ const ClientsPage = () => {
 					onSearchInputChange={setSearchInput}
 					onFiltersChange={updateFilters}
 					onReset={resetFilters}
-					projects={projectsQuery.data ?? []}
-					campaigns={campaignsQuery.data ?? []}
-					users={usersQuery.data ?? []}
+					projects={toolbarProjects}
+					campaigns={toolbarCampaigns}
+					users={toolbarUsers}
 				/>
 			)}
 
@@ -311,21 +286,19 @@ const ClientsPage = () => {
 					isLoading={clientsQuery.isLoading}
 					isError={clientsQuery.isError}
 					onRetry={() => clientsQuery.refetch()}
+					hasNextPage={clientsQuery.hasNextPage}
+					isFetchingNextPage={clientsQuery.isFetchingNextPage}
+					fetchNextPage={clientsQuery.fetchNextPage}
+					serverTotal={clientsQuery.total}
 					isFilteredEmpty={isFilteredEmpty}
-					projectsMap={projectsMap}
-					usersMap={usersMap}
 					sorting={sorting}
 					onSortingChange={handleSortingChange}
 					actionsDisabled={actionsPending}
 					onView={openDetail}
 					onEdit={openEdit}
-					onMarkLost={(client) => {
-						setMarkLostError("");
-						setMarkLostTarget(client);
-					}}
-					onRestore={(client) => {
-						setRestoreError("");
-						setRestoreTarget(client);
+					onDelete={(client) => {
+						setDeleteError("");
+						setDeleteTarget(client);
 					}}
 					onStatusChange={handleStatusChange}
 					statusUpdatingId={
@@ -339,14 +312,13 @@ const ClientsPage = () => {
 			<ClientDetailModal
 				open={Boolean(selected)}
 				onClose={closeDetail}
-				client={detailClient}
+				client={detailClient ?? detailPreview}
+				isDetailReady={Boolean(detailClient)}
 				isLoading={Boolean(selected) && detailQuery.isLoading && !detailClient}
 				isError={Boolean(selected) && detailQuery.isError && !detailClient}
 				onRetry={() => detailQuery.refetch()}
 				preventClose={actionsPending}
-				projectsMap={projectsMap}
-				campaignsMap={campaignsMap}
-				usersMap={usersMap}
+				users={usersQuery.data ?? []}
 			/>
 
 			<ClientFormModal
@@ -371,22 +343,13 @@ const ClientsPage = () => {
 				usersLoading={usersQuery.isLoading}
 			/>
 
-			<ClientMarkLostModal
-				open={Boolean(markLostTarget)}
-				client={markLostTarget}
-				isSubmitting={markLost.isPending}
-				error={markLostError}
-				onClose={() => !markLost.isPending && setMarkLostTarget(null)}
-				onConfirm={handleMarkLost}
-			/>
-
-			<ClientRestoreModal
-				open={Boolean(restoreTarget)}
-				client={restoreTarget}
-				isSubmitting={restore.isPending}
-				error={restoreError}
-				onClose={() => !restore.isPending && setRestoreTarget(null)}
-				onConfirm={handleRestore}
+			<ClientDeleteDialog
+				open={Boolean(deleteTarget)}
+				client={deleteTarget}
+				isSubmitting={deleteClient.isPending}
+				error={deleteError}
+				onClose={() => !deleteClient.isPending && setDeleteTarget(null)}
+				onConfirm={handleDelete}
 			/>
 		</div>
 	);

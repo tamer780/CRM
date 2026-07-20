@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { LEAD_STATUS_ROW_STYLES } from "../../../../utils/leads/leadConstants";
-import { resolveProjectLabel } from "../../../../utils/leads/resolveLeadLabels";
+import { nestedEntityName } from "../../../../utils/api/nestedRelations";
 import { getAvatarTone, getInitials } from "../../utils/leadAvatars";
 import LeadActionsMenu from "./LeadActionsMenu";
 import LeadAssignSelect from "./LeadAssignSelect";
@@ -134,6 +134,7 @@ export function LeadMobileCard({
 						>
 							<LeadAssignSelect
 								assignedTo={lead.assigned_to}
+								assignee={lead.assignee}
 								users={users}
 								onChange={(userId) => onAssignChange?.(lead, userId)}
 								isUpdating={assignUpdatingId === lead.id}
@@ -177,7 +178,6 @@ export function LeadMobileCard({
 
 const LeadTableRow = ({
 	lead,
-	projectsMap,
 	users = [],
 	onView,
 	onEdit,
@@ -191,7 +191,7 @@ const LeadTableRow = ({
 }) => {
 	const { t } = useTranslation();
 	const showActions = canEdit;
-	const projectLabel = resolveProjectLabel(projectsMap, lead);
+	const projectLabel = nestedEntityName(lead.project);
 	const lastCommentText = getLastCommentText(lead.last_comment);
 
 	return (
@@ -269,6 +269,7 @@ const LeadTableRow = ({
 			<td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
 				<LeadAssignSelect
 					assignedTo={lead.assigned_to}
+					assignee={lead.assignee}
 					users={users}
 					onChange={(userId) => onAssignChange?.(lead, userId)}
 					isUpdating={assignUpdatingId === lead.id}

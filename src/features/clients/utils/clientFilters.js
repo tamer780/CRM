@@ -1,6 +1,9 @@
+import { relationId } from "../../../utils/api/nestedRelations";
+import { CLIENT_ALL_STATUS, CLIENT_DEFAULT_STATUS } from "./clientConstants";
+
 export const emptyClientFilters = () => ({
 	search: "",
-	status: "",
+	status: CLIENT_DEFAULT_STATUS,
 	projectId: "",
 	campaignId: "",
 	assignedTo: "",
@@ -8,6 +11,23 @@ export const emptyClientFilters = () => ({
 	dateFrom: "",
 	dateTo: "",
 });
+
+function normalizeStatusFilter(status) {
+	if (status == null || status === "") return CLIENT_DEFAULT_STATUS;
+	return String(status);
+}
+
+function isDefaultStatusFilter(status) {
+	return normalizeStatusFilter(status) === CLIENT_DEFAULT_STATUS;
+}
+
+function isAllStatusFilter(status) {
+	return normalizeStatusFilter(status) === CLIENT_ALL_STATUS;
+}
+
+function appliesStatusFilter(status) {
+	return !isDefaultStatusFilter(status) && !isAllStatusFilter(status);
+}
 
 const FILTER_KEYS = [
 	"search",
@@ -34,7 +54,7 @@ const URL_KEY_MAP = {
 export function filtersFromSearchParams(searchParams) {
 	return {
 		search: searchParams.get("q") ?? "",
-		status: searchParams.get("status") ?? "",
+		status: normalizeStatusFilter(searchParams.get("status")),
 		projectId: searchParams.get("project") ?? "",
 		campaignId: searchParams.get("campaign") ?? "",
 		assignedTo: searchParams.get("assigned") ?? "",
@@ -49,6 +69,10 @@ export function applyFiltersToSearchParams(searchParams, filters) {
 	for (const key of FILTER_KEYS) {
 		const urlKey = URL_KEY_MAP[key];
 		const value = filters[key];
+		if (key === "status" && isDefaultStatusFilter(value)) {
+			next.delete(urlKey);
+			continue;
+		}
 		if (value) next.set(urlKey, String(value));
 		else next.delete(urlKey);
 	}
@@ -65,7 +89,10 @@ export function clearFilterParams(searchParams) {
 }
 
 export function hasActiveClientFilters(filters) {
-	return FILTER_KEYS.some((key) => Boolean(filters[key]));
+	return FILTER_KEYS.some((key) => {
+		if (key === "status") return !isDefaultStatusFilter(filters[key]);
+		return Boolean(filters[key]);
+	});
 }
 
 function inDateRange(convertedAt, dateFrom, dateTo) {
@@ -88,7 +115,7 @@ export function filterClients(list, filters) {
 	const q = filters.search.trim().toLowerCase();
 
 	return (list ?? []).filter((client) => {
-		if (filters.status && client.status !== filters.status) {
+		if (appliesStatusFilter(filters.status) && client.status !== filters.status) {
 			return false;
 		}
 		if (filters.source && client.source !== filters.source) {
@@ -96,19 +123,22 @@ export function filterClients(list, filters) {
 		}
 		if (
 			filters.projectId &&
-			String(client.project_id) !== String(filters.projectId)
+			String(relationId(client, "project", "project_id")) !==
+				String(filters.projectId)
 		) {
 			return false;
 		}
 		if (
 			filters.campaignId &&
-			String(client.campaign_id) !== String(filters.campaignId)
+			String(relationId(client, "campaign", "campaign_id")) !==
+				String(filters.campaignId)
 		) {
 			return false;
 		}
 		if (
 			filters.assignedTo &&
-			String(client.assigned_to) !== String(filters.assignedTo)
+			String(relationId(client, "assignee", "assigned_to")) !==
+				String(filters.assignedTo)
 		) {
 			return false;
 		}

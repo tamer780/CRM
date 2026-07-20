@@ -1,7 +1,11 @@
 import api from "../../api/client";
 
-export async function getTeams() {
-	const response = await api.get("/teams");
+export async function getTeams({ page, per_page } = {}) {
+	const params = {};
+	if (page) params.page = page;
+	if (per_page) params.per_page = per_page;
+
+	const response = await api.get("/teams", { params });
 	return response.data;
 }
 

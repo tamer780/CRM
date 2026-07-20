@@ -8,6 +8,12 @@ export const CLIENT_STATUSES = [
 	"archived",
 ];
 
+export const CLIENT_DEFAULT_STATUS = "default";
+
+export const CLIENT_ALL_STATUS = "all_status";
+
+export const CLIENT_STATUS_FILTERABLE = [...CLIENT_STATUSES, CLIENT_ALL_STATUS];
+
 export const CLIENT_SOURCES = [
 	"facebook",
 	"instagram",

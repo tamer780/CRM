@@ -1,6 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateClient } from "../../services/clients/clientsService";
 import { extractData } from "../../utils/api/apiHelpers";
+import {
+	clientDetailQueryKey,
+	mergeClientDetailCache,
+} from "../../features/clients/utils/clientDetailUtils";
 
 export function useUpdateClient(clientId) {
 	const queryClient = useQueryClient();
@@ -13,10 +17,9 @@ export function useUpdateClient(clientId) {
 		onMutate: async (body) => {
 			await queryClient.cancelQueries({ queryKey: ["clients", "list"] });
 			const previousList = queryClient.getQueryData(["clients", "list"]);
-			const previousDetail = queryClient.getQueryData([
-				"clients",
-				String(clientId),
-			]);
+			const previousDetail = queryClient.getQueryData(
+				clientDetailQueryKey(clientId),
+			);
 
 			queryClient.setQueryData(["clients", "list"], (old) => {
 				if (!Array.isArray(old)) return old;
@@ -28,10 +31,10 @@ export function useUpdateClient(clientId) {
 			});
 
 			if (previousDetail) {
-				queryClient.setQueryData(["clients", String(clientId)], {
-					...previousDetail,
-					...body,
-				});
+				queryClient.setQueryData(
+					clientDetailQueryKey(clientId),
+					mergeClientDetailCache(previousDetail, body),
+				);
 			}
 
 			return { previousList, previousDetail };
@@ -42,14 +45,16 @@ export function useUpdateClient(clientId) {
 			}
 			if (context?.previousDetail) {
 				queryClient.setQueryData(
-					["clients", String(clientId)],
+					clientDetailQueryKey(clientId),
 					context.previousDetail,
 				);
 			}
 		},
 		onSuccess: (client) => {
 			if (client) {
-				queryClient.setQueryData(["clients", String(clientId)], client);
+				queryClient.setQueryData(clientDetailQueryKey(clientId), (old) =>
+					mergeClientDetailCache(old, client),
+				);
 			}
 		},
 		onSettled: () => {

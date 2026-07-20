@@ -1,11 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import SourceBadge from "../../../../components/ui/SourceBadge";
-import {
-	resolveCampaignLabel,
-	resolveProjectLabel,
-	resolveUserLabel,
-} from "../../../../utils/leads/resolveLeadLabels";
+import { nestedEntityName } from "../../../../utils/api/nestedRelations";
 
 function formatDateTime(value) {
 	if (!value) return "—";
@@ -20,14 +16,20 @@ function formatDateTime(value) {
 	});
 }
 
-function Field({ label, value, dir, children }) {
+function Field({ label, value, dir, children, multiline = false }) {
 	return (
 		<div>
 			<p className="text-xs font-medium uppercase tracking-wide text-muted">
 				{label}
 			</p>
 			{children ?? (
-				<p className="mt-1 text-sm text-text" dir={dir}>
+				<p
+					className={[
+						"mt-1 text-sm text-text",
+						multiline ? "whitespace-pre-wrap leading-relaxed" : "",
+					].join(" ")}
+					dir={dir}
+				>
 					{value == null || value === "" ? "—" : value}
 				</p>
 			)}
@@ -41,13 +43,7 @@ function isValidDate(value) {
 	return !Number.isNaN(date.getTime());
 }
 
-const LeadDetailCard = ({
-	lead,
-	projectsMap,
-	campaignsMap,
-	usersMap,
-	children,
-}) => {
+const LeadDetailCard = ({ lead, usersMap, children }) => {
 	const { t } = useTranslation();
 
 	const upcoming = useMemo(() => {
@@ -190,11 +186,11 @@ const LeadDetailCard = ({
 							/>
 							<Field
 								label={t("leads.form.project")}
-								value={resolveProjectLabel(projectsMap, lead)}
+								value={nestedEntityName(lead.project)}
 							/>
 							<Field
 								label={t("leads.form.campaign")}
-								value={resolveCampaignLabel(campaignsMap, lead)}
+								value={nestedEntityName(lead.campaign)}
 							/>
 						</div>
 					</div>
@@ -206,11 +202,16 @@ const LeadDetailCard = ({
 						<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 							<Field
 								label={t("leads.columns.assignedTo")}
-								value={resolveUserLabel(usersMap, lead.assigned_to)}
+								value={nestedEntityName(lead.assignee)}
 							/>
 							<Field
 								label={t("leads.detail.assignedBy")}
-								value={resolveUserLabel(usersMap, lead.assigned_by)}
+								value={
+									usersMap?.get(Number(lead.assigned_by))?.name ??
+									usersMap?.get(String(lead.assigned_by))?.name ??
+									lead.assigned_by ??
+									"—"
+								}
 							/>
 							<Field
 								label={t("leads.detail.assignedAt")}
@@ -218,7 +219,35 @@ const LeadDetailCard = ({
 							/>
 							<Field
 								label={t("leads.detail.createdBy")}
-								value={resolveUserLabel(usersMap, lead.created_by)}
+								value={
+									usersMap?.get(Number(lead.created_by))?.name ??
+									usersMap?.get(String(lead.created_by))?.name ??
+									lead.created_by ??
+									"—"
+								}
+							/>
+						</div>
+					</div>
+
+					<div className="border-t border-border pt-6">
+						<p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted">
+							{t("leads.detail.notes")}
+						</p>
+						<div className="grid grid-cols-1 gap-4">
+							<Field
+								label={t("leads.form.note")}
+								value={lead.note}
+								multiline
+							/>
+							<Field
+								label={t("leads.form.lastCommunicationNote")}
+								value={lead.last_communication_note}
+								multiline
+							/>
+							<Field
+								label={t("leads.detail.lostReason")}
+								value={lead.lost_reason}
+								multiline
 							/>
 						</div>
 					</div>

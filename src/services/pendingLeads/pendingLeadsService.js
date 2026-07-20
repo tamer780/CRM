@@ -25,11 +25,3 @@ export async function removePendingLead(pendingLeadId, body) {
 	);
 	return response.data;
 }
-
-export async function mergePendingLead(pendingLeadId, body) {
-	const response = await api.post(
-		`/pending-leads/${pendingLeadId}/merge`,
-		body,
-	);
-	return response.data;
-}

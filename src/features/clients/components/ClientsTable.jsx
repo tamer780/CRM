@@ -8,22 +8,21 @@ import {
 	ArrowDown,
 	ArrowUp,
 	ArrowUpDown,
-	Ban,
 	Pencil,
-	RotateCcw,
+	Trash2,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import ErrorState from "../../../components/dashboard/ErrorState";
+import InfiniteScrollFooter from "../../../components/ui/InfiniteScrollFooter";
+import { useInfiniteScrollSentinel } from "../../../hooks/ui/useInfiniteScrollSentinel";
 import {
 	getAvatarTone,
 	getInitials,
 } from "../../leads/utils/leadAvatars";
+import { nestedEntityName } from "../../../utils/api/nestedRelations";
 import ClientEmptyState from "./ClientEmptyState";
 import ClientStatusSelect from "./ClientStatusSelect";
-
-const INITIAL_VISIBLE = 20;
-const CHUNK_SIZE = 20;
 
 function formatDate(value) {
 	if (!value) return "—";
@@ -36,11 +35,21 @@ function formatDate(value) {
 	});
 }
 
-function resolveLabel(map, id) {
-	if (id == null || id === "") return "—";
-	const item = map?.get(Number(id)) ?? map?.get(String(id));
-	if (!item) return String(id);
-	return item.name ?? item.title ?? item.email ?? String(id);
+function AssignedCell({ assignee }) {
+	if (!assignee) {
+		return <span className="text-sm text-muted">—</span>;
+	}
+	const name = assignee.name ?? assignee.email ?? `#${assignee.id}`;
+	return (
+		<div className="flex min-w-0 items-center gap-2">
+			<span
+				className={`flex size-8 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${getAvatarTone(name)}`}
+			>
+				{getInitials(name)}
+			</span>
+			<span className="truncate text-sm text-text">{name}</span>
+		</div>
+	);
 }
 
 function SortIcon({ column }) {
@@ -63,36 +72,15 @@ function ProjectBadge({ label }) {
 	);
 }
 
-function AssignedCell({ usersMap, assignedTo }) {
-	const user =
-		usersMap?.get(Number(assignedTo)) ?? usersMap?.get(String(assignedTo));
-	if (!user) {
-		return <span className="text-sm text-muted">—</span>;
-	}
-	const name = user.name ?? user.email ?? `#${user.id}`;
-	return (
-		<div className="flex min-w-0 items-center gap-2">
-			<span
-				className={`flex size-8 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${getAvatarTone(name)}`}
-			>
-				{getInitials(name)}
-			</span>
-			<span className="truncate text-sm text-text">{name}</span>
-		</div>
-	);
-}
-
 function ActionButtons({
 	client,
 	actionsDisabled,
 	onEdit,
-	onMarkLost,
-	onRestore,
+	onDelete,
 }) {
 	const { t } = useTranslation();
 	const btn =
 		"inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-50";
-	const isLost = client.status === "lost";
 
 	return (
 		<div
@@ -109,27 +97,15 @@ function ActionButtons({
 				<Pencil className="size-3.5" aria-hidden="true" />
 				{t("clients.actions.edit")}
 			</button>
-			{isLost ? (
-				<button
-					type="button"
-					disabled={actionsDisabled}
-					onClick={() => onRestore(client)}
-					className={`${btn} text-green-700 hover:bg-green-50`}
-				>
-					<RotateCcw className="size-3.5" aria-hidden="true" />
-					{t("clients.actions.restore")}
-				</button>
-			) : (
-				<button
-					type="button"
-					disabled={actionsDisabled}
-					onClick={() => onMarkLost(client)}
-					className={`${btn} text-red-600 hover:bg-red-50`}
-				>
-					<Ban className="size-3.5" aria-hidden="true" />
-					{t("clients.actions.markLost")}
-				</button>
-			)}
+			<button
+				type="button"
+				disabled={actionsDisabled}
+				onClick={() => onDelete(client)}
+				className={`${btn} text-red-600 hover:bg-red-50`}
+			>
+				<Trash2 className="size-3.5" aria-hidden="true" />
+				{t("clients.actions.delete")}
+			</button>
 		</div>
 	);
 }
@@ -161,25 +137,25 @@ const ClientsTable = ({
 	isError,
 	onRetry,
 	isFilteredEmpty = false,
-	projectsMap,
-	usersMap,
 	sorting,
 	onSortingChange,
 	actionsDisabled = false,
 	onView,
 	onEdit,
-	onMarkLost,
-	onRestore,
+	onDelete,
 	onStatusChange,
 	statusUpdatingId = null,
+	hasNextPage = false,
+	isFetchingNextPage = false,
+	fetchNextPage,
+	serverTotal,
 }) => {
 	const { t } = useTranslation();
-	const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
-	const sentinelRef = useRef(null);
-
-	useEffect(() => {
-		setVisibleCount(INITIAL_VISIBLE);
-	}, [clients]);
+	const sentinelRef = useInfiniteScrollSentinel({
+		hasNextPage,
+		isFetchingNextPage,
+		fetchNextPage,
+	});
 
 	const columns = useMemo(
 		() => [
@@ -228,19 +204,16 @@ const ClientsTable = ({
 			},
 			{
 				id: "project",
-				accessorFn: (row) => resolveLabel(projectsMap, row.project_id),
+				accessorFn: (row) => nestedEntityName(row.project),
 				header: t("clients.columns.project"),
 				cell: ({ getValue }) => <ProjectBadge label={getValue()} />,
 			},
 			{
 				id: "assignedTo",
-				accessorFn: (row) => resolveLabel(usersMap, row.assigned_to),
+				accessorFn: (row) => nestedEntityName(row.assignee),
 				header: t("clients.columns.assignedTo"),
 				cell: ({ row }) => (
-					<AssignedCell
-						usersMap={usersMap}
-						assignedTo={row.original.assigned_to}
-					/>
+					<AssignedCell assignee={row.original.assignee} />
 				),
 			},
 			{
@@ -302,21 +275,17 @@ const ClientsTable = ({
 						client={row.original}
 						actionsDisabled={actionsDisabled}
 						onEdit={onEdit}
-						onMarkLost={onMarkLost}
-						onRestore={onRestore}
+						onDelete={onDelete}
 					/>
 				),
 			},
 		],
 		[
 			t,
-			projectsMap,
-			usersMap,
 			actionsDisabled,
 			onView,
 			onEdit,
-			onMarkLost,
-			onRestore,
+			onDelete,
 			onStatusChange,
 			statusUpdatingId,
 		],
@@ -336,27 +305,8 @@ const ClientsTable = ({
 
 	const allRows = table.getRowModel().rows;
 	const totalCount = allRows.length;
-	const visibleRows = allRows.slice(0, visibleCount);
-	const hasMore = visibleCount < totalCount;
-
-	useEffect(() => {
-		const node = sentinelRef.current;
-		if (!node || !hasMore) return undefined;
-
-		const observer = new IntersectionObserver(
-			(entries) => {
-				if (entries[0]?.isIntersecting) {
-					setVisibleCount((prev) =>
-						Math.min(prev + CHUNK_SIZE, totalCount),
-					);
-				}
-			},
-			{ root: null, rootMargin: "200px", threshold: 0 },
-		);
-
-		observer.observe(node);
-		return () => observer.disconnect();
-	}, [hasMore, totalCount, visibleCount]);
+	const visibleRows = allRows;
+	const totalFromServer = serverTotal ?? totalCount;
 
 	if (isLoading) return <TableSkeleton />;
 
@@ -407,7 +357,7 @@ const ClientsTable = ({
 										</p>
 										<div className="mt-2 flex flex-wrap gap-2">
 											<ProjectBadge
-												label={resolveLabel(projectsMap, client.project_id)}
+												label={nestedEntityName(client.project)}
 											/>
 										</div>
 									</div>
@@ -429,8 +379,7 @@ const ClientsTable = ({
 									client={client}
 									actionsDisabled={actionsDisabled}
 									onEdit={onEdit}
-									onMarkLost={onMarkLost}
-									onRestore={onRestore}
+									onDelete={onDelete}
 								/>
 							</div>
 						</article>
@@ -527,19 +476,16 @@ const ClientsTable = ({
 				</div>
 			</section>
 
-			<p className="text-center text-sm text-muted">
-				{t("clients.pagination.showing", {
-					shown: Math.min(visibleCount, totalCount),
-					total: totalCount,
-				})}
-			</p>
-			{hasMore ? (
-				<div
-					ref={sentinelRef}
-					className="h-4 w-full"
-					aria-hidden="true"
-				/>
-			) : null}
+			<InfiniteScrollFooter
+				shown={totalCount}
+				total={totalFromServer}
+				hasNextPage={hasNextPage}
+				isFetchingNextPage={isFetchingNextPage}
+				sentinelRef={sentinelRef}
+				showingKey="clients.pagination.showing"
+				loadingMoreKey="clients.pagination.loadingMore"
+				endKey="clients.pagination.end"
+			/>
 		</>
 	);
 };

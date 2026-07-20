@@ -1,27 +1,24 @@
 import { X } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useBodyScrollLock } from "../../../hooks/ui/useBodyScrollLock";
 import SourceBadge from "../../../components/ui/SourceBadge";
 import {
 	getAvatarTone,
 	getInitials,
 } from "../../leads/utils/leadAvatars";
+import {
+	clientHasLostInfo,
+	formatClientDateTime,
+	getClientDetailTabs,
+	resolveUserName,
+} from "../utils/clientDetailUtils";
+import { nestedEntityName } from "../../../utils/api/nestedRelations";
 import ClientStatusBadge from "./ClientStatusBadge";
-
-const DRAWER_TABS = ["overview", "activities", "comments", "timeline", "files"];
-
-function formatDateTime(value) {
-	if (!value) return "—";
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) return value;
-	return date.toLocaleString(undefined, {
-		year: "numeric",
-		month: "short",
-		day: "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-	});
-}
+import ClientActivitiesTab from "./detail/ClientActivitiesTab";
+import ClientCommentsTab from "./detail/ClientCommentsTab";
+import ClientScheduledActionsTab from "./detail/ClientScheduledActionsTab";
+import ClientTimelineTab from "./detail/ClientTimelineTab";
 
 function Field({ label, value }) {
 	return (
@@ -56,24 +53,16 @@ function ModalSkeleton() {
 	);
 }
 
-function resolveEntity(map, id) {
-	if (id == null || id === "") return "—";
-	const item = map?.get(Number(id)) ?? map?.get(String(id));
-	if (!item) return String(id);
-	return item.name ?? item.title ?? item.email ?? String(id);
-}
-
 const ClientDetailModal = ({
 	open,
 	onClose,
 	client,
+	isDetailReady = false,
 	isLoading,
 	isError,
 	onRetry,
 	preventClose = false,
-	projectsMap,
-	campaignsMap,
-	usersMap,
+	users = [],
 }) => {
 	const { t } = useTranslation();
 	const titleId = useId();
@@ -81,16 +70,27 @@ const ClientDetailModal = ({
 	const previousFocusRef = useRef(null);
 	const [activeTab, setActiveTab] = useState("overview");
 
+	const visibleTabs = useMemo(
+		() => (isDetailReady ? getClientDetailTabs(client) : ["overview"]),
+		[client, isDetailReady],
+	);
+
+	useBodyScrollLock(open);
+
 	useEffect(() => {
 		if (open) setActiveTab("overview");
 	}, [open, client?.id]);
 
 	useEffect(() => {
+		if (!visibleTabs.includes(activeTab)) {
+			setActiveTab("overview");
+		}
+	}, [visibleTabs, activeTab]);
+
+	useEffect(() => {
 		if (!open) return undefined;
 
 		previousFocusRef.current = document.activeElement;
-		const previousOverflow = document.body.style.overflow;
-		document.body.style.overflow = "hidden";
 
 		const dialog = dialogRef.current;
 		const focusable = dialog?.querySelector(
@@ -108,30 +108,17 @@ const ClientDetailModal = ({
 		document.addEventListener("keydown", handleKeyDown);
 		return () => {
 			document.removeEventListener("keydown", handleKeyDown);
-			document.body.style.overflow = previousOverflow;
 			previousFocusRef.current?.focus?.();
 		};
 	}, [open, onClose, preventClose]);
 
-	const assignedUser =
-		client?.assigned_to != null
-			? (usersMap?.get(Number(client.assigned_to)) ??
-				usersMap?.get(String(client.assigned_to)))
-			: null;
-	const assignedName = assignedUser
-		? (assignedUser.name ?? assignedUser.email ?? `#${assignedUser.id}`)
-		: null;
+	const assignedName = nestedEntityName(client?.assignee);
+	const hasAssigned = client?.assignee != null;
 
-	const lostByUser =
-		client?.lost_by != null
-			? (usersMap?.get(Number(client.lost_by)) ??
-				usersMap?.get(String(client.lost_by)))
-			: null;
-	const lostByName = lostByUser
-		? (lostByUser.name ?? lostByUser.email ?? `#${lostByUser.id}`)
-		: client?.lost_by != null
-			? String(client.lost_by)
-			: null;
+	const lostByName =
+		client?.lost_by_user != null
+			? nestedEntityName(client.lost_by_user)
+			: resolveUserName(users, client?.lost_by);
 
 	if (!open) return null;
 
@@ -177,36 +164,36 @@ const ClientDetailModal = ({
 				</div>
 
 				<div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
-					<nav
-						className="mb-5 flex gap-1 overflow-x-auto border-b border-border pb-px"
-						aria-label={t("clients.drawer.tabsLabel")}
-					>
-						{DRAWER_TABS.map((tab) => {
-							const disabled = tab !== "overview";
-							const isActive = activeTab === tab;
-							return (
-								<button
-									key={tab}
-									type="button"
-									disabled={disabled}
-									onClick={() => !disabled && setActiveTab(tab)}
-									className={[
-										"shrink-0 rounded-t-lg px-3 py-2 text-sm font-medium transition",
-										isActive
-											? "border-b-2 border-gold text-text"
-											: disabled
-												? "cursor-not-allowed text-muted/50"
+					{client && visibleTabs.length > 1 && (
+						<nav
+							className="mb-5 flex gap-1 overflow-x-auto border-b border-border pb-px"
+							aria-label={t("clients.drawer.tabsLabel")}
+							role="tablist"
+						>
+							{visibleTabs.map((tab) => {
+								const isActive = activeTab === tab;
+								return (
+									<button
+										key={tab}
+										type="button"
+										role="tab"
+										aria-selected={isActive}
+										id={`client-detail-tab-${tab}`}
+										aria-controls={`client-detail-panel-${tab}`}
+										onClick={() => setActiveTab(tab)}
+										className={[
+											"shrink-0 rounded-t-lg px-3 py-2 text-sm font-medium transition",
+											isActive
+												? "border-b-2 border-gold text-text"
 												: "text-muted hover:text-text",
-									].join(" ")}
-									title={
-										disabled ? t("clients.drawer.comingSoon") : undefined
-									}
-								>
-									{t(`clients.drawer.tabs.${tab}`)}
-								</button>
-							);
-						})}
-					</nav>
+										].join(" ")}
+									>
+										{t(`clients.drawer.tabs.${tab}`)}
+									</button>
+								);
+							})}
+						</nav>
+					)}
 
 					{isLoading && <ModalSkeleton />}
 
@@ -228,7 +215,12 @@ const ClientDetailModal = ({
 					)}
 
 					{client && !isLoading && activeTab === "overview" && (
-						<div className="space-y-6">
+						<div
+							id="client-detail-panel-overview"
+							role="tabpanel"
+							aria-labelledby="client-detail-tab-overview"
+							className="space-y-6"
+						>
 							<section>
 								<h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted">
 									{t("clients.drawer.general")}
@@ -276,7 +268,7 @@ const ClientDetailModal = ({
 										<p className="text-xs font-medium uppercase tracking-wide text-muted">
 											{t("clients.form.assignedTo")}
 										</p>
-										{assignedName ? (
+										{hasAssigned ? (
 											<div className="mt-1.5 flex items-center gap-2">
 												<span
 													className={`flex size-8 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${getAvatarTone(assignedName)}`}
@@ -290,12 +282,16 @@ const ClientDetailModal = ({
 										)}
 									</div>
 									<Field
+										label={t("clients.drawer.team")}
+										value={nestedEntityName(client.team)}
+									/>
+									<Field
 										label={t("clients.form.project")}
-										value={resolveEntity(projectsMap, client.project_id)}
+										value={nestedEntityName(client.project)}
 									/>
 									<Field
 										label={t("clients.form.campaign")}
-										value={resolveEntity(campaignsMap, client.campaign_id)}
+										value={nestedEntityName(client.campaign)}
 									/>
 									<div>
 										<p className="text-xs font-medium uppercase tracking-wide text-muted">
@@ -310,29 +306,29 @@ const ClientDetailModal = ({
 
 							<section>
 								<h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted">
-									{t("clients.drawer.timeline")}
+									{t("clients.drawer.dates")}
 								</h3>
 								<div className="grid grid-cols-1 gap-4 rounded-2xl border border-border bg-background/40 p-4 sm:grid-cols-2">
 									<Field
 										label={t("clients.drawer.qualifiedAt")}
-										value={formatDateTime(client.qualified_at)}
+										value={formatClientDateTime(client.qualified_at)}
 									/>
 									<Field
 										label={t("clients.drawer.convertedAt")}
-										value={formatDateTime(client.converted_at)}
+										value={formatClientDateTime(client.converted_at)}
 									/>
 									<Field
 										label={t("clients.drawer.createdAt")}
-										value={formatDateTime(client.created_at)}
+										value={formatClientDateTime(client.created_at)}
 									/>
 									<Field
 										label={t("clients.drawer.updatedAt")}
-										value={formatDateTime(client.updated_at)}
+										value={formatClientDateTime(client.updated_at)}
 									/>
 								</div>
 							</section>
 
-							{client.status === "lost" && (
+							{clientHasLostInfo(client) && (
 								<section>
 									<h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted">
 										{t("clients.drawer.lostInfo")}
@@ -340,7 +336,7 @@ const ClientDetailModal = ({
 									<div className="grid grid-cols-1 gap-4 rounded-2xl border border-red-100 bg-red-50/40 p-4 sm:grid-cols-2">
 										<Field
 											label={t("clients.drawer.lostAt")}
-											value={formatDateTime(client.lost_at)}
+											value={formatClientDateTime(client.lost_at)}
 										/>
 										<Field
 											label={t("clients.drawer.lostBy")}
@@ -355,6 +351,52 @@ const ClientDetailModal = ({
 									</div>
 								</section>
 							)}
+						</div>
+					)}
+
+					{client && !isLoading && isDetailReady && activeTab === "activities" && (
+						<div
+							id="client-detail-panel-activities"
+							role="tabpanel"
+							aria-labelledby="client-detail-tab-activities"
+						>
+							<ClientActivitiesTab activities={client.activities} />
+						</div>
+					)}
+
+					{client && !isLoading && isDetailReady && activeTab === "comments" && (
+						<div
+							id="client-detail-panel-comments"
+							role="tabpanel"
+							aria-labelledby="client-detail-tab-comments"
+						>
+							<ClientCommentsTab comments={client.comments} />
+						</div>
+					)}
+
+					{client && !isLoading && isDetailReady && activeTab === "timeline" && (
+						<div
+							id="client-detail-panel-timeline"
+							role="tabpanel"
+							aria-labelledby="client-detail-tab-timeline"
+						>
+							<ClientTimelineTab timeline={client.timeline} />
+						</div>
+					)}
+
+					{client &&
+						!isLoading &&
+						isDetailReady &&
+						activeTab === "scheduledActions" && (
+						<div
+							id="client-detail-panel-scheduledActions"
+							role="tabpanel"
+							aria-labelledby="client-detail-tab-scheduledActions"
+						>
+							<ClientScheduledActionsTab
+								scheduledActions={client.scheduled_actions}
+								users={users}
+							/>
 						</div>
 					)}
 				</div>

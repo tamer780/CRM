@@ -21,18 +21,17 @@ export const LEAD_STATUSES = [
 	"meeting_scheduled",
 	"qualified",
 	"low_budget",
-	"not_interested",
-	"converted",
+	"not_interested",	
 	"all_status",
 	"default",
 ];
 
-/** Statuses shown in row / bulk status pickers (excludes filter meta values). */
+
 export const LEAD_STATUS_ACTIONABLE = LEAD_STATUSES.filter(
 	(s) => s !== "all_status" && s !== "default",
 );
 
-/** Statuses shown in the filter multi-select (default is the clear/default row). */
+
 export const LEAD_STATUS_FILTERABLE = LEAD_STATUSES.filter(
 	(s) => s !== "default",
 );
@@ -96,6 +95,9 @@ export const LEAD_SOURCE_ICON_KEYS = {
 	other: "circle-help",
 };
 
+/** Max how far ahead a scheduled call may be set. */
+export const SCHEDULED_CALL_MAX_AHEAD_MS = 7 * 24 * 60 * 60 * 1000;
+
 /**
  * Same validation rules as the previous parent-page handlers.
  * Returns a map of field → error message (empty object when valid).
@@ -114,6 +116,16 @@ export function validateLeadForm(values, t) {
 	}
 	if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
 		errors.email = t("validation.emailInvalid");
+	}
+
+	if (values?.scheduled_call_at) {
+		const scheduledAt = new Date(values.scheduled_call_at);
+		if (!Number.isNaN(scheduledAt.getTime())) {
+			const maxAt = Date.now() + SCHEDULED_CALL_MAX_AHEAD_MS;
+			if (scheduledAt.getTime() > maxAt) {
+				errors.scheduled_call_at = t("leads.validation.scheduledCallMaxOneWeek");
+			}
+		}
 	}
 
 	return errors;
