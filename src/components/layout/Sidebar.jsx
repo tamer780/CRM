@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { ChevronsLeft, ChevronsRight, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import logoLight from "../../assets/logo-light.png";
+import logo from "../../assets/logo-light.png";
 import { canAccessPath } from "../../features/users/utils/permissions";
 import { useAuthMe } from "../../hooks/auth/useAuthMe";
 import { useLogout } from "../../hooks/auth/useLogout";
@@ -46,11 +46,16 @@ const Sidebar = ({ collapsed, onToggleCollapse }) => {
 				].join(" ")}
 			>
 				{!collapsed && (
-					<img
-						src={logoLight}
-						alt={t("common.appName")}
-						className="h-18 w-auto"
-					/>
+					<div className="flex min-w-0 items-center gap-2">
+						<img
+							src={logo}
+							alt={t("common.appName")}
+							className="h-10 max-h-10 w-auto max-w-[56px] shrink-0 object-contain"
+						/>
+						<span className="truncate text-sm font-semibold tracking-wide text-white">
+							Amair CRM
+						</span>
+					</div>
 				)}
 				<button
 					type="button"

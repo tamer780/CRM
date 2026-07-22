@@ -179,6 +179,16 @@ const MeetingForm = ({
 							disabled={isSubmitting}
 						/>
 					</div>
+					<div className="sm:col-span-2 border-t border-border/70 pt-4">
+						<FormTextarea
+							label={t("meetings.form.comment")}
+							placeholder={t("meetings.form.commentPlaceholder")}
+							value={values.comment ?? ""}
+							onChange={(e) => set("comment", e.target.value)}
+							error={errors.comment}
+							disabled={isSubmitting}
+							minRows={3}
+						/>
 
 					<div className="sm:col-span-2">
 						<FormTextarea
@@ -187,8 +197,11 @@ const MeetingForm = ({
 							onChange={(e) => set("notes", e.target.value)}
 							error={errors.notes}
 							disabled={isSubmitting}
-							rows={3}
+							minRows={3}
 						/>
+					</div>
+
+					
 					</div>
 				</div>
 			</div>

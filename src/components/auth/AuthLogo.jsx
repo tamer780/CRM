@@ -1,14 +1,14 @@
-import logoLight from "../../assets/logo-light.png";
+import logo from "../../assets/logo-light.png";
 
 const AuthLogo = () => (
 	<div className="mb-6 flex flex-col items-center">
 		<img
-			src={logoLight}
-			alt="Amair CRM"
+			src={logo}
+			alt="EH"
 			className="h-auto w-20 sm:w-24"
 		/>
 		<p className="mt-3 text-xs font-medium tracking-[0.25em] text-gold sm:text-sm">
-			AMAIR CRM
+			EH
 		</p>
 	</div>
 );

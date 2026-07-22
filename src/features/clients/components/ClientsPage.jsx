@@ -15,7 +15,7 @@ import { extractApiError } from "../../../utils/api/apiHelpers";
 import {
 	mergeEntityLists,
 } from "../../../utils/api/nestedRelations";
-import { clientMatchesScope } from "../../users/utils/permissions";
+import { clientMatchesScope, PERMISSIONS } from "../../users/utils/permissions";
 import {
 	clientToFormValues,
 	computeClientKpis,
@@ -42,12 +42,15 @@ import ClientsToolbar from "./ClientsToolbar";
 const ClientsPage = () => {
 	const { t } = useTranslation();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const { scope } = usePermissions();
+	const { scope, can } = usePermissions();
+	const canViewProjects = can(PERMISSIONS.PROJECTS_VIEW);
+	const canViewCampaigns = can(PERMISSIONS.CAMPAIGNS_VIEW);
+	const canListUsers = can(PERMISSIONS.USERS_MANAGE);
 
 	const clientsQuery = useInfiniteClients();
-	const projectsQuery = useProjects();
-	const campaignsQuery = useCampaigns();
-	const usersQuery = useUsers();
+	const projectsQuery = useProjects({ enabled: canViewProjects });
+	const campaignsQuery = useCampaigns({ enabled: canViewCampaigns });
+	const usersQuery = useUsers({ enabled: canListUsers });
 	const deleteClient = useDeleteClient();
 	const updateClientStatus = useUpdateClientStatus();
 

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { usePermissions } from "../../../hooks/auth/usePermissions";
 import { useCreateMeeting } from "../../../hooks/meetings/useCreateMeeting";
 import { useDeleteMeeting } from "../../../hooks/meetings/useDeleteMeeting";
 import { useLeads } from "../../../hooks/leads/useLeads";
@@ -9,6 +10,7 @@ import { useMeeting } from "../../../hooks/meetings/useMeeting";
 import { useInfiniteMeetings } from "../../../hooks/meetings/useInfiniteMeetings";
 import { useUpdateMeeting } from "../../../hooks/meetings/useUpdateMeeting";
 import { useUsers } from "../../../hooks/users/useUsers";
+import { PERMISSIONS } from "../../users/utils/permissions";
 import { extractApiError } from "../../../utils/api/apiHelpers";
 import {
 	computeMeetingKpis,
@@ -39,8 +41,10 @@ import MeetingsToolbar from "./MeetingsToolbar";
 const MeetingsPage = () => {
 	const { t } = useTranslation();
 	const [searchParams, setSearchParams] = useSearchParams();
+	const { can } = usePermissions();
+	const canListUsers = can(PERMISSIONS.USERS_MANAGE);
 
-	const usersQuery = useUsers();
+	const usersQuery = useUsers({ enabled: canListUsers });
 	const leadsQuery = useLeads();
 	const createMeeting = useCreateMeeting();
 	const deleteMeeting = useDeleteMeeting();
@@ -236,6 +240,7 @@ const MeetingsPage = () => {
 					assigned_to: meeting.assigned_to ?? null,
 					status,
 					meeting_date: meeting.meeting_date ?? null,
+					comment: meeting.comment ?? null,
 					notes: meeting.notes ?? null,
 				},
 			},

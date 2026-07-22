@@ -13,6 +13,8 @@ const LeadBulkAssignBar = ({
 	onDelete,
 	onClear,
 	canDelete = true,
+	canChangeStatus = true,
+	canAssign = true,
 }) => {
 	const { t } = useTranslation();
 	const busy = isAssigning || isUpdatingStatus || isDeleting;
@@ -26,27 +28,35 @@ const LeadBulkAssignBar = ({
 					{t("leads.bulk.selected", { count: selectedCount })}
 				</p>
 				<div className="flex flex-wrap items-center gap-2">
-					<span className="text-sm text-muted">
-						{t("leads.columns.status")}
-					</span>
-					<LeadStatusSelect
-						status=""
-						onChange={onStatusChange}
-						isUpdating={isUpdatingStatus}
-						disabled={busy}
-						placement="bottom"
-					/>
-					<span className="text-sm text-muted">
-						{t("dashboard.quickActions.assignLead")}
-					</span>
-					<LeadAssignSelect
-						assignedTo=""
-						users={users}
-						onChange={onAssign}
-						isUpdating={isAssigning}
-						disabled={busy}
-						placement="bottom"
-					/>
+					{canChangeStatus && (
+						<>
+							<span className="text-sm text-muted">
+								{t("leads.columns.status")}
+							</span>
+							<LeadStatusSelect
+								status=""
+								onChange={onStatusChange}
+								isUpdating={isUpdatingStatus}
+								disabled={busy}
+								placement="bottom"
+							/>
+						</>
+					)}
+					{canAssign && (
+						<>
+							<span className="text-sm text-muted">
+								{t("dashboard.quickActions.assignLead")}
+							</span>
+							<LeadAssignSelect
+								assignedTo=""
+								users={users}
+								onChange={onAssign}
+								isUpdating={isAssigning}
+								disabled={busy}
+								placement="bottom"
+							/>
+						</>
+					)}
 					{canDelete && (
 						<button
 							type="button"

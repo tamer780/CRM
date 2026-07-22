@@ -11,6 +11,11 @@ const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
 			refetchOnWindowFocus: false,
+			retry: (failureCount, error) => {
+				const status = error?.response?.status ?? error?.status;
+				if (status === 401 || status === 403) return false;
+				return failureCount < 3;
+			},
 		},
 	},
 });
@@ -20,7 +25,7 @@ createRoot(document.getElementById("root")).render(
 		<QueryClientProvider client={queryClient}>
 			<RouterProvider router={router} />
 			<Toaster
-				position="top-center"
+				position="top-right"
 				richColors
 				closeButton
 				toastOptions={{

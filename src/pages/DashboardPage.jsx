@@ -93,7 +93,9 @@ const DashboardPage = () => {
 	const teamsQuery = useTeams({ enabled: roleReady && isManager });
 	const projectsQuery = useProjects({ enabled: roleReady && isFullAdmin });
 	const campaignsQuery = useCampaigns({ enabled: roleReady && isFullAdmin });
-	const usersQuery = useUsers();
+	const usersQuery = useUsers({
+		enabled: roleReady && (isManager || isFullAdmin),
+	});
 
 	const displayName =
 		user?.name ??

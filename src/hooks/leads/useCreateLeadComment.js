@@ -51,6 +51,12 @@ export function useCreateLeadComment(leadId) {
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey });
+			queryClient.invalidateQueries({ queryKey: ["scheduled-actions"] });
+			if (leadId != null) {
+				queryClient.invalidateQueries({
+					queryKey: ["leads", String(leadId)],
+				});
+			}
 		},
 	});
 }

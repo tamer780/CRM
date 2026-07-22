@@ -9,26 +9,18 @@ import AuthLogo from "../components/auth/AuthLogo";
 import Spinner from "../components/auth/Spinner";
 import { getLoginErrorMessage, useLogin } from "../hooks/auth/useLogin";
 import {
-  clearRememberedEmail,
-  getRememberedEmail,
-  setRememberedEmail,
-} from "../utils/token/tokenStorage";
-import {
   validateEmail,
   validatePassword,
 } from "../utils/validation/validation";
-import LanguageSwitcher from "../components/layout/LanguageSwitcher";
 
 const LoginPage = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const registered = location.state?.registered;
-  const rememberedEmail = getRememberedEmail();
   const loginMutation = useLogin();
 
-  const [email, setEmail] = useState(rememberedEmail);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(Boolean(rememberedEmail));
   const [showPassword, setShowPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [apiError, setApiError] = useState("");
@@ -52,13 +44,6 @@ const LoginPage = () => {
     loginMutation.mutate(
       { email, password },
       {
-        onSuccess: () => {
-          if (rememberMe) {
-            setRememberedEmail(email);
-          } else {
-            clearRememberedEmail();
-          }
-        },
         onError: (error) => {
           setApiError(getLoginErrorMessage(error));
         },
@@ -155,28 +140,6 @@ const LoginPage = () => {
             </button>
           }
         />
-
-        <div className="flex items-center justify-between gap-4">
-          <label className="flex cursor-pointer items-center gap-2.5">
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(event) => setRememberMe(event.target.checked)}
-              disabled={isPending}
-              className="size-4 rounded border-white/30 accent-gold focus:ring-2 focus:ring-gold"
-            />
-            <span className="text-sm text-white/70">
-              {t("auth.login.rememberMe")}
-            </span>
-          </label>
-          <a
-            href="#"
-            className="text-sm text-light-gold transition-colors hover:text-gold hover:underline"
-            onClick={(event) => event.preventDefault()}
-          >
-            {t("auth.login.forgotPassword")}
-          </a>
-        </div>
 
         <button
           type="submit"

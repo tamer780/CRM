@@ -1,6 +1,6 @@
 {
 	"common": {
-		"appName": "Amair CRM",
+		"appName": "EH",
 		"loading": "Loading...",
 		"logout": "Logout",
 		"user": "User",
@@ -470,6 +470,7 @@
 			"source": "Source",
 			"status": "Status",
 			"scheduledCall": "Scheduled Call",
+			"schedule": "Schedule",
 			"project": "Project",
 			"campaign": "Campaign",
 			"assignedTo": "Assigned To",
@@ -485,6 +486,19 @@
 			"overdueHoursMinutes": "overdue {{hours}}h {{minutes}}m",
 			"reminder": "Call reminder: {{name}} — {{when}}",
 			"open": "Open lead"
+		},
+		"schedule": {
+			"call": "Call",
+			"followUp": "Follow-up"
+		},
+		"dateTime": {
+			"placeholder": "Pick date & time",
+			"pickerLabel": "Choose date and time",
+			"time": "Time",
+			"hour": "Hour",
+			"minute": "Minute",
+			"now": "Now",
+			"apply": "Apply"
 		},
 		"form": {
 			"name": "Name",
@@ -548,7 +562,19 @@
 			"required": "Please write a comment before posting.",
 			"tooLong": "Comment is too long.",
 			"loadFailed": "Unable to load comments. Please try again.",
-			"postFailed": "Unable to post comment. Please try again."
+			"postFailed": "Unable to post comment. Please try again.",
+			"nextActionTitle": "Next scheduled action",
+			"nextActionHint": "Active leads require a next scheduled action with every comment.",
+			"nextActionHintOptional": "You can optionally add a next scheduled action with this comment.",
+			"optional": "optional",
+			"actionType": "Next action type",
+			"scheduledAt": "Scheduled at",
+			"actionNote": "Action note",
+			"actionNotePlaceholder": "Optional note for the next action…",
+			"scheduledActionRequired": "Please set the next scheduled action before posting.",
+			"actionTypeRequired": "Select a next action type.",
+			"scheduledAtRequired": "Choose when the next action should happen.",
+			"scheduledAtInvalid": "Enter a valid date and time."
 		},
 		"status": {
 			"new": "New",
@@ -1505,7 +1531,13 @@
 			"timeline": "Timeline",
 			"createdBy": "Created By",
 			"createdAt": "Created At",
-			"updatedAt": "Updated At"
+			"updatedAt": "Updated At",
+			"comments": "Comments",
+			"openingComment": "Opening",
+			"latest": "Latest",
+			"commentsEmptyTitle": "No comments",
+			"commentsEmptyMessage": "Comments added for this meeting will appear here.",
+			"unknownAuthor": "Team member"
 		},
 		"form": {
 			"subtitle": "Link a lead, set assignee, status, and meeting time.",
@@ -1517,6 +1549,9 @@
 			"statusPlaceholder": "Select a status",
 			"meetingDate": "Meeting date",
 			"notes": "Notes",
+			"comment": "Comment",
+			"commentPlaceholder": "Write an optional comment…",
+			"commentHint": "Optional — appears in the meeting comments thread.",
 			"create": "Create Meeting",
 			"save": "Save Changes"
 		},

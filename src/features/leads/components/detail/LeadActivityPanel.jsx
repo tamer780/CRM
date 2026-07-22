@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import LeadCommentsSection from "./LeadCommentsSection";
 
-const LeadActivityPanel = ({ leadId, users = [] }) => {
+const LeadActivityPanel = ({ leadId, leadStatus, users = [] }) => {
 	const { t } = useTranslation();
 
 	return (
@@ -14,6 +14,7 @@ const LeadActivityPanel = ({ leadId, users = [] }) => {
 
 			<LeadCommentsSection
 				leadId={leadId}
+				leadStatus={leadStatus}
 				users={users}
 				variant="embedded"
 			/>

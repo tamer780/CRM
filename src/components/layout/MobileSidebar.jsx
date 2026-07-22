@@ -1,7 +1,7 @@
 import { LogOut, X } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import logoLight from "../../assets/logo-light.png";
+import logo from "../../assets/logo-light.png";
 import { canAccessPath } from "../../features/users/utils/permissions";
 import { useAuthMe } from "../../hooks/auth/useAuthMe";
 import { useLogout } from "../../hooks/auth/useLogout";
@@ -45,11 +45,16 @@ const MobileSidebar = ({ open, onClose }) => {
 				aria-hidden={!open}
 			>
 				<div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-4">
+				<div className="flex min-w-0 items-center gap-2">
 					<img
-						src={logoLight}
+						src={logo}
 						alt={t("common.appName")}
-						className="h-9 w-auto"
+						className="h-10 max-h-10 w-auto max-w-[56px] shrink-0 object-contain"
 					/>
+					<span className="truncate text-sm font-semibold tracking-wide text-white">
+						EH-Development
+					</span>
+				</div>
 					<button
 						type="button"
 						onClick={onClose}

@@ -7,6 +7,7 @@ import {
 	getInitials,
 } from "../../leads/utils/leadAvatars";
 import { MEETING_STATUS_STYLES } from "../utils/meetingConstants";
+import MeetingCommentsSection from "./MeetingCommentsSection";
 
 function formatDateTime(value) {
 	if (!value) return "—";
@@ -145,6 +146,7 @@ const MeetingDetailModal = ({
 		: meeting?.lead_id
 			? `#${meeting.lead_id}`
 			: null;
+	const leadStatus = lead?.status;
 
 	if (!open) return null;
 
@@ -216,10 +218,25 @@ const MeetingDetailModal = ({
 									{t("meetings.drawer.general")}
 								</h3>
 								<div className="grid grid-cols-1 gap-4 rounded-2xl border border-border bg-background/40 p-4 sm:grid-cols-2">
-									<Field
-										label={t("meetings.form.lead")}
-										value={leadLabel}
-									/>
+									<div>
+										<p className="text-xs font-medium uppercase tracking-wide text-muted">
+											{t("meetings.form.lead")}
+										</p>
+										{leadLabel ? (
+											<div className="mt-1.5 flex flex-wrap items-center gap-2">
+												<p className="text-sm text-text">{leadLabel}</p>
+												{leadStatus ? (
+													<span className="inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-700">
+														{t(`leads.status.${leadStatus}`, {
+															defaultValue: leadStatus,
+														})}
+													</span>
+												) : null}
+											</div>
+										) : (
+											<p className="mt-1 text-sm text-text">—</p>
+										)}
+									</div>
 									<Field
 										label={t("meetings.form.meetingDate")}
 										value={formatDateTime(meeting.meeting_date)}
@@ -242,6 +259,8 @@ const MeetingDetailModal = ({
 									</div>
 								</div>
 							</section>
+
+							<MeetingCommentsSection meeting={meeting} />
 
 							<section>
 								<h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted">

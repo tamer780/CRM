@@ -4,8 +4,8 @@ import { nestedEntityName } from "../../../../utils/api/nestedRelations";
 import { getAvatarTone, getInitials } from "../../utils/leadAvatars";
 import LeadActionsMenu from "./LeadActionsMenu";
 import LeadAssignSelect from "./LeadAssignSelect";
+import LeadScheduleCell from "./LeadScheduleCell";
 import LeadStatusSelect from "./LeadStatusSelect";
-import ScheduledCallBadge from "./ScheduledCallBadge";
 
 function rowStatusClass(status) {
 	return (
@@ -63,6 +63,8 @@ export function LeadMobileCard({
 	selected = false,
 	onToggleSelect,
 	canEdit = true,
+	canChangeStatus = canEdit,
+	canAssign = canEdit,
 }) {
 	const { t } = useTranslation();
 	const showActions = canEdit;
@@ -121,11 +123,12 @@ export function LeadMobileCard({
 									status={lead.status}
 									onChange={(status) => onStatusChange?.(lead, status)}
 									isUpdating={statusUpdatingId === lead.id}
+									disabled={!canChangeStatus}
 								/>
 							</div>
 						</div>
 						<div className="mt-2">
-							<ScheduledCallBadge scheduledCallAt={lead.scheduled_call_at} />
+							<LeadScheduleCell lead={lead} />
 						</div>
 						<div
 							className="mt-2"
@@ -138,6 +141,7 @@ export function LeadMobileCard({
 								users={users}
 								onChange={(userId) => onAssignChange?.(lead, userId)}
 								isUpdating={assignUpdatingId === lead.id}
+								disabled={!canAssign}
 								placement="top"
 							/>
 						</div>
@@ -188,10 +192,17 @@ const LeadTableRow = ({
 	selected = false,
 	onToggleSelect,
 	canEdit = true,
+	canChangeStatus = canEdit,
+	canAssign = canEdit,
 }) => {
 	const { t } = useTranslation();
 	const showActions = canEdit;
-	const projectLabel = nestedEntityName(lead.project);
+	const projectName = nestedEntityName(lead.project);
+	const projectId = lead.project?.id;
+	const projectLabel =
+		projectId != null && projectName !== "—"
+			? `#${projectId} ${projectName}`
+			: projectName;
 	const lastCommentText = getLastCommentText(lead.last_comment);
 
 	return (
@@ -256,12 +267,13 @@ const LeadTableRow = ({
 					status={lead.status}
 					onChange={(status) => onStatusChange?.(lead, status)}
 					isUpdating={statusUpdatingId === lead.id}
+					disabled={!canChangeStatus}
 				/>
 			</td>
 			<td className="px-4 py-3">
-				<ScheduledCallBadge scheduledCallAt={lead.scheduled_call_at} />
+				<LeadScheduleCell lead={lead} />
 			</td>
-			<td className="max-w-[5rem] px-4 py-3 text-muted">
+			<td className="max-w-[8rem] px-4 py-3 text-muted">
 				<span className="block truncate" title={projectLabel}>
 					{projectLabel}
 				</span>
@@ -273,6 +285,7 @@ const LeadTableRow = ({
 					users={users}
 					onChange={(userId) => onAssignChange?.(lead, userId)}
 					isUpdating={assignUpdatingId === lead.id}
+					disabled={!canAssign}
 					placement="top"
 				/>
 			</td>

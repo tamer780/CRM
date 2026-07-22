@@ -59,8 +59,14 @@ const LeadPage = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const { can } = usePermissions();
 	const canEditLeads = can(PERMISSIONS.LEADS_EDIT);
+	const canChangeLeadStatus =
+		canEditLeads || can(PERMISSIONS.LEADS_CHANGE_STATUS);
+	const canAssignLeads = canEditLeads;
 	const canDeleteLeads = can(PERMISSIONS.LEADS_DELETE);
 	const canImportLeads = can(PERMISSIONS.LEADS_IMPORT);
+	const canViewProjects = can(PERMISSIONS.PROJECTS_VIEW);
+	const canViewCampaigns = can(PERMISSIONS.CAMPAIGNS_VIEW);
+	const canListUsers = can(PERMISSIONS.USERS_MANAGE) || canEditLeads;
 
 	const [filters, setFilters] = useState(emptyFilters);
 	const [modalOpen, setModalOpen] = useState(false);
@@ -88,9 +94,9 @@ const LeadPage = () => {
 		lastActionFrom: filters.lastActionFrom,
 		lastActionTo: filters.lastActionTo,
 	});
-	const projectsQuery = useProjects();
-	const campaignsQuery = useCampaigns();
-	const usersQuery = useUsers();
+	const projectsQuery = useProjects({ enabled: canViewProjects });
+	const campaignsQuery = useCampaigns({ enabled: canViewCampaigns });
+	const usersQuery = useUsers({ enabled: canListUsers });
 	const createLead = useCreateLead();
 	const deleteLead = useDeleteLead();
 	const assignLead = useAssignLead();
@@ -265,6 +271,7 @@ const LeadPage = () => {
 	};
 
 	const handleAssignChange = (lead, user_id) => {
+		if (!canAssignLeads) return;
 		if (!lead?.id || user_id == null) return;
 		if (String(lead.assigned_to) === String(user_id)) return;
 		const isReassign = Boolean(lead.assigned_to);
@@ -299,6 +306,7 @@ const LeadPage = () => {
 	const clearSelection = () => setSelectedIds(new Set());
 
 	const handleBulkAssign = async (user_id) => {
+		if (!canAssignLeads) return;
 		if (user_id == null || selectedIds.size === 0) return;
 		const lead_ids = filteredLeads
 			.filter((lead) => selectedIds.has(String(lead.id)))
@@ -310,6 +318,7 @@ const LeadPage = () => {
 	};
 
 	const handleBulkStatus = async (status) => {
+		if (!canChangeLeadStatus) return;
 		if (!status || selectedIds.size === 0) return;
 		const lead_ids = filteredLeads
 			.filter((lead) => selectedIds.has(String(lead.id)))
@@ -351,6 +360,7 @@ const LeadPage = () => {
 	};
 
 	const handleStatusChange = (lead, status) => {
+		if (!canChangeLeadStatus) return;
 		if (!lead?.id || !status) return;
 		if (status === "meeting_scheduled") {
 			setMeetingError("");
@@ -504,6 +514,8 @@ const LeadPage = () => {
 				onDelete={openBulkDelete}
 				onClear={clearSelection}
 				canDelete={canDeleteLeads}
+				canChangeStatus={canChangeLeadStatus}
+				canAssign={canAssignLeads}
 			/>
 
 			<LeadTable
@@ -534,6 +546,8 @@ const LeadPage = () => {
 				onToggleSelect={toggleSelect}
 				onToggleSelectAll={toggleSelectAll}
 				canEdit={canEditLeads}
+				canChangeStatus={canChangeLeadStatus}
+				canAssign={canAssignLeads}
 			/>
 
 			<LeadDetailDrawer
@@ -548,6 +562,8 @@ const LeadPage = () => {
 				campaignsLoading={campaignsQuery.isLoading}
 				usersLoading={usersQuery.isLoading}
 				canEdit={canEditLeads}
+				canChangeStatus={canChangeLeadStatus}
+				canAssign={canAssignLeads}
 				canDelete={canDeleteLeads}
 				onDelete={openDeleteLead}
 				onStatusChange={handleStatusChange}

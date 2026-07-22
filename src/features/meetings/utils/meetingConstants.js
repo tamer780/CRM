@@ -70,6 +70,10 @@ export function computeMeetingKpis(list) {
 	};
 }
 
+function trimOptionalText(value) {
+	return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
 export function emptyMeetingFormValues() {
 	return {
 		lead_id: "",
@@ -77,6 +81,7 @@ export function emptyMeetingFormValues() {
 		status: "scheduled",
 		meeting_date: "",
 		notes: "",
+		comment: "",
 	};
 }
 
@@ -90,15 +95,11 @@ export function meetingToFormValues(meeting) {
 		status: meeting.status ?? "scheduled",
 		meeting_date: toDatetimeLocalValue(meeting.meeting_date),
 		notes: meeting.notes ?? "",
+		comment: meeting.comment ?? "",
 	};
 }
 
 export function formValuesToCreatePayload(values) {
-	const notes =
-		typeof values.notes === "string" && values.notes.trim()
-			? values.notes.trim()
-			: null;
-
 	return {
 		lead_id: hasId(values.lead_id) ? Number(values.lead_id) : null,
 		assigned_to: hasId(values.assigned_to)
@@ -106,23 +107,20 @@ export function formValuesToCreatePayload(values) {
 			: null,
 		status: values.status || "scheduled",
 		meeting_date: fromDatetimeLocalValue(values.meeting_date),
-		notes,
+		notes: trimOptionalText(values.notes),
+		comment: trimOptionalText(values.comment),
 	};
 }
 
 export function formValuesToUpdatePayload(values) {
-	const notes =
-		typeof values.notes === "string" && values.notes.trim()
-			? values.notes.trim()
-			: null;
-
 	return {
 		assigned_to: hasId(values.assigned_to)
 			? Number(values.assigned_to)
 			: null,
 		status: values.status || "scheduled",
 		meeting_date: fromDatetimeLocalValue(values.meeting_date),
-		notes,
+		notes: trimOptionalText(values.notes),
+		comment: trimOptionalText(values.comment),
 	};
 }
 

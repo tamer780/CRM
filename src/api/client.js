@@ -3,7 +3,7 @@ import { clearToken, getToken } from "../utils/token/tokenStorage";
 
 const baseURL =
 	import.meta.env.VITE_API_BASE_URL?.trim() ||
-	"https://crm.having-agency.com/public/api/v1";
+	"https://new-crm.amaireg.com/api/v1";
 
 const PUBLIC_AUTH_PATHS = ["/auth/login", "/auth/register"];
 

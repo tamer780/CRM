@@ -84,6 +84,8 @@ const LeadTable = ({
 	onToggleSelect,
 	onToggleSelectAll,
 	canEdit = true,
+	canChangeStatus = canEdit,
+	canAssign = canEdit,
 	hasNextPage = false,
 	isFetchingNextPage = false,
 	fetchNextPage,
@@ -140,6 +142,8 @@ const LeadTable = ({
 		assignUpdatingId,
 		onToggleSelect,
 		canEdit,
+		canChangeStatus,
+		canAssign,
 	};
 
 	return (
@@ -174,7 +178,7 @@ const LeadTable = ({
 									<th className="px-4 py-3 text-start">{t("leads.columns.name")}</th>
 									<th className="px-4 py-3 text-start">{t("leads.columns.status")}</th>
 									<th className="px-4 py-3 text-start">
-										{t("leads.columns.scheduledCall")}
+										{t("leads.columns.schedule")}
 									</th>
 									<th className="px-4 py-3 text-start">{t("leads.columns.project")}</th>
 									<th className="px-4 py-3 text-start">{t("leads.columns.assignedTo")}</th>

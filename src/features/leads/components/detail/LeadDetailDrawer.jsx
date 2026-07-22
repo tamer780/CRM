@@ -34,6 +34,8 @@ const LeadDetailDrawer = ({
 	campaignsLoading = false,
 	usersLoading = false,
 	canEdit = true,
+	canChangeStatus = canEdit,
+	canAssign = canEdit,
 	canDelete = false,
 	onDelete,
 	onStatusChange,
@@ -115,7 +117,7 @@ const LeadDetailDrawer = ({
 				status={lead.status}
 				onChange={(status) => onStatusChange?.(lead, status)}
 				isUpdating={statusUpdatingId === lead.id}
-				disabled={!canEdit}
+				disabled={!canChangeStatus}
 				placement="bottom"
 			/>
 			<LeadAssignSelect
@@ -124,7 +126,7 @@ const LeadDetailDrawer = ({
 				users={users}
 				onChange={(userId) => onAssignChange?.(lead, userId)}
 				isUpdating={assignUpdatingId === lead.id}
-				disabled={!canEdit}
+				disabled={!canAssign}
 				placement="bottom"
 			/>
 		</div>
@@ -202,6 +204,7 @@ const LeadDetailDrawer = ({
 						<LeadDetailCard lead={lead} usersMap={usersMap}>
 							<LeadActivityPanel
 								leadId={leadId}
+								leadStatus={lead.status}
 								users={users}
 							/>
 						</LeadDetailCard>

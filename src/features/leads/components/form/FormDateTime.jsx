@@ -1,9 +1,9 @@
 import { useId } from "react";
+import DateTimePickerField from "./DateTimePickerField";
 import {
 	FieldLabel,
 	FieldLoading,
 	FieldMessage,
-	fieldClassName,
 } from "./formFieldStyles";
 
 const FormDateTime = ({
@@ -14,8 +14,10 @@ const FormDateTime = ({
 	helperText,
 	disabled = false,
 	loading = false,
+	value,
+	onChange,
+	placeholder,
 	className,
-	...props
 }) => {
 	const autoId = useId();
 	const inputId = id ?? autoId;
@@ -32,14 +34,16 @@ const FormDateTime = ({
 	return (
 		<div>
 			<FieldLabel htmlFor={inputId} label={label} required={required} />
-			<input
+			<DateTimePickerField
 				id={inputId}
-				type="datetime-local"
-				required={required}
+				value={value ?? ""}
+				onChange={(next) => {
+					onChange?.({ target: { value: next } });
+				}}
 				disabled={disabled}
-				aria-invalid={Boolean(error)}
-				className={fieldClassName({ error, className })}
-				{...props}
+				error={Boolean(error)}
+				placeholder={placeholder}
+				className={className}
 			/>
 			<FieldMessage error={error} helperText={helperText} />
 		</div>

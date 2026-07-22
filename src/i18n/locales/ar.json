@@ -1,6 +1,6 @@
 {
 	"common": {
-		"appName": "أمير CRM",
+		"appName": "EH",
 		"loading": "جاري التحميل...",
 		"logout": "تسجيل الخروج",
 		"user": "مستخدم",
@@ -470,6 +470,7 @@
 			"source": "المصدر",
 			"status": "الحالة",
 			"scheduledCall": "موعد المكالمة",
+			"schedule": "الجدول",
 			"project": "المشروع",
 			"campaign": "الحملة",
 			"assignedTo": "مُعيّن إلى",
@@ -485,6 +486,19 @@
 			"overdueHoursMinutes": "متأخر {{hours}} س {{minutes}} د",
 			"reminder": "تذكير مكالمة: {{name}} — {{when}}",
 			"open": "فتح العميل المحتمل"
+		},
+		"schedule": {
+			"call": "مكالمة",
+			"followUp": "متابعة"
+		},
+		"dateTime": {
+			"placeholder": "اختر التاريخ والوقت",
+			"pickerLabel": "اختيار التاريخ والوقت",
+			"time": "الوقت",
+			"hour": "ساعة",
+			"minute": "دقيقة",
+			"now": "الآن",
+			"apply": "تطبيق"
 		},
 		"form": {
 			"name": "الاسم",
@@ -548,7 +562,19 @@
 			"required": "يرجى كتابة تعليق قبل النشر.",
 			"tooLong": "التعليق طويل جداً.",
 			"loadFailed": "تعذّر تحميل التعليقات. يرجى المحاولة مرة أخرى.",
-			"postFailed": "تعذّر نشر التعليق. يرجى المحاولة مرة أخرى."
+			"postFailed": "تعذّر نشر التعليق. يرجى المحاولة مرة أخرى.",
+			"nextActionTitle": "الإجراء المجدول التالي",
+			"nextActionHint": "العملاء المحتملون النشطون يتطلبون إجراءً مجدولاً تالياً مع كل تعليق.",
+			"nextActionHintOptional": "يمكنك إضافة إجراء مجدول تالٍ مع هذا التعليق بشكل اختياري.",
+			"optional": "اختياري",
+			"actionType": "نوع الإجراء التالي",
+			"scheduledAt": "موعد الإجراء",
+			"actionNote": "ملاحظة الإجراء",
+			"actionNotePlaceholder": "ملاحظة اختيارية للإجراء التالي…",
+			"scheduledActionRequired": "يرجى تحديد الإجراء المجدول التالي قبل النشر.",
+			"actionTypeRequired": "اختر نوع الإجراء التالي.",
+			"scheduledAtRequired": "اختر موعد الإجراء التالي.",
+			"scheduledAtInvalid": "أدخل تاريخاً ووقتاً صالحين."
 		},
 		"status": {
 			"new": "جديد",
@@ -1505,7 +1531,13 @@
 			"timeline": "الجدول الزمني",
 			"createdBy": "أنشئ بواسطة",
 			"createdAt": "تاريخ الإنشاء",
-			"updatedAt": "تاريخ التحديث"
+			"updatedAt": "تاريخ التحديث",
+			"comments": "التعليقات",
+			"openingComment": "افتتاحي",
+			"latest": "الأحدث",
+			"commentsEmptyTitle": "لا توجد تعليقات",
+			"commentsEmptyMessage": "ستظهر التعليقات المضافة لهذا الاجتماع هنا.",
+			"unknownAuthor": "عضو الفريق"
 		},
 		"form": {
 			"subtitle": "اربط عميلاً محتملاً وعيّن المكلّف والحالة ووقت الاجتماع.",
@@ -1517,6 +1549,9 @@
 			"statusPlaceholder": "اختر حالة",
 			"meetingDate": "تاريخ الاجتماع",
 			"notes": "ملاحظات",
+			"comment": "تعليق",
+			"commentPlaceholder": "اكتب تعليقاً اختيارياً…",
+			"commentHint": "اختياري — يظهر في سلسلة تعليقات الاجتماع.",
 			"create": "إنشاء اجتماع",
 			"save": "حفظ التغييرات"
 		},
